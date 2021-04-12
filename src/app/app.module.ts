@@ -6,17 +6,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from "@angular/common/http";
 
 import { InputTextModule } from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
 import {FormsModule} from "@angular/forms";
+import { LoginComponent } from './features/login/login.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     InputTextModule,
+    ButtonModule,
     FormsModule
   ],
   providers: [],

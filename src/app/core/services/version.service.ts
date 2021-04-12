@@ -9,7 +9,7 @@ import Version from "../../shared/models/version";
 })
 export class VersionService {
 
-  constructor(public httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
 
   getVersion(): Observable<Version> {
     return this.httpClient.get<Version>(`${environment.backendUrl}/version`);

@@ -1,9 +1,14 @@
-<p>Login</p>
+<div *ngIf="user && user.login">
+  <p>Welcome {{user.name}} !</p>
+</div>
 
-<span class="p-float-label">
-    <input id="float-input" type="text" pInputText [(ngModel)]="username">
-    <label for="float-input">Username</label>
-</span>
+<div *ngIf="!user || !user.login">
+  <p>Login</p>
+  <app-login></app-login>
+</div>
 
-<p>Welcome {{username}} !</p>
+
+
+
+
 <p>PiggyBank API {{version}}</p>

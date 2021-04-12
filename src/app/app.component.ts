@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { VersionService } from "./core/services/version.service";
+import IUser from "./shared/models/IUser";
+import {LoginService} from "./core/services/login.service";
 
 @Component({
   selector: 'app-root',
@@ -11,7 +13,11 @@ export class AppComponent implements OnInit {
   username = '';
   version = '';
 
-  constructor(public versionService: VersionService) {
+  user: IUser | undefined;
+
+  constructor(private versionService: VersionService,
+              private loginService: LoginService) {
+    loginService.getUser().subscribe(value => { this.user = value});
   }
 
   ngOnInit(): void {
