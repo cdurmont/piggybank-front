@@ -1,0 +1,44 @@
+.login-body {
+  height: 100vh;
+  font-family: latoregular,Trebuchet MS,Arial,Helvetica,sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 100px 0 0;
+  background-image: linear-gradient(0deg,#6b77a1,#737ea5 3%,#9599b3 15%,#b1b0bf 28%,#c7c1c8 41%,#d6cdcf 57%,#dfd5d3 74%,#e2d7d4);
+  background-image: -webkit-linear-gradient(bottom,#6b77a1,#737ea5 3%,#9599b3 15%,#b1b0bf 28%,#c7c1c8 41%,#d6cdcf 57%,#dfd5d3 74%,#e2d7d4);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#E2D7D4",endColorstr="#6B77A1",GradientType=0);
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+#login-wrapper {
+  width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+
+#login-wrapper #login-container {
+  margin-top: 20px;
+  box-sizing: border-box;
+  height: 300px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+  padding: 2em;
+  text-align: center;
+  color: #4f575b;
+}
+#login-wrapper #login-container .title {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+#login-wrapper .login-footer {
+
+  color: #fff;
+  font-size: 14px;
+  margin-top: 50px;
+
+}

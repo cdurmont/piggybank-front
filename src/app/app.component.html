@@ -1,14 +1,25 @@
 <div *ngIf="user && user.login">
+  <p-toolbar>
+    <div class="p-toolbar-group-left">
+      <button type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)"></button>
+      <p-menu #menu [popup]="true"></p-menu>
+      <i class="pi pi-wallet"></i>
+    </div>
+    <div class="p-toolbar-group-right">
+      <p-button icon="pi pi-cog"></p-button>
+      <p-splitButton icon="pi pi-user"></p-splitButton>
+    </div>
+  </p-toolbar>
   <p>Welcome {{user.name}} !</p>
+
+  <router-outlet></router-outlet>
 </div>
+
+
 
 <div *ngIf="!user || !user.login">
-  <p>Login</p>
   <app-login></app-login>
 </div>
-
-
-
 
 <p-toast></p-toast>
 <p>PiggyBank API {{version}}</p>
