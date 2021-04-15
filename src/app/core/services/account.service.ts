@@ -14,6 +14,6 @@ export class AccountService {
   constructor(private httpClient: HttpClient) { }
 
   read(accountFilter: IAccount): Observable<IAccount[]> {
-    return this.httpClient.get<IAccount[]>(this.serviceUrl);
+    return this.httpClient.get<IAccount[]>(this.serviceUrl, {params: {filter: JSON.stringify(accountFilter)}});
   }
 }

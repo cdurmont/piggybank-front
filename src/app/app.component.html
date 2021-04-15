@@ -1,5 +1,5 @@
 <div *ngIf="user && user.login">
-  <p-toolbar>
+  <p-toolbar class="toolbar">
     <div class="p-toolbar-group-left">
       <button type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)"></button>
       <p-menu #menu [popup]="true"></p-menu>
@@ -10,7 +10,6 @@
       <p-splitButton icon="pi pi-user"></p-splitButton>
     </div>
   </p-toolbar>
-  <p>Welcome {{user.name}} !</p>
 
   <router-outlet></router-outlet>
 </div>

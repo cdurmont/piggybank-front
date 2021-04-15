@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import IAccount from "../../shared/models/IAccount";
 import {AccountService} from "../../core/services/account.service";
 import {MessageService} from "primeng/api";
+import {TreeNode} from 'primeng/api';
+
 
 @Component({
   selector: 'app-accounts',
@@ -10,14 +11,39 @@ import {MessageService} from "primeng/api";
 })
 export class AccountsComponent implements OnInit {
 
-  public accounts:IAccount[] = [];
+  public accounts:TreeNode[] = [];
 
   constructor(private accountService: AccountService,
               private messageService: MessageService) { }
 
   ngOnInit(): void {
-    this.accountService.read({}).subscribe(value => {
-      this.accounts = value;
+    this.accountService.read({parent: {}}).subscribe(value => {
+      this.accounts = value.map<TreeNode>(account => {
+        let tn:TreeNode = {data: account, leaf: false};
+        return tn;
+      });
+
+    }, error => {
+      this.messageService.add({severity: 'error', summary: "Erreur à la récupération des comptes", data: error});
+      console.error('Error reading accounts : ' + JSON.stringify(error));
+    })
+  }
+
+  onNodeExpand(event: {node:TreeNode}) {
+    const node = event.node;
+    this.accountService.read({parent: {_id : node.data._id}}).subscribe(subAccounts => {
+
+      if (!subAccounts || subAccounts.length == 0)
+        node.leaf = true;
+      else {
+        event.node.children = subAccounts.map<TreeNode>(account => {
+          let tn:TreeNode = {data: account, leaf: false};
+          return tn;
+        });
+      }
+
+      this.accounts = [...this.accounts]; // needed to refresh the table
+
     }, error => {
       this.messageService.add({severity: 'error', summary: "Erreur à la récupération des comptes", data: error});
       console.error('Error reading accounts : ' + JSON.stringify(error));
