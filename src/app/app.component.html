@@ -9,7 +9,7 @@
       </a>
     </div>
     <div>
-      <p-button icon="pi pi-cog"></p-button>
+      <p-button icon="pi pi-cog" *ngIf="user.admin" routerLink="/admin/users"></p-button>
       <p-button icon="pi pi-user" (click)="userMenu.toggle($event)"></p-button>
       <p-menu #userMenu [popup]="true" [model]="userMenuContent"></p-menu>
     </div>

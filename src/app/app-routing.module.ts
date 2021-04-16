@@ -5,7 +5,8 @@ import {PreferencesComponent} from "./features/preferences/preferences.component
 
 const routes: Routes = [
   { path: '', component: AccountsComponent },
-  { path: 'preferences', component: PreferencesComponent }
+  { path: 'preferences', component: PreferencesComponent },
+  { path: 'admin/users', loadChildren: () => import('./features/admin-users/admin-users.module').then(m => m.AdminUsersModule) }
 ];
 
 @NgModule({
