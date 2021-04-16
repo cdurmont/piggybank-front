@@ -13,18 +13,21 @@ import {MenuModule} from 'primeng/menu';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {TableModule} from 'primeng/table';
 import {TreeTableModule} from 'primeng/treetable';
+import {PasswordModule} from 'primeng/password';
 
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
 import { LoginComponent } from './features/login/login.component';
 import { AccountsComponent } from './features/accounts/accounts.component';
 import {AuthInterceptor} from "./core/auth.interceptor";
+import { PreferencesComponent } from './features/preferences/preferences.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    AccountsComponent
+    AccountsComponent,
+    PreferencesComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,7 @@ import {AuthInterceptor} from "./core/auth.interceptor";
     SplitButtonModule,
     TableModule,
     TreeTableModule,
+    PasswordModule,
     FormsModule,
     BrowserAnimationsModule
   ],

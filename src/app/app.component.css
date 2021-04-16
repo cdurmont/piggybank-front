@@ -1,3 +1,16 @@
-.toolbar .p-toolbar{
+.toolbar {
   background-color: #3F51B5;
+  color: white;
+}
+.toolbar .title {
+  vertical-align: top;
+  margin: 0.714rem;
+  text-decoration: none;
+  color:white;
+}
+
+.footer{
+  color: lightslategrey;
+  text-align: right;
+  font-size: small;
 }
