@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {FormsModule} from "@angular/forms";
 
 import {InputTextModule} from "primeng/inputtext";
 import {ButtonModule} from "primeng/button";
@@ -10,8 +11,7 @@ import {SplitButtonModule} from "primeng/splitbutton";
 import {TableModule} from "primeng/table";
 import {TreeTableModule} from "primeng/treetable";
 import {PasswordModule} from "primeng/password";
-import {FormsModule} from "@angular/forms";
-
+import {InputSwitchModule} from 'primeng/inputswitch';
 
 
 @NgModule({
@@ -27,7 +27,8 @@ import {FormsModule} from "@angular/forms";
     TableModule,
     TreeTableModule,
     PasswordModule,
-    FormsModule
+    FormsModule,
+    InputSwitchModule
 
   ],
   exports: [
@@ -41,7 +42,7 @@ import {FormsModule} from "@angular/forms";
     TreeTableModule,
     PasswordModule,
     FormsModule,
-
+    InputSwitchModule
   ]
 })
 export class PrimeImportsModule { }

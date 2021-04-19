@@ -1,0 +1,32 @@
+<p *ngIf="!createMode">Modifier un utilisateur</p>
+<p *ngIf="createMode">Créer un utilisateur</p>
+
+<form (ngSubmit)="save()">
+  <div class="p-fluid">
+    <div class="p-field p-col-12 p-md-4">
+        <span class="p-float-label">
+            <input id="login" name="login" type="text" pInputText [(ngModel)]="user.login" required>
+            <label for="login">Identifiant*</label>
+        </span>
+    </div>
+    <div class="p-field p-col-12 p-md-4">
+        <span class="p-float-label">
+          <input id="name" name="name" type="text" pInputText [(ngModel)]="user.name" required>
+          <label for="name">Nom*</label>
+        </span>
+    </div>
+    <div class="p-field p-col-12 p-md-4">
+      <p-inputSwitch id="admin" name="admin" [(ngModel)]="user.admin"></p-inputSwitch><label for="admin">Administrateur</label>
+    </div>
+    <div class="p-field p-col-12 p-md-4" *ngIf="createMode">
+        <span class="p-float-label">
+          <input pPassword type="password" id="password" name="password" [(ngModel)]="user.hash" required="required">
+          <label for="password">Mot de passe*</label>
+        </span>
+    </div>
+    <div class="p-field p-grid">
+      <p-button type="button" icon="pi pi-undo" label="Annuler" routerLink="/admin/users" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"></p-button>
+      <p-button type="submit" icon="pi pi-check-square" label="Valider" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"></p-button>
+    </div>
+  </div>
+</form>
