@@ -14,13 +14,15 @@ import {AuthInterceptor} from "./core/auth.interceptor";
 import { PreferencesComponent } from './features/preferences/preferences.component';
 
 import { PrimeImportsModule } from "./shared/prime-imports/prime-imports.module";
+import { BalanceComponent } from './shared/components/balance/balance.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     AccountsComponent,
-    PreferencesComponent
+    PreferencesComponent,
+    BalanceComponent
   ],
   imports: [
     BrowserModule,
