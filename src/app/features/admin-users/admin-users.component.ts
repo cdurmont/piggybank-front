@@ -16,10 +16,22 @@ export class AdminUsersComponent implements OnInit {
               private messageService: MessageService) { }
 
   ngOnInit(): void {
+    this.loadUserList();
+  }
+
+  private loadUserList():void {
     this.userService.read().subscribe(value => { this.users = value},
       error => {
         this.messageService.add({severity:'error', summary: "Erreur à la lecture des utilisateurs", data: error});
       })
   }
 
+  delete(user: IUser):void {
+    this.userService.delete(user).subscribe(
+      () => {
+        this.messageService.add({severity:'success', summary: "Utilisateur supprimé"});
+        this.loadUserList();
+      },
+      error => { this.messageService.add({severity:'error', summary: "Erreur à la suppression de l'utilisateur", data: error}) });
+  }
 }

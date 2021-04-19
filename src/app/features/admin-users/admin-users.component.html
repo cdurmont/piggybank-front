@@ -1,21 +1,29 @@
 
 <p-table [value]="users">
   <ng-template pTemplate="caption">
-    <div class="table-header">Liste des utilisateurs de l'application</div>
+    <div class="table-header">Liste des utilisateurs de l'application
+      <span style="float:right">
+        <a routerLink="create"><i class="pi pi-plus-circle"></i> </a>
+      </span>
+    </div>
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
       <th>Login</th>
       <th>Nom</th>
       <th>Admin</th>
+      <th></th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-user>
     <tr>
-      <td>{{user.login}}</td>
+      <td><a routerLink="update/{{user._id}}">{{user.login}}</a></td>
       <td>{{user.name}}</td>
       <td>
         <i *ngIf="user.admin" class="pi pi-check-circle"></i>
+      </td>
+      <td>
+        <button pButton icon="pi pi-trash" (click)="delete(user)" class="p-button-rounded p-button-text"></button>
       </td>
     </tr>
   </ng-template>

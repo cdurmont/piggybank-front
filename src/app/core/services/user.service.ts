@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import IUser from "../../shared/models/IUser";
 import {Observable} from "rxjs";
+import {reduce} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,23 @@ export class UserService {
 
   constructor(private httpClient: HttpClient) { }
 
-  update(user: IUser): Observable<IUser> {
-    return this.httpClient.put(`${this.serviceUrl}/${user._id}`, user);
+  create(user: IUser): Observable<IUser> {
+    return this.httpClient.post(this.serviceUrl, user);
   }
 
   read(): Observable<IUser[]> {
     return this.httpClient.get<IUser[]>(this.serviceUrl);
+  }
+
+  update(user: IUser): Observable<IUser> {
+    return this.httpClient.put(`${this.serviceUrl}/${user._id}`, user);
+  }
+
+  delete(user: IUser): Observable<{}> {
+    return this.httpClient.delete(`${this.serviceUrl}/${user._id}`);
+  }
+
+  getById(id: string): Observable<IUser[]> {
+    return this.httpClient.get<IUser[]>(this.serviceUrl, {params: {filter: JSON.stringify({_id: id})}});
   }
 }
