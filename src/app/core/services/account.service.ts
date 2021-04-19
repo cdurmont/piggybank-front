@@ -16,4 +16,8 @@ export class AccountService {
   read(accountFilter: IAccount): Observable<IAccount[]> {
     return this.httpClient.get<IAccount[]>(this.serviceUrl, {params: {filter: JSON.stringify(accountFilter)}});
   }
+
+  getBalance(account: IAccount): Observable<any> {
+    return this.httpClient.get(`${this.serviceUrl}/${account._id}/balance`);
+  }
 }

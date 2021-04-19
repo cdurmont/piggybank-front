@@ -2,7 +2,7 @@
   <ng-template pTemplate="header">
     <tr>
       <th>Compte</th>
-      <th>Type</th>
+      <th>Solde</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
@@ -12,7 +12,7 @@
         {{rowData.name}}
       </td>
       <td>
-        {{rowData.type}}
+        <app-balance [account]="rowData"></app-balance>
       </td>
     </tr>
   </ng-template>
