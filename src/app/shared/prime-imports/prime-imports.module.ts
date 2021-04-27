@@ -13,7 +13,6 @@ import {TreeTableModule} from "primeng/treetable";
 import {PasswordModule} from "primeng/password";
 import {InputSwitchModule} from 'primeng/inputswitch';
 
-
 @NgModule({
   declarations: [],
   imports: [

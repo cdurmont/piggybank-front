@@ -9,7 +9,9 @@
     <tr>
       <td>
         <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-        {{rowData.name}}
+        <a routerLink="accounts/{{rowData._id}}">
+          {{rowData.name}}
+        </a>
       </td>
       <td>
         <app-balance [account]="rowData"></app-balance>

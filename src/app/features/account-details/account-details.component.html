@@ -1,0 +1,74 @@
+<a routerLink="/">Retour aux comptes</a>
+<p>Compte : {{account.name}}</p>
+
+<div *ngIf="subAccounts.length==0">
+  Ce compte ne contient pas de sous-comptes. <a routerLink="/accounts/create">Créer un sous-compte...</a>
+</div>
+<div *ngIf="subAccounts.length>0">
+  {{subAccounts.length}} sous comptes
+  <a (click)="toggleSubAccounts()">
+    <span *ngIf="!showSubAccounts">Afficher</span><span *ngIf="showSubAccounts">Masquer</span>
+  </a>
+  <p-table *ngIf="showSubAccounts" [value]="subAccounts">
+    <ng-template pTemplate="header">
+      <th>
+        <td>Compte</td>
+    </ng-template>
+    <ng-template pTemplate="body" let-sub>
+      <tr>
+        <td>{{sub.name}}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-table [value]="entries" styleClass="p-datatable-striped p-datatable-gridlines" dataKey="_id" rowExpandMode="single">
+  <ng-template pTemplate="caption">
+    <div class="table-header">
+      Ecritures du compte
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+      <td>Date</td>
+      <td>Référence</td>
+      <td width="50%">Description</td>
+      <td>Compte</td>
+      <td>Débit</td>
+      <td>Crédit</td>
+      <td>Solde</td>
+  </ng-template>
+  <ng-template pTemplate="body" let-entry let-expanded="expanded">
+    <tr [ngClass]="expanded ? 'rowExpanded' : ''">
+      <td>
+        <button type="button" pButton [pRowToggler]="entry" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+        {{entry.date | date : 'shortDate' }}</td>
+      <td>{{entry.reference}}</td>
+      <td>{{entry.transaction.description}}</td>
+      <td>{{entry.contreparties[0].account.name}}</td>
+      <td class="amount">{{entry.debit}}</td>
+      <td class="amount">{{entry.credit}}</td>
+      <td class="amount">{{entry.balance}}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="rowexpansion" let-entry>
+    <tr>
+      <td colspan="7" style="padding:0">
+          <!-- contreparties -->
+          <p-table [value]="entry.contreparties" dataKey="_id">
+            <ng-template pTemplate="body" let-ctp>
+              <tr [ngClass]="'contrepartie'">
+                <td></td>
+                <td>{{ctp.reference}}</td>
+                <td width="50%">{{ctp.description}}</td>
+                <td>{{ctp.account.name}}</td>
+                <td class="amount">{{ctp.debit}}</td>
+                <td class="amount">{{ctp.credit}}</td>
+                <td></td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -1,0 +1,12 @@
+.amount {
+  text-align: right !important;
+}
+
+
+:host ::ng-deep .contrepartie {
+    background-color: #f4fafe !important;
+  }
+
+:host ::ng-deep .rowExpanded {
+  background-color: #a0d2fa !important;
+}
