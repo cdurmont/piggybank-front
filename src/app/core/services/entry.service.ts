@@ -16,4 +16,8 @@ export class EntryService {
   read(entryFilter: IEntry): Observable<IEntry[]> {
     return this.httpClient.get<IEntry[]>(this.serviceUrl, { params: { filter: JSON.stringify(entryFilter)}});
   }
+
+  readDetailed(entryFilter: IEntry): Observable<IEntry[]> {
+    return this.httpClient.get<IEntry[]>(`${this.serviceUrl}/detailed`, { params: { filter: JSON.stringify(entryFilter)}});
+  }
 }

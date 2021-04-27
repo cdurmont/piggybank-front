@@ -22,7 +22,9 @@
   </p-table>
 </div>
 
-<p-table [value]="entries" styleClass="p-datatable-striped p-datatable-gridlines" dataKey="_id" rowExpandMode="single">
+<p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
+<p-table [value]="entries" styleClass="p-datatable-striped p-datatable-gridlines" dataKey="_id" rowExpandMode="single"
+  [contextMenu]="cm" [(contextMenuSelection)]="selectedEntry">
   <ng-template pTemplate="caption">
     <div class="table-header">
       Ecritures du compte
@@ -38,7 +40,7 @@
       <td>Solde</td>
   </ng-template>
   <ng-template pTemplate="body" let-entry let-expanded="expanded">
-    <tr [ngClass]="expanded ? 'rowExpanded' : ''">
+    <tr [ngClass]="expanded ? 'rowExpanded' : ''" [pContextMenuRow]="entry">
       <td>
         <button type="button" pButton [pRowToggler]="entry" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
         {{entry.date | date : 'shortDate' }}</td>
@@ -72,3 +74,5 @@
     </tr>
   </ng-template>
 </p-table>
+
+<p-confirmDialog></p-confirmDialog>

@@ -12,6 +12,9 @@ import {TableModule} from "primeng/table";
 import {TreeTableModule} from "primeng/treetable";
 import {PasswordModule} from "primeng/password";
 import {InputSwitchModule} from 'primeng/inputswitch';
+import {ContextMenuModule} from "primeng/contextmenu";
+import {ConfirmationService} from "primeng/api";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
 
 @NgModule({
   declarations: [],
@@ -27,8 +30,9 @@ import {InputSwitchModule} from 'primeng/inputswitch';
     TreeTableModule,
     PasswordModule,
     FormsModule,
-    InputSwitchModule
-
+    InputSwitchModule,
+    ContextMenuModule,
+    ConfirmDialogModule,
   ],
   exports: [
     InputTextModule,
@@ -41,7 +45,10 @@ import {InputSwitchModule} from 'primeng/inputswitch';
     TreeTableModule,
     PasswordModule,
     FormsModule,
-    InputSwitchModule
-  ]
+    InputSwitchModule,
+    ContextMenuModule,
+    ConfirmDialogModule,
+  ],
+  providers: [ ConfirmationService ]
 })
 export class PrimeImportsModule { }
