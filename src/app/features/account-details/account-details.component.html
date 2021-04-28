@@ -1,15 +1,15 @@
 <a routerLink="/">Retour aux comptes</a>
-<p>Compte : {{account.name}}</p>
+<p>Compte : {{account.name}}
+  <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text" routerLink="/accounts/properties/{{account._id}}"></button>
+</p>
 
 <div *ngIf="subAccounts.length==0">
   Ce compte ne contient pas de sous-comptes. <a routerLink="/accounts/create">Créer un sous-compte...</a>
 </div>
-<div *ngIf="subAccounts.length>0">
-  {{subAccounts.length}} sous comptes
-  <a (click)="toggleSubAccounts()">
-    <span *ngIf="!showSubAccounts">Afficher</span><span *ngIf="showSubAccounts">Masquer</span>
-  </a>
-  <p-table *ngIf="showSubAccounts" [value]="subAccounts">
+<div >
+  {{subAccounts.length}} sous-compte(s)
+
+  <p-table *ngIf="subAccounts.length>0" [value]="subAccounts">
     <ng-template pTemplate="header">
       <th>
         <td>Compte</td>
@@ -24,7 +24,7 @@
 
 <p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
 <p-table [value]="entries" styleClass="p-datatable-striped p-datatable-gridlines" dataKey="_id" rowExpandMode="single"
-  [contextMenu]="cm" [(contextMenuSelection)]="selectedEntry">
+  [contextMenu]="cm" [(contextMenuSelection)]="selectedEntry" *ngIf="subAccounts.length==0">
   <ng-template pTemplate="caption">
     <div class="table-header">
       Ecritures du compte

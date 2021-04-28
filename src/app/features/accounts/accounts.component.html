@@ -1,4 +1,11 @@
 <p-treeTable [value]="accounts" (onNodeExpand)="onNodeExpand($event)">
+  <ng-template pTemplate="caption">
+    <div class="table-header">Vue globale des comptes
+      <span style="float:right">
+        <a routerLink="/accounts/create"><i class="pi pi-plus-circle"></i> </a>
+      </span>
+    </div>
+  </ng-template>
   <ng-template pTemplate="header">
     <tr>
       <th>Compte</th>
@@ -9,7 +16,7 @@
     <tr>
       <td>
         <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-        <a routerLink="accounts/{{rowData._id}}">
+        <a routerLink="accounts/details/{{rowData._id}}">
           {{rowData.name}}
         </a>
       </td>

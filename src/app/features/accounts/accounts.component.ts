@@ -13,13 +13,13 @@ export class AccountsComponent implements OnInit {
 
   public accounts:TreeNode[] = [];
 
-  constructor(private accountService: AccountService,
-              private messageService: MessageService) { }
+  constructor(protected accountService: AccountService,
+              protected messageService: MessageService) { }
 
   ngOnInit(): void {
     this.accountService.read({parent: {}}).subscribe(value => {
       this.accounts = value.map<TreeNode>(account => {
-        let tn:TreeNode = {data: account, leaf: false};
+        let tn:TreeNode = {data: account, leaf: false, label: account.name, key: account._id};
         return tn;
       });
 
@@ -37,7 +37,7 @@ export class AccountsComponent implements OnInit {
         node.leaf = true;
       else {
         event.node.children = subAccounts.map<TreeNode>(account => {
-          let tn:TreeNode = {data: account, leaf: false};
+          let tn:TreeNode = {data: account, leaf: false, label: account.name, key: account._id};
           return tn;
         });
       }

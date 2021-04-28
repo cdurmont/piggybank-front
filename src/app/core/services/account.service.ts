@@ -20,4 +20,16 @@ export class AccountService {
   getBalance(account: IAccount): Observable<any> {
     return this.httpClient.get(`${this.serviceUrl}/${account._id}/balance`);
   }
+
+  delete(account: IAccount): Observable<{}> {
+    return this.httpClient.delete(`${this.serviceUrl}/${account._id}`);
+  }
+
+  update(account: IAccount): Observable<{}> {
+    return this.httpClient.put(`${this.serviceUrl}/${account._id}`,account);
+  }
+
+  create(account: IAccount): Observable<IAccount> {
+    return this.httpClient.post(`${this.serviceUrl}`,account);
+  }
 }

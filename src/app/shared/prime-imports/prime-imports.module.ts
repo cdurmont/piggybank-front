@@ -15,6 +15,8 @@ import {InputSwitchModule} from 'primeng/inputswitch';
 import {ContextMenuModule} from "primeng/contextmenu";
 import {ConfirmationService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {OverlayPanelModule} from "primeng/overlaypanel";
+import {TreeModule} from "primeng/tree";
 
 @NgModule({
   declarations: [],
@@ -33,6 +35,8 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     InputSwitchModule,
     ContextMenuModule,
     ConfirmDialogModule,
+    OverlayPanelModule,
+    TreeModule,
   ],
   exports: [
     InputTextModule,
@@ -48,6 +52,8 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     InputSwitchModule,
     ContextMenuModule,
     ConfirmDialogModule,
+    OverlayPanelModule,
+    TreeModule,
   ],
   providers: [ ConfirmationService ]
 })

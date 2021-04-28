@@ -1,0 +1,35 @@
+<p *ngIf="!createMode">Modifier un compte</p>
+<p *ngIf="createMode">Créer un compte</p>
+
+<form (ngSubmit)="save()">
+  <div class="p-fluid">
+    <div class="p-field p-col-12 p-md-4">
+        <span class="p-float-label">
+          <input id="name" name="name" type="text" pInputText [(ngModel)]="account.name" required>
+          <label for="name">Nom du compte*</label>
+        </span>
+    </div>
+    <div class="p-field p-col-12 p-md-4">
+        <span class="p-float-label">
+          <input id="iban" name="iban" type="text" pInputText [(ngModel)]="account.iban" required>
+          <label for="name">IBAN</label>
+        </span>
+    </div>
+    <div class="p-field p-col-12 p-md-4">
+        <span class="p-float-label">
+          <input id="ref" name="ref" type="text" pInputText [(ngModel)]="account.externalRef" required>
+          <label for="name">Référence externe</label>
+        </span>
+    </div>
+    <div class="p-field p-col-12 p-md-4">
+      <app-account-selector label="Compte parent" (onAccountSelect)="setParent($event)"></app-account-selector>
+    </div>
+
+    <div class="p-col-12 p-grid p-md-4">
+      <p-button type="button" icon="pi pi-trash" label="Supprimer" (click)="delete()" class="p-sm-12 p-xl-4" styleClass="p-button-danger"></p-button>
+      <p-button type="button" icon="pi pi-undo" label="Annuler" (click)="cancel()" class="p-sm-12 p-xl-4"></p-button>
+      <p-button type="submit" icon="pi pi-check-square" label="Valider" class="p-sm-12 p-xl-4"></p-button>
+    </div>
+  </div>
+</form>
+<p-confirmDialog></p-confirmDialog>

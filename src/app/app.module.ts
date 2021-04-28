@@ -17,28 +17,30 @@ import { PrimeImportsModule } from "./shared/prime-imports/prime-imports.module"
 import { BalanceComponent } from './shared/components/balance/balance.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    AccountsComponent,
-    PreferencesComponent,
-    BalanceComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    PrimeImportsModule,
-
-  ],
-  providers: [
-    {
-      provide : HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi   : true,
-    },
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        AccountsComponent,
+        PreferencesComponent,
+        BalanceComponent,
     ],
-  bootstrap: [AppComponent]
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        AppRoutingModule,
+        PrimeImportsModule,
+
+    ],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+    ],
+    exports: [
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
