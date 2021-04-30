@@ -7,7 +7,8 @@ const routes: Routes = [
   { path: '', component: AccountsComponent },
   { path: 'preferences', component: PreferencesComponent },
   { path: 'admin/users', loadChildren: () => import('./features/admin-users/admin-users.module').then(m => m.AdminUsersModule) },
-  { path: 'accounts', loadChildren: () => import('./features/account-details/account-details.module').then(m => m.AccountDetailsModule) }
+  { path: 'accounts', loadChildren: () => import('./features/account-details/account-details.module').then(m => m.AccountDetailsModule) },
+  { path: 'transactions', loadChildren: () => import('./features/transactions/transactions.module').then(m => m.TransactionsModule) }
 ];
 
 @NgModule({

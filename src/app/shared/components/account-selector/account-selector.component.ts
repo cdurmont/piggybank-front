@@ -13,6 +13,8 @@ export class AccountSelectorComponent extends AccountsComponent {
 
   @Input()
   label: string | undefined;
+  @Input()
+  account: IAccount = {};
   @Output()
   onAccountSelect: EventEmitter<IAccount> = new EventEmitter<IAccount>();
   selectedLabel: string | undefined;
@@ -22,14 +24,22 @@ export class AccountSelectorComponent extends AccountsComponent {
     super(accountService, messageService);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+    this.onAccountSelect.emit(this.account);
+    this.selectedLabel = this.account?.name;
+  }
+
   nodeSelect(event: any, op:any): void {
     op.hide(event);
+    this.account = event.node.data;
     this.selectedLabel = event.node.label;
     this.onAccountSelect.emit(event.node.data);
   }
 
   clear(): void {
-    this.onAccountSelect.emit();
+    this.onAccountSelect.emit({});
     this.selectedLabel = undefined;
+    this.account = {};
   }
 }

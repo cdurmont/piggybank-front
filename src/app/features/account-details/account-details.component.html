@@ -28,6 +28,9 @@
   <ng-template pTemplate="caption">
     <div class="table-header">
       Ecritures du compte
+      <span style="float:right">
+        <a routerLink="/transactions/create/{{account._id}}"><i class="pi pi-plus-circle"></i> </a>
+      </span>
     </div>
   </ng-template>
   <ng-template pTemplate="header">
@@ -47,9 +50,9 @@
       <td>{{entry.reference}}</td>
       <td>{{entry.transaction.description}}</td>
       <td>{{entry.contreparties[0].account.name}}</td>
-      <td class="amount">{{entry.debit}}</td>
-      <td class="amount">{{entry.credit}}</td>
-      <td class="amount">{{entry.balance}}</td>
+      <td class="amount">{{entry.debit | currency}}</td>
+      <td class="amount">{{entry.credit | currency}}</td>
+      <td class="amount">{{entry.balance | currency}}</td>
     </tr>
   </ng-template>
   <ng-template pTemplate="rowexpansion" let-entry>

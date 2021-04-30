@@ -1,0 +1,45 @@
+<div *ngIf="transaction.entries && transaction.entries.length>0">
+<div class="p-grid p-col-12 p-fluid">
+  <div class="p-col-2">
+    <button type="button" pButton (click)="toggleExpand()"
+            class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float:left"></button>
+    <p-calendar [(ngModel)]="transaction.entries[0].date" appendTo="body"></p-calendar>
+  </div>
+  <div class="p-col-2"><input type="text" pInputText [(ngModel)]="transaction.entries[0].reference"></div>
+  <div class="p-col-3"><input type="text" pInputText [(ngModel)]="transaction.description"></div>
+  <div class="p-col-3">
+    <app-account-selector (onAccountSelect)="setAccount($event, transaction.entries[1])" [account]="transaction.entries[1].account" *ngIf="!isSplitTransaction()"></app-account-selector>
+    <input pInputText disabled="disabled" *ngIf="isSplitTransaction()" value="Transaction répartie">
+  </div>
+  <div class="amount p-col-1"><input type="number" pInputText [(ngModel)]="transaction.entries[0].debit" (ngModelChange)="changeMainDebit($event)"></div>
+  <div class="amount p-col-1"><input type="number" pInputText [(ngModel)]="transaction.entries[0].credit" (ngModelChange)="changeMainCredit($event)"></div>
+</div>
+
+<div *ngIf="expanded" class="contrepartie">
+  <div *ngFor="let ctp of transaction.entries" class="p-grid p-col-12 p-fluid">
+    <div class="p-col-2">
+    </div>
+    <div class="p-col-2"><input type="text" pInputText [(ngModel)]="ctp.reference"></div>
+    <div class="p-col-3"><input type="text" pInputText [(ngModel)]="ctp.description"></div>
+    <div class="p-col-3"><app-account-selector (onAccountSelect)="setAccount($event, ctp)" [account]="ctp.account"></app-account-selector> </div>
+    <div class="amount p-col-1"><input type="number" pInputText [(ngModel)]="ctp.debit" (ngModelChange)="changeDebit($event, ctp)"></div>
+    <div class="amount p-col-1"><input type="number" pInputText [(ngModel)]="ctp.credit" (ngModelChange)="changeCredit($event, ctp)"></div>
+  </div>
+</div>
+
+  <div class="p-grid p-jc-start p-ai-center vertical-container">
+    <div class="p-col-2">
+      <p-inputSwitch [(ngModel)]="multi" id="multiSwitch"></p-inputSwitch>
+      <label for="multiSwitch" style="margin-left:0.5rem">Saisie en masse</label>
+    </div>
+    <div class="p-col-1">
+      <button pButton type="button" icon="pi pi-undo" label="Annuler" (click)="cancel()"></button>
+    </div>
+    <div class="p-col-1">
+      <button pButton type="button" icon="pi pi-check-square" label="Valider" (click)="save()"></button>
+    </div>
+
+
+  </div>
+
+</div>

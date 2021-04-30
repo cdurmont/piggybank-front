@@ -5,19 +5,22 @@ import { AccountDetailsRoutingModule } from './account-details-routing.module';
 import { AccountDetailsComponent } from './account-details.component';
 import { PrimeImportsModule } from "../../shared/prime-imports/prime-imports.module";
 import { AccountPropertiesComponent } from './account-properties/account-properties.component';
-import { AccountSelectorComponent } from '../../shared/components/account-selector/account-selector.component';
+import {SharedComponentsModule} from "../../shared/shared-components/shared-components.module";
 
 
 @NgModule({
   declarations: [
     AccountDetailsComponent,
     AccountPropertiesComponent,
-    AccountSelectorComponent,
   ],
-    imports: [
-        CommonModule,
-        AccountDetailsRoutingModule,
-        PrimeImportsModule,
-    ]
+  exports: [
+
+  ],
+  imports: [
+    CommonModule,
+    AccountDetailsRoutingModule,
+    PrimeImportsModule,
+    SharedComponentsModule,
+  ]
 })
 export class AccountDetailsModule { }

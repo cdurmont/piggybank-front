@@ -11,6 +11,10 @@ export class TransactionService {
   private serviceUrl:string = `${environment.backendUrl}/transactions`;
   constructor(private httpClient: HttpClient) { }
 
+  create(txn: ITransaction): Observable<ITransaction> {
+    return this.httpClient.post(this.serviceUrl, txn);
+  }
+
   delete(txn: ITransaction): Observable<{}> {
     return this.httpClient.delete(`${this.serviceUrl}/${txn._id}`);
   }

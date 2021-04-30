@@ -17,6 +17,7 @@ import {ConfirmationService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {TreeModule} from "primeng/tree";
+import {CalendarModule} from "primeng/calendar";
 
 @NgModule({
   declarations: [],
@@ -37,6 +38,7 @@ import {TreeModule} from "primeng/tree";
     ConfirmDialogModule,
     OverlayPanelModule,
     TreeModule,
+    CalendarModule,
   ],
   exports: [
     InputTextModule,
@@ -54,6 +56,7 @@ import {TreeModule} from "primeng/tree";
     ConfirmDialogModule,
     OverlayPanelModule,
     TreeModule,
+    CalendarModule,
   ],
   providers: [ ConfirmationService ]
 })
