@@ -15,6 +15,10 @@ export class TransactionService {
     return this.httpClient.post(this.serviceUrl, txn);
   }
 
+  update(txn: ITransaction): Observable<{}> {
+    return this.httpClient.put(`${this.serviceUrl}/${txn._id}`, txn);
+  }
+
   delete(txn: ITransaction): Observable<{}> {
     return this.httpClient.delete(`${this.serviceUrl}/${txn._id}`);
   }

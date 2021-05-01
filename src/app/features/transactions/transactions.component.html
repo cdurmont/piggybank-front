@@ -28,7 +28,7 @@
 </div>
 
   <div class="p-grid p-jc-start p-ai-center vertical-container">
-    <div class="p-col-2">
+    <div class="p-col-2" *ngIf="createMode">
       <p-inputSwitch [(ngModel)]="multi" id="multiSwitch"></p-inputSwitch>
       <label for="multiSwitch" style="margin-left:0.5rem">Saisie en masse</label>
     </div>

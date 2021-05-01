@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import IAccount from "../../shared/models/IAccount";
 import {AccountService} from "../../core/services/account.service";
 import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
@@ -24,6 +24,7 @@ export class AccountDetailsComponent implements OnInit {
   selectedEntry: IEntry = {};
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private accountService: AccountService,
               private entryService: EntryService,
               private transactionService: TransactionService,
@@ -34,7 +35,8 @@ export class AccountDetailsComponent implements OnInit {
   ngOnInit(): void {
 
     this.contextMenu = [
-      {label: "Supprimer", icon:'pi pi-fw pi-trash', command: (event) => { this.deleteEntry(event)}}
+      {label: "Modifier", icon:'pi pi-fw pi-pencil', command: (event) => { this.updateEntry(event)}},
+      {label: "Supprimer", icon:'pi pi-fw pi-trash', command: (event) => { this.deleteEntry(event)}},
     ];
     // main account
     let id = this.route.snapshot.paramMap.get('id');
@@ -64,7 +66,7 @@ export class AccountDetailsComponent implements OnInit {
     this.showSubAccounts = ! this.showSubAccounts;
   }
 
-  private deleteEntry(event: Event) {
+  private deleteEntry() {
     this.confirmService.confirm({
       icon: 'pi pi-exclamation-triangle',
       message: "Etes-vous sûr de vouloir supprimer l'ensemble de la transaction ?",
@@ -76,9 +78,11 @@ export class AccountDetailsComponent implements OnInit {
         }, error => {
             this.messageService.add({severity: 'error', summary: "Erreur lors de la suppression de la transaction", data: error});
           })
-
       }
     })
+  }
 
+  private updateEntry() {
+    this.router.navigate([`/transactions/update/${this.selectedEntry.transaction._id}`]).catch(() => {console.error('error navigating to transaction details')});
   }
 }
