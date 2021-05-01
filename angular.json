@@ -5,6 +5,9 @@
   "projects": {
     "piggybank-front": {
       "projectType": "application",
+      "i18n": {
+        "sourceLocale": "fr-FR"
+      },
       "schematics": {
         "@schematics/angular:application": {
           "strict": true

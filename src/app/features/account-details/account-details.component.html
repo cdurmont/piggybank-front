@@ -34,10 +34,10 @@
     </div>
   </ng-template>
   <ng-template pTemplate="header">
-      <td>Date</td>
+      <td width="10%">Date</td>
       <td>Référence</td>
-      <td width="50%">Description</td>
-      <td>Compte</td>
+      <td width="40%">Description</td>
+      <td width="20%">Compte</td>
       <td>Débit</td>
       <td>Crédit</td>
       <td>Solde</td>
@@ -45,14 +45,17 @@
   <ng-template pTemplate="body" let-entry let-expanded="expanded">
     <tr [ngClass]="expanded ? 'rowExpanded' : ''" [pContextMenuRow]="entry">
       <td>
-        <button type="button" pButton [pRowToggler]="entry" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-        {{entry.date | date : 'shortDate' }}</td>
+        <div class="p-grid p-ai-center vertical-container">
+          <button type="button" pButton [pRowToggler]="entry" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float: left"></button>
+          <span>{{entry.date | date : 'shortDate' }}</span>
+        </div>
+      </td>
       <td>{{entry.reference}}</td>
       <td>{{entry.transaction.description}}</td>
       <td>{{entry.contreparties[0].account.name}}</td>
-      <td class="amount">{{entry.debit | currency}}</td>
-      <td class="amount">{{entry.credit | currency}}</td>
-      <td class="amount">{{entry.balance | currency}}</td>
+      <td class="amount">{{entry.debit | currency : 'EUR'}}</td>
+      <td class="amount">{{entry.credit | currency: 'EUR'}}</td>
+      <td class="amount">{{entry.balance | currency: 'EUR'}}</td>
     </tr>
   </ng-template>
   <ng-template pTemplate="rowexpansion" let-entry>
@@ -62,10 +65,10 @@
           <p-table [value]="entry.contreparties" dataKey="_id">
             <ng-template pTemplate="body" let-ctp>
               <tr [ngClass]="'contrepartie'">
-                <td></td>
+                <td width="10%"></td>
                 <td>{{ctp.reference}}</td>
-                <td width="50%">{{ctp.description}}</td>
-                <td>{{ctp.account.name}}</td>
+                <td width="40%">{{ctp.description}}</td>
+                <td width="20%">{{ctp.account.name}}</td>
                 <td class="amount">{{ctp.debit}}</td>
                 <td class="amount">{{ctp.credit}}</td>
                 <td></td>
