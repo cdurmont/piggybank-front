@@ -35,8 +35,8 @@ export class AccountDetailsComponent implements OnInit {
   ngOnInit(): void {
 
     this.contextMenu = [
-      {label: "Modifier", icon:'pi pi-fw pi-pencil', command: (event) => { this.updateEntry(event)}},
-      {label: "Supprimer", icon:'pi pi-fw pi-trash', command: (event) => { this.deleteEntry(event)}},
+      {label: "Modifier", icon:'pi pi-fw pi-pencil', command: () => { this.updateEntry()}},
+      {label: "Supprimer", icon:'pi pi-fw pi-trash', command: () => { this.deleteEntry()}},
     ];
     // main account
     let id = this.route.snapshot.paramMap.get('id');
