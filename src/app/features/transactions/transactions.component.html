@@ -1,9 +1,29 @@
 <div *ngIf="transaction.entries && transaction.entries.length>0">
+
+<div *ngIf="recurMode">
+  <p>Propriétés de la transaction récurrente</p>
+  <div class="p-fluid">
+    <div class="p-field p-col-12 p-md-4">
+        <span class="p-float-label">
+          <p-calendar id="recurStartDate" name="recurStartDate" [(ngModel)]="transaction.recurStartDate" dateFormat="dd/mm/yy"></p-calendar>
+          <label for="recurStartDate">Première exécution*</label>
+        </span>
+    </div>
+    <div class="p-field p-col-12 p-md-4">
+        <span class="p-float-label">
+          <p-calendar id="recurEndDate" name="recurEndDate" [(ngModel)]="transaction.recurEndDate" dateFormat="dd/mm/yy"></p-calendar>
+          <label for="recurEndDate">Dernière exécution</label>
+        </span>
+    </div>
+  </div>
+</div>
+
+
 <div class="p-grid p-col-12 p-fluid">
   <div class="p-col-2">
     <button type="button" pButton (click)="toggleExpand()"
             class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float:left"></button>
-    <p-calendar [(ngModel)]="transaction.entries[0].date" appendTo="body"></p-calendar>
+    <p-calendar [(ngModel)]="transaction.entries[0].date" appendTo="body" dateFormat="dd/mm/yy"></p-calendar>
   </div>
   <div class="p-col-2"><input type="text" pInputText [(ngModel)]="transaction.entries[0].reference"></div>
   <div class="p-col-3"><input type="text" pInputText [(ngModel)]="transaction.description"></div>

@@ -5,11 +5,13 @@ import { TransactionsRoutingModule } from './transactions-routing.module';
 import { TransactionsComponent } from './transactions.component';
 import {PrimeImportsModule} from "../../shared/prime-imports/prime-imports.module";
 import {SharedComponentsModule} from "../../shared/shared-components/shared-components.module";
+import { RecurComponent } from './recur/recur.component';
 
 
 @NgModule({
   declarations: [
-    TransactionsComponent
+    TransactionsComponent,
+    RecurComponent
   ],
   imports: [
     CommonModule,

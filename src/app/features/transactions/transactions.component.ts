@@ -25,6 +25,7 @@ export class TransactionsComponent implements OnInit {
   };
 
   createMode: boolean = false;
+  recurMode: boolean = false;
   expanded: boolean = false;
   multi: boolean = true;
   mainAccount: IAccount = {};
@@ -41,8 +42,11 @@ export class TransactionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.route.snapshot.url[0].path === "create")
+    let path = this.route.snapshot.url[0].path;
+    if (path === "create" || path === "createRecur")
       this.createMode = true;
+    if (path === "createRecur")
+      this.recurMode = true;
     let id = this.route.snapshot.paramMap.get('id');
     if (id) {
       if (this.createMode) {
@@ -64,6 +68,11 @@ export class TransactionsComponent implements OnInit {
             this.mainAccount = entries[0].account;
             this.transaction = entries[0].transaction;
             this.transaction.entries = entries;
+            if (this.transaction.type === 'R') {
+              this.recurMode = true;
+
+            }
+
           }, error => {
             this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction", data: error});
             console.error(error);
@@ -174,6 +183,115 @@ export class TransactionsComponent implements OnInit {
   }
 
   save(): void {
+
+    if (!this.validate())
+      return;
+
+    if (this.recurMode && !this.transaction.recurNextDate) {
+      this.transaction.recurNextDate = TransactionsComponent.addMonths(this.transaction.recurStartDate, 1);
+    }
+
+    if (this.createMode)
+      this.saveCreate();
+     else
+      this.saveUpdate();
+
+
+  }
+
+  private saveUpdate() {
+    let ok: boolean = true;
+    // updating the transaction it tricky ! Might be some entries to create, update and/or delete !
+    this.deletedEntries.forEach(entry => {
+      this.entryService.delete(entry).subscribe(
+        () => {
+        },
+        (error: any) => {
+          ok = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: "Erreur à l'enregistrement de la transaction (1)",
+            detail: "Aucune modification appliquée",
+            data: error
+          });
+        }
+      );
+    });
+    // @ts-ignore
+    let entries: IEntry[] = this.transaction.entries;
+    this.transaction.entries = undefined; // or things get messy when serializing... objects are nested
+    let newEntries: IEntry[] = entries.filter(entry => {
+      return entry._id == undefined
+    });
+    newEntries?.forEach(entry => {
+      entry.transaction = this.transaction;
+      this.entryService.create(entry).subscribe(
+        () => {
+        }, error => {
+          ok = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: "Erreur à l'enregistrement de la transaction (2)",
+            detail: "Vérifiez la transaction, elle est peut-être corrompue!",
+            data: error
+          });
+        }
+      );
+    });
+    let updatedEntries: IEntry[] = entries.filter(entry => {
+      return entry._id != undefined
+    });
+    updatedEntries?.forEach(entry => {
+      this.entryService.update(entry).subscribe(
+        () => {
+        }, error => {
+          ok = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: "Erreur à l'enregistrement de la transaction (3)",
+            detail: "Vérifiez la transaction, elle est peut-être corrompue!",
+            data: error
+          });
+        }
+      );
+    });
+    if (ok) {
+      this.transactionService.update(this.transaction).subscribe(
+        () => {
+          this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
+          this.location.back();
+        }, error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: "Erreur à l'enregistrement de la transaction (4)",
+            detail: "Vérifiez la transaction, elle est peut-être corrompue!",
+            data: error
+          });
+          this.location.back();
+        }
+      );
+    } else this.transaction.entries = entries;
+  }
+
+  private saveCreate() {
+    this.transactionService.create(this.transaction).subscribe(
+      () => {
+        this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
+        if (!this.multi)
+          this.location.back();
+        this.initTransaction();
+      }, error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: "Erreur à l'enregistrement de la transaction",
+          data: error
+        });
+        console.error(error);
+      }
+    );
+  }
+
+  private validate() {
     let ok: boolean = true;
     // @ts-ignore
     this.transaction.entries.forEach((entry, pos) => {
@@ -183,77 +301,28 @@ export class TransactionsComponent implements OnInit {
           severity: 'warn',
           summary: "Saisie incomplète",
           detail: (1 + pos) + "e ligne: pas de compte sélectionné"
-        })
+        });
       }
-    })
-    if (!ok)
-      return;
-
-    if (this.createMode) {
-      this.transactionService.create(this.transaction).subscribe(
-        () => {
-          this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
-          if (!this.multi)
-            this.location.back();
-          this.initTransaction();
-        }, error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: "Erreur à l'enregistrement de la transaction",
-            data: error
-          });
-          console.error(error);
-        }
-      );
-    } else {
-      // updating the transaction it tricky ! Might be some entries to create, update and/or delete !
-      this.deletedEntries.forEach(entry => {
-        this.entryService.delete(entry).subscribe(
-          () => { },
-          (error: any) => {
-            ok = false;
-            this.messageService.add({ severity: 'error', summary: "Erreur à l'enregistrement de la transaction (1)", detail: "Aucune modification appliquée", data: error});
-          }
-        );
-      });
-      // @ts-ignore
-      let entries: IEntry[] = this.transaction.entries;
-      this.transaction.entries = undefined; // or things get messy when serializing... objects are nested
-      let newEntries: IEntry[] = entries.filter(entry => { return entry._id == undefined });
-      newEntries?.forEach(entry => {
-        entry.transaction = this.transaction;
-        this.entryService.create(entry).subscribe(
-          () => {}, error => {
-            ok = false;
-            this.messageService.add({ severity: 'error', summary: "Erreur à l'enregistrement de la transaction (2)", detail: "Vérifiez la transaction, elle est peut-être corrompue!", data: error});
-          }
-        );
-      });
-      let updatedEntries: IEntry[] = entries.filter(entry => { return entry._id != undefined });
-      updatedEntries?.forEach(entry => {
-        this.entryService.update(entry).subscribe(
-          () => {}, error => {
-            ok = false;
-            this.messageService.add({ severity: 'error', summary: "Erreur à l'enregistrement de la transaction (3)", detail: "Vérifiez la transaction, elle est peut-être corrompue!", data: error});
-          }
-        );
-      });
-      if (ok) {
-        this.transactionService.update(this.transaction).subscribe(
-          () => {
-            this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
-            this.location.back();
-          }, error => {
-            this.messageService.add({ severity: 'error', summary: "Erreur à l'enregistrement de la transaction (4)", detail: "Vérifiez la transaction, elle est peut-être corrompue!", data: error});
-            this.location.back();
-          }
-        );
-      } else this.transaction.entries = entries;
-
+    });
+    if (this.recurMode && !this.transaction.recurStartDate) {
+      this.messageService.add({severity: 'warn', summary: "La date de première exécution est obligatoire"});
+      ok = false;
     }
+    return ok;
   }
 
   isSplitTransaction(): boolean {
     return !this.transaction.entries ? false : (this.transaction.entries.length > 2);
+  }
+
+  private static addMonths(date: Date|undefined, months: number): Date|undefined {
+    if (date) {
+      let d = date.getDate();
+      date.setMonth(date.getMonth() + +months);
+      if (date.getDate() != d) {
+        date.setDate(0);
+      }
+    }
+    return date;
   }
 }

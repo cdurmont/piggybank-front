@@ -17,7 +17,10 @@ export class AppComponent implements OnInit {
   userMenuContent: MenuItem[] = [ {label: 'Préférences', routerLink: ['/preferences']},
                                   {label: 'Déconnexion', command: () => { this.logout() }}];
 
-  mainMenuContent: MenuItem[] = [ {label: 'Comptes', routerLink: ['/']}];
+  mainMenuContent: MenuItem[] = [
+    {label: 'Comptes', routerLink: ['/']},
+    {label: 'Transactions récurrentes', routerLink: ['/transactions/recurring']},
+  ];
 
   constructor(private versionService: VersionService,
               private loginService: LoginService) {
