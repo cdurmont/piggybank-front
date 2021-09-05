@@ -18,6 +18,8 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {TreeModule} from "primeng/tree";
 import {CalendarModule} from "primeng/calendar";
+import {FileUploadModule} from "primeng/fileupload";
+import {SelectButtonModule} from "primeng/selectbutton";
 
 @NgModule({
   declarations: [],
@@ -39,6 +41,8 @@ import {CalendarModule} from "primeng/calendar";
     OverlayPanelModule,
     TreeModule,
     CalendarModule,
+    FileUploadModule,
+    SelectButtonModule,
   ],
   exports: [
     InputTextModule,
@@ -57,6 +61,8 @@ import {CalendarModule} from "primeng/calendar";
     OverlayPanelModule,
     TreeModule,
     CalendarModule,
+    FileUploadModule,
+    SelectButtonModule,
   ],
   providers: [ ConfirmationService ]
 })

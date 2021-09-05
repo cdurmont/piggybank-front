@@ -1,0 +1,153 @@
+import { Component, OnInit } from '@angular/core';
+import IAccount from "../../shared/models/IAccount";
+import ITransaction from "../../shared/models/ITransaction";
+import {MessageService} from "primeng/api";
+import {AccountService} from "../../core/services/account.service";
+import {TransactionService} from "../../core/services/transaction.service";
+import {EntryService} from "../../core/services/entry.service";
+import IEntry from "../../shared/models/IEntry";
+
+@Component({
+  selector: 'app-import',
+  templateUrl: './import.component.html',
+  styleUrls: ['./import.component.css']
+})
+export class ImportComponent implements OnInit {
+
+  createOrLinkValues = [{name: "Créer", value:'C'},{name: "Lier", value: 'L'}];
+  createOrLink:string = 'C';
+
+  importedAccounts: IAccount[] = [];
+  importedTransactions: ITransaction[] = [];
+
+  constructor(private messageService: MessageService,
+              private accountService: AccountService,
+              private entryService: EntryService,
+              private transactionService: TransactionService,
+              ) { }
+
+  ngOnInit(): void {
+    this.accountService.read({type: 'I'}).subscribe(
+      accountList => {
+        if (accountList)
+          accountList.forEach(account => { account.createOrLink = 'C'; account.parent= {}})
+        this.importedAccounts = accountList;
+      },
+      error => {
+        this.messageService.add({severity: 'error', summary: "Erreur lors de la lecture des comptes importés"});
+        console.error(error);
+      }
+    );
+
+    this.transactionService.read({type: 'I'}).subscribe(
+      txnList => {
+        if (txnList) {
+          txnList.sort((a, b) => {
+            // @ts-ignore
+            return new Date(a.entries[0].date).getTime() - new Date(b.entries[0].date).getTime();
+          });
+          txnList.forEach(txn => {
+            if (!txn.entries) // shouldn't happen
+              txn.entries = [];
+            if (txn.entries.length == 0)  // shouldn't happen too
+              txn.entries.push({account: {}, date: new Date()});
+            if (txn.entries.length == 1)  // that, should happen every time
+              txn.entries.push({
+                account: {},
+                date: txn.entries[0].date,
+                debit: txn.entries[0].credit,
+                credit: txn.entries[0].debit,
+              });
+            txn.entries.forEach(entry => { if (entry.date) entry.date = new Date(entry.date)}); // revive dates
+          });
+        }
+
+        this.importedTransactions = txnList;
+      }, error => {
+        this.messageService.add({severity: 'error', summary: "Erreur lors de la lecture des transactions importées"});
+        console.error(error);
+      }
+    );
+  }
+
+  accountSelected(parent: IAccount, account:IAccount): void {
+    account.parent = parent;
+  }
+
+  accountSelectedTxn(account: IAccount, txn:ITransaction): void {
+    if (txn && txn.entries && txn.entries.length>1)
+      txn.entries[1].account = account;
+  }
+
+  importAccounts():void {
+    this.importedAccounts.forEach(account => {
+      if (account.createOrLink === 'C') {
+        account.type = 'U';
+        account.createOrLink = undefined;
+        this.accountService.update(account).subscribe(
+          () => {},
+          error => {
+            this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement du compte"});
+            console.error(error);
+          }
+        );
+      } else {
+        account.createOrLink = undefined;
+        // Link to another existing account. Account to be used is stored in 'parent'
+        // 1. move all entries from the imported account to the linked account
+        this.entryService.batchUpdate({account: {_id: account._id}}, {account: account.parent}).subscribe(
+          () => {
+            // 2. store externalRef in the linked account so further imports will find it
+            account.parent.externalRef = account.externalRef;
+            this.accountService.update(account.parent).subscribe(
+              () => {
+                // 3. delete imported account
+                this.accountService.delete(account).subscribe(
+                  () => {
+                    // we should do something here to celebrate...
+                    this.messageService.add({severity: 'success', summary: "Compte importé"});
+                  }, error => {
+                    this.messageService.add({severity: 'error', summary: "Erreur lors de la suppression du compte temporaire"});
+                    console.error(error);
+                  }
+                );
+              }, error => {
+                this.messageService.add({severity: 'error', summary: "Erreur lors de la modification du compte lié"});
+                console.error(error);
+              }
+            );
+          }, error => {
+            this.messageService.add({severity: 'error', summary: "Erreur lors du déplacement des écritures sur le compte lié"});
+            console.error(error);
+          }
+        );
+      }
+    });
+  }
+
+  importTransactions():void {
+    this.importedTransactions.forEach(txn => {
+      if (txn.entries && txn.entries.length==2 && txn.entries[1].account && txn.entries[1].account._id) {
+        // an account has been set for this transaction, save it !
+        txn.type = 'S'; // this is now a standard transaction
+        let contrepartie = txn.entries[1];
+        this.transactionService.update(txn).subscribe(
+          () => {
+            contrepartie.transaction = {_id: txn._id};
+            this.entryService.create(contrepartie).subscribe(
+              () => {
+                this.messageService.add({severity: 'success', summary: "Transaction '" + txn.description + "' importée"});
+              }, error => {
+                this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement de la contrepartie"});
+                console.error(error);
+              }
+            );
+          }, error => {
+            this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement de la transaction"});
+            console.error(error);
+          }
+        );
+      }
+    });
+  }
+}

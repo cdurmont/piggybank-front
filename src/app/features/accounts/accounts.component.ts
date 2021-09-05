@@ -18,10 +18,14 @@ export class AccountsComponent implements OnInit {
 
   ngOnInit(): void {
     this.accountService.read({parent: {}}).subscribe(value => {
-      this.accounts = value.map<TreeNode>(account => {
-        let tn:TreeNode = {data: account, leaf: false, label: account.name, key: account._id};
-        return tn;
-      });
+      this.accounts = value
+        .filter(account => {
+          return (account.type != 'I')
+        })
+        .map<TreeNode>(account => {
+          let tn:TreeNode = {data: account, leaf: false, label: account.name, key: account._id};
+          return tn;
+        });
 
     }, error => {
       this.messageService.add({severity: 'error', summary: "Erreur à la récupération des comptes", data: error});

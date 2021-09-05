@@ -1,0 +1,35 @@
+<div *ngIf="importedAccounts.length>0">
+  <p>{{importedAccounts.length}} comptes à importer</p>
+  <div class="p-grid p-col-12 p-fluid" *ngFor="let account of importedAccounts">
+    <div class="p-col-3">
+      <input pInputText disabled="disabled" [(ngModel)]="account.externalRef">
+    </div>
+    <div class="p-col-3">
+      <input pInputText [(ngModel)]="account.name" [disabled]="account.createOrLink === 'L'">
+    </div>
+    <div class="p-col-1">
+      <p-selectButton [(ngModel)]="account.createOrLink" [options]="createOrLinkValues" optionLabel="name" optionValue="value"></p-selectButton>
+    </div>
+    <div class="p-col-5">
+      <app-account-selector [label]="account.createOrLink === 'C' ? 'Compte parent': 'Compte associé'" [account]="account.parent" (onAccountSelect)="accountSelected($event,account)"></app-account-selector>
+    </div>
+  </div>
+  <button pButton type="button" label="Créer/lier les comptes" (click)="importAccounts()"></button>
+</div>
+
+<div *ngIf="importedAccounts && importedAccounts.length == 0 && importedTransactions.length > 0">
+  <p>{{importedTransactions.length}} transactions à importer</p>
+  <div class="p-grid p-col-12 p-fluid" *ngFor="let txn of importedTransactions">
+    <ng-container *ngIf=" txn && txn.entries && txn.entries.length>1">
+      <div class="p-col-1"><p-calendar disabled="disabled" [(ngModel)]="txn.entries[0].date" dateFormat="dd/mm/yy"></p-calendar> </div>
+      <div class="p-col-3"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].reference"></div>
+      <div class="p-col-3"><input pInputText disabled="disabled" [(ngModel)]="txn.description"></div>
+      <div class="p-col-3"><app-account-selector [account]="txn.entries[1].account" (onAccountSelect)="accountSelectedTxn($event,txn)"></app-account-selector> </div>
+      <div class="p-col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].debit"></div>
+      <div class="p-col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].credit"></div>
+    </ng-container>
+  </div>
+  <button pButton type="button" label="Importer les transactions complétées" (click)="importTransactions()"></button>
+</div>
+
+<p-fileUpload url="../api-v1/imports/ofx" name="ofx" *ngIf="importedAccounts.length == 0 && importedTransactions.length == 0"></p-fileUpload>

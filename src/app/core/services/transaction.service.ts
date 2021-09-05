@@ -28,7 +28,7 @@ export class TransactionService {
       }));
   }
 
-  update(txn: ITransaction): Observable<{}> {
+  update(txn: ITransaction): Observable<ITransaction> {
     return this.httpClient.put(`${this.serviceUrl}/${txn._id}`, txn);
   }
 

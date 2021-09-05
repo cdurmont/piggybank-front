@@ -4,6 +4,7 @@ import {environment} from "../../../environments/environment";
 import IEntry from "../../shared/models/IEntry";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
+import {Patch} from "../../shared/models/patch";
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,14 @@ export class EntryService {
 
   update(entry: IEntry): Observable<{}> {
     return this.httpClient.put(`${this.serviceUrl}/${entry._id}`, entry);
+  }
+
+  batchUpdate(filter: IEntry, set: IEntry): Observable<{}> {
+    let patch: Patch<IEntry> = {
+      filter: filter,
+      set: set
+    };
+    return this.httpClient.patch(this.serviceUrl, patch);
   }
 
   delete(entry: IEntry): Observable<{}> {
