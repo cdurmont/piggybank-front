@@ -1,0 +1,10 @@
+# dependencies
+/node_modules
+/e2e
+.git
+.gitignore
+.editorconfig
+.browserslistrc
+Dockerfile
+
+
