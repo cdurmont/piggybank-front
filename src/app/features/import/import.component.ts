@@ -6,6 +6,8 @@ import {AccountService} from "../../core/services/account.service";
 import {TransactionService} from "../../core/services/transaction.service";
 import {EntryService} from "../../core/services/entry.service";
 import IEntry from "../../shared/models/IEntry";
+import IAssociation from "../../shared/models/IAssociation";
+import {AssociationService} from "../../core/services/association.service";
 
 @Component({
   selector: 'app-import',
@@ -20,10 +22,15 @@ export class ImportComponent implements OnInit {
   importedAccounts: IAccount[] = [];
   importedTransactions: ITransaction[] = [];
 
+  association: IAssociation = {account: {}};
+  associatingTransaction: ITransaction = {};
+  private createMode: boolean = true; //used for associations
+
   constructor(private messageService: MessageService,
               private accountService: AccountService,
               private entryService: EntryService,
               private transactionService: TransactionService,
+              private associationService: AssociationService,
               ) { }
 
   ngOnInit(): void {
@@ -39,35 +46,50 @@ export class ImportComponent implements OnInit {
       }
     );
 
-    this.transactionService.read({type: 'I'}).subscribe(
-      txnList => {
-        if (txnList) {
-          txnList.sort((a, b) => {
-            // @ts-ignore
-            return new Date(a.entries[0].date).getTime() - new Date(b.entries[0].date).getTime();
-          });
-          txnList.forEach(txn => {
-            if (!txn.entries) // shouldn't happen
-              txn.entries = [];
-            if (txn.entries.length == 0)  // shouldn't happen too
-              txn.entries.push({account: {}, date: new Date()});
-            if (txn.entries.length == 1)  // that, should happen every time
-              txn.entries.push({
-                account: {},
-                date: txn.entries[0].date,
-                debit: txn.entries[0].credit,
-                credit: txn.entries[0].debit,
-              });
-            txn.entries.forEach(entry => { if (entry.date) entry.date = new Date(entry.date)}); // revive dates
-          });
-        }
+    this.associationService.read({}).subscribe( associations => {
+      this.transactionService.read({type: 'I'}).subscribe(
+        txnList => {
+          if (txnList) {
+            txnList.sort((a, b) => {
+              // @ts-ignore
+              return new Date(a.entries[0].date).getTime() - new Date(b.entries[0].date).getTime();
+            });
+            txnList.forEach(txn => {
+              if (!txn.entries) // shouldn't happen
+                txn.entries = [];
+              if (txn.entries.length == 0)  // shouldn't happen too
+                txn.entries.push({account: {}, date: new Date()});
+              if (txn.entries.length == 1)  // that, should happen every time
+                txn.entries.push({
+                  account: {},
+                  date: txn.entries[0].date,
+                  debit: txn.entries[0].credit,
+                  credit: txn.entries[0].debit,
+                });
+              txn.entries.forEach(entry => { if (entry.date) entry.date = new Date(entry.date)}); // revive dates
+              // try to associate to an account
+              if (associations)
+                associations.forEach(assoc => {
+                  if (assoc.regex && txn.description) {
+                    let regexp = new RegExp(assoc.regex);
+                    if (regexp.test(txn.description)) {
+                      // @ts-ignore
+                      txn.entries[1].account = assoc.account;
+                    }
+                  }
 
-        this.importedTransactions = txnList;
-      }, error => {
-        this.messageService.add({severity: 'error', summary: "Erreur lors de la lecture des transactions importées"});
-        console.error(error);
-      }
-    );
+                });
+            });
+          }
+
+          this.importedTransactions = txnList;
+        }, error => {
+          this.messageService.add({severity: 'error', summary: "Erreur lors de la lecture des transactions importées"});
+          console.error(error);
+        }
+      );
+
+    });
   }
 
   accountSelected(parent: IAccount, account:IAccount): void {
@@ -75,8 +97,11 @@ export class ImportComponent implements OnInit {
   }
 
   accountSelectedTxn(account: IAccount, txn:ITransaction): void {
-    if (txn && txn.entries && txn.entries.length>1)
+    if (txn && txn.entries && txn.entries.length>1) {
       txn.entries[1].account = account;
+      if (account && account._id)
+        txn.selected = true;
+    }
   }
 
   importAccounts():void {
@@ -127,9 +152,12 @@ export class ImportComponent implements OnInit {
 
   importTransactions():void {
     this.importedTransactions.forEach(txn => {
-      if (txn.entries && txn.entries.length==2 && txn.entries[1].account && txn.entries[1].account._id) {
+      if (txn.entries && txn.entries.length==2 && txn.entries[1].account && txn.entries[1].account._id && txn.selected) {
         // an account has been set for this transaction, save it !
         txn.type = 'S'; // this is now a standard transaction
+        txn.assignDialogVisible = undefined;  // remove all presentation attributes
+        txn.selected = undefined;
+        txn.appliedAssociation = undefined;
         let contrepartie = txn.entries[1];
         this.transactionService.update(txn).subscribe(
           () => {
@@ -149,5 +177,46 @@ export class ImportComponent implements OnInit {
         );
       }
     });
+  }
+
+  showDialogAssign(txn: ITransaction) {
+    txn.assignDialogVisible = true;
+    this.association = {  regex: txn.description,
+                          account: txn.entries && txn.entries.length>1 ? txn.entries[1].account : undefined};
+    this.associatingTransaction = txn;
+  }
+
+  cancelAssign() {
+    this.associatingTransaction.assignDialogVisible = false;
+  }
+
+  saveAssign() {
+    if (this.createMode)
+      this.associationService.create(this.association).subscribe(
+        () => {
+          this.messageService.add({severity: 'success', summary: "Règle d'association créée"});
+          this.associatingTransaction.assignDialogVisible = false;
+        },
+        error => {
+          this.messageService.add({severity: 'error', summary: "Erreur à l'enregistrement de l'association", data: error});
+          console.error(error);
+        }
+      );
+    else
+      this.associationService.update(this.association).subscribe(
+        () => {
+          this.messageService.add({severity: 'success', summary: "Règle d'association modifiée"});
+          this.associatingTransaction.assignDialogVisible = false;
+        },
+        error => {
+          this.messageService.add({severity: 'error', summary: "Erreur à l'enregistrement du compte", data: error});
+          console.error(error);
+        }
+      );
+
+  }
+
+  accountSelectedAssoc(account: IAccount) {
+    this.association.account = account;
   }
 }

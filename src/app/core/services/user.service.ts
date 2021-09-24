@@ -31,6 +31,7 @@ export class UserService {
   }
 
   getById(id: string): Observable<IUser[]> {
-    return this.httpClient.get<IUser[]>(this.serviceUrl, {params: {filter: JSON.stringify({_id: id})}});
+    let user:IUser = {_id: id};
+    return this.httpClient.get<IUser[]>(this.serviceUrl, {params: {filter: JSON.stringify(user)}});
   }
 }

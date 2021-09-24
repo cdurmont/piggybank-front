@@ -15,6 +15,7 @@ import { PreferencesComponent } from './features/preferences/preferences.compone
 
 import { PrimeImportsModule } from "./shared/prime-imports/prime-imports.module";
 import { BalanceComponent } from './shared/components/balance/balance.component';
+import { QuickinputsComponent } from './features/quickinputs/quickinputs.component';
 
 @NgModule({
     declarations: [
@@ -23,6 +24,7 @@ import { BalanceComponent } from './shared/components/balance/balance.component'
         AccountsComponent,
         PreferencesComponent,
         BalanceComponent,
+        QuickinputsComponent,
     ],
     imports: [
         BrowserModule,

@@ -4,10 +4,11 @@ import IAccount from "../../shared/models/IAccount";
 import IEntry from "../../shared/models/IEntry";
 import {ActivatedRoute} from "@angular/router";
 import {AccountService} from "../../core/services/account.service";
-import {MessageService} from "primeng/api";
+import {MenuItem, MessageService} from "primeng/api";
 import {Location} from "@angular/common";
 import {TransactionService} from "../../core/services/transaction.service";
 import {EntryService} from "../../core/services/entry.service";
+import {LoginService} from "../../core/services/login.service";
 
 @Component({
   selector: 'app-transactions',
@@ -16,16 +17,20 @@ import {EntryService} from "../../core/services/entry.service";
 })
 export class TransactionsComponent implements OnInit {
 
+  transMenuContent: MenuItem[] = [ {label: 'Inverser', command: () => { this.revertTransaction() }}];
+
+  lastDate: Date = new Date();
 
   transaction: ITransaction = {
     entries: [
-      {date: new Date(), account: {}},
-      {date: new Date(), account: {}},
+      {date: this.lastDate, account: {}},
+      {date: this.lastDate, account: {}},
     ]
   };
 
   createMode: boolean = false;
   recurMode: boolean = false;
+  quickMode: boolean = false;
   expanded: boolean = false;
   multi: boolean = true;
   mainAccount: IAccount = {};
@@ -38,18 +43,58 @@ export class TransactionsComponent implements OnInit {
               private entryService: EntryService,
               private messageService: MessageService,
               private location: Location,
+              private loginService: LoginService,
   ) {
+  }
+
+  private static addMonths(date: Date|undefined, months: number): Date|undefined {
+    if (date) {
+      let d = date.getDate();
+      date.setMonth(date.getMonth() + +months);
+      if (date.getDate() != d) {
+        date.setDate(0);
+      }
+    }
+    return date;
   }
 
   ngOnInit(): void {
     let path = this.route.snapshot.url[0].path;
-    if (path === "create" || path === "createRecur")
+    if (path === "create" || path === "createRecur" || path === "createQuick" || path === "useQuickInput")
       this.createMode = true;
     if (path === "createRecur")
       this.recurMode = true;
+    if (path === "createQuick" || path === "useQuickInput")
+      this.quickMode = true;
     let id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      if (this.createMode) {
+      if (this.quickMode) {
+        // id + quickMode => using a quick input as a model to create a new transaction
+        this.multi = false;
+        this.transaction.type = 'S';
+        this.entryService.read({transaction: { _id:id}}).subscribe(
+          entries => {
+            if (entries.length == 0)
+              return this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction: aucune écriture"});
+            this.mainAccount = entries[0].account;
+            this.transaction.entries = [];
+            this.transaction.description = entries[0].transaction.description;
+            // duplicates the model's entries
+            entries.forEach(entry => {
+              this.transaction.entries?.push({
+                date: this.lastDate,
+                account: entry.account,
+                description: entry.description,
+                debit: entry.debit,
+                credit: entry.credit});
+            });
+          }, error => {
+            this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction", data: error});
+            console.error(error);
+          }
+        );
+      }
+      else if (this.createMode) {
         this.accountService.read({_id: id}).subscribe(
           value => {
             this.mainAccount = value[0];
@@ -70,7 +115,6 @@ export class TransactionsComponent implements OnInit {
             this.transaction.entries = entries;
             if (this.transaction.type === 'R') {
               this.recurMode = true;
-
             }
 
           }, error => {
@@ -80,16 +124,25 @@ export class TransactionsComponent implements OnInit {
         );
       }
     }
+    else this.initTransaction();
   }
 
   initTransaction():void {
     this.transaction = {
       entries: [
-        {date: new Date(), account: this.mainAccount ? this.mainAccount : {}},
-        {date: new Date(), account: {}},
-      ]
+        {date: this.lastDate, account: this.mainAccount ? this.mainAccount : {}},
+        {date: this.lastDate, account: {}},
+      ],
+      type: this.quickMode ? 'Q' : this.recurMode ? 'R' : 'S'
     };
+    if (this.quickMode) {
+      this.multi = false;
+      this.loginService.getUser().subscribe(user => {
+        this.transaction.owner = user;
+      });
+    }
   }
+
   setAccount(account: IAccount, entry: IEntry): void {
     entry.account = account;
   }
@@ -120,6 +173,9 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  changeDate(newDate: Date): void {
+    this.lastDate = newDate;
+  }
 
   changeDebit(newDebit: number, entry: IEntry): void {
     entry.debit = newDebit;
@@ -197,6 +253,10 @@ export class TransactionsComponent implements OnInit {
       this.saveUpdate();
 
 
+  }
+
+  isSplitTransaction(): boolean {
+    return !this.transaction.entries ? false : (this.transaction.entries.length > 2);
   }
 
   private saveUpdate() {
@@ -311,18 +371,11 @@ export class TransactionsComponent implements OnInit {
     return ok;
   }
 
-  isSplitTransaction(): boolean {
-    return !this.transaction.entries ? false : (this.transaction.entries.length > 2);
-  }
-
-  private static addMonths(date: Date|undefined, months: number): Date|undefined {
-    if (date) {
-      let d = date.getDate();
-      date.setMonth(date.getMonth() + +months);
-      if (date.getDate() != d) {
-        date.setDate(0);
-      }
-    }
-    return date;
+  private revertTransaction() {
+    this.transaction.entries?.forEach(entry => {
+      let oldDebit = entry.debit;
+      entry.debit = entry.credit;
+      entry.credit = oldDebit;
+    })
   }
 }

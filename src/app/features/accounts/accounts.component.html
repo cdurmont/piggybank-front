@@ -2,7 +2,7 @@
   <ng-template pTemplate="caption">
     <div class="table-header">Vue globale des comptes
       <span style="float:right">
-        <a routerLink="/accounts/create"><i class="pi pi-plus-circle"></i> </a>
+        <a (click)="refresh()"><i class="pi pi-refresh"></i></a>
       </span>
     </div>
   </ng-template>
@@ -26,3 +26,7 @@
     </tr>
   </ng-template>
 </p-treeTable>
+<br>
+<p-button (click)="quickInputs.toggle($event)">Saisie rapide</p-button>&nbsp;
+<p-menu #quickInputs [popup]="true" [model]="quickInputsMenu"></p-menu>
+<p-button routerLink="/accounts/create" *ngIf="user.admin">Nouveau compte</p-button>

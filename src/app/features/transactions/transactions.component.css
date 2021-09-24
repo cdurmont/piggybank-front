@@ -1,3 +1,7 @@
 .contrepartie {
   background-color: #f4fafe !important;
 }
+
+p-button.transMenu {
+  position:absolute;
+}

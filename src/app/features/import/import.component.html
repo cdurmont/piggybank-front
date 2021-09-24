@@ -21,9 +21,24 @@
   <p>{{importedTransactions.length}} transactions à importer</p>
   <div class="p-grid p-col-12 p-fluid" *ngFor="let txn of importedTransactions">
     <ng-container *ngIf=" txn && txn.entries && txn.entries.length>1">
-      <div class="p-col-1"><p-calendar disabled="disabled" [(ngModel)]="txn.entries[0].date" dateFormat="dd/mm/yy"></p-calendar> </div>
-      <div class="p-col-3"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].reference"></div>
-      <div class="p-col-3"><input pInputText disabled="disabled" [(ngModel)]="txn.description"></div>
+      <div class="p-col-2 p-grid">
+        <p-checkbox class="p-col-3" [binary]="true" [(ngModel)]="txn.selected"></p-checkbox>
+        <p-calendar class="p-col-9" disabled="disabled" [(ngModel)]="txn.entries[0].date" dateFormat="dd/mm/yy"></p-calendar> </div>
+      <div class="p-col-2"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].reference"></div>
+      <div class="p-col-3">
+        <div class="p-inputgroup">
+          <input pInputText disabled="disabled" [(ngModel)]="txn.description">
+          <p-button (click)="showDialogAssign(txn)"><i class="pi pi-link"></i></p-button>
+          <p-dialog title="Assigner un compte automatiquement" [(visible)]="txn.assignDialogVisible">
+            <div class="p-grid">
+              <input pInputText placeholder="Regex" class="p-col-12" [(ngModel)]="association.regex">
+              <div class="p-col-12"><app-account-selector [account]="association.account" (onAccountSelect)="accountSelectedAssoc($event)"></app-account-selector> </div>
+              <p-button class="p-col-6" (click)="cancelAssign()">Annuler</p-button>
+              <p-button class="p-col-6" (click)="saveAssign()">Associer</p-button>
+            </div>
+          </p-dialog>
+        </div>
+      </div>
       <div class="p-col-3"><app-account-selector [account]="txn.entries[1].account" (onAccountSelect)="accountSelectedTxn($event,txn)"></app-account-selector> </div>
       <div class="p-col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].debit"></div>
       <div class="p-col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].credit"></div>
@@ -32,4 +47,4 @@
   <button pButton type="button" label="Importer les transactions complétées" (click)="importTransactions()"></button>
 </div>
 
-<p-fileUpload url="../api-v1/imports/ofx" name="ofx" *ngIf="importedAccounts.length == 0 && importedTransactions.length == 0"></p-fileUpload>
+<p-fileUpload url="../api-v1/imports/ofx" name="ofx"></p-fileUpload>

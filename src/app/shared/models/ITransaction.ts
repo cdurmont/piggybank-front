@@ -1,4 +1,6 @@
 import IEntry from "./IEntry";
+import IUser from "./IUser";
+import IAssociation from "./IAssociation";
 
 
 interface ITransaction {
@@ -9,7 +11,11 @@ interface ITransaction {
     recurStartDate?: Date,
     recurEndDate?: Date,
     recurNextDate?: Date,
-    entries?: IEntry[]
+    owner?: IUser,
+    entries?: IEntry[],
+    selected?: boolean,
+    assignDialogVisible?: boolean,
+    appliedAssociation?: IAssociation,
 }
 
 export default ITransaction;

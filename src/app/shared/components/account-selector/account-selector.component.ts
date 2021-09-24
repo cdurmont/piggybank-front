@@ -3,6 +3,8 @@ import {AccountsComponent} from "../../../features/accounts/accounts.component";
 import {AccountService} from "../../../core/services/account.service";
 import {MessageService} from "primeng/api";
 import IAccount from "../../models/IAccount";
+import {TransactionService} from "../../../core/services/transaction.service";
+import {LoginService} from "../../../core/services/login.service";
 
 @Component({
   selector: 'app-account-selector',
@@ -15,13 +17,18 @@ export class AccountSelectorComponent extends AccountsComponent {
   label: string | undefined;
   @Input()
   account: IAccount = {};
+  @Input()
+  placeholder: string = "Compte";
   @Output()
   onAccountSelect: EventEmitter<IAccount> = new EventEmitter<IAccount>();
   selectedLabel: string | undefined;
 
   constructor(accountService: AccountService,
-              messageService: MessageService) {
-    super(accountService, messageService);
+              messageService: MessageService,
+              transactionService: TransactionService,
+              loginService: LoginService,
+              ) {
+    super(accountService, messageService, transactionService, loginService);
   }
 
   ngOnInit() {

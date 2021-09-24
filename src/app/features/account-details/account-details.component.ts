@@ -6,6 +6,9 @@ import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {EntryService} from "../../core/services/entry.service";
 import IEntry from "../../shared/models/IEntry";
 import {TransactionService} from "../../core/services/transaction.service";
+import {LoginService} from "../../core/services/login.service";
+import IUser from "../../shared/models/IUser";
+import {PermissionService} from "../../core/services/permission.service";
 
 @Component({
   selector: 'app-account-details',
@@ -23,13 +26,18 @@ export class AccountDetailsComponent implements OnInit {
   contextMenu: MenuItem[] = [];
   selectedEntry: IEntry = {};
 
+  user:IUser = {};
+  writeAllowed: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private accountService: AccountService,
               private entryService: EntryService,
               private transactionService: TransactionService,
               private messageService: MessageService,
-              private confirmService: ConfirmationService
+              private confirmService: ConfirmationService,
+              private loginService: LoginService,
+              private permissionService: PermissionService,
               ) { }
 
   ngOnInit(): void {
@@ -53,11 +61,35 @@ export class AccountDetailsComponent implements OnInit {
 
     // entries
     this.loadEntries(id);
+
+    // connected user
+    this.loginService.getUser().subscribe(user => {
+      this.user = user;
+      if (user.admin)
+        this.writeAllowed = true;
+      else
+        this.permissionService.read({user: user, account: { _id: id}}).subscribe(permissions => {
+          if (permissions)
+            permissions.forEach(permission => {
+              if (permission.type === 'W')
+                this.writeAllowed = true;
+            })
+        })
+    });
   }
 
   loadEntries(accountId: string|null) {
     this.entryService.readDetailed({account: {_id: accountId}}).subscribe(
-      value => { this.entries = value },
+      value => {
+        //
+        if (value)
+          value.forEach(entry => {
+            if (entry.contreparties && entry.contreparties.length>1)
+              while (entry.contreparties[0].account._id == this.account._id)
+                entry.contreparties.push(<IEntry>entry.contreparties.shift());
+          });
+        this.entries = value;
+      },
       error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture des écritures du compte", data: error})}
     );
   }

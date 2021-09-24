@@ -20,6 +20,8 @@ import {TreeModule} from "primeng/tree";
 import {CalendarModule} from "primeng/calendar";
 import {FileUploadModule} from "primeng/fileupload";
 import {SelectButtonModule} from "primeng/selectbutton";
+import {CheckboxModule} from "primeng/checkbox";
+import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
   declarations: [],
@@ -43,6 +45,8 @@ import {SelectButtonModule} from "primeng/selectbutton";
     CalendarModule,
     FileUploadModule,
     SelectButtonModule,
+    CheckboxModule,
+    DialogModule,
   ],
   exports: [
     InputTextModule,
@@ -63,6 +67,8 @@ import {SelectButtonModule} from "primeng/selectbutton";
     CalendarModule,
     FileUploadModule,
     SelectButtonModule,
+    CheckboxModule,
+    DialogModule,
   ],
   providers: [ ConfirmationService ]
 })

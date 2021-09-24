@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   user: IUser | undefined;
 
   userMenuContent: MenuItem[] = [ {label: 'Préférences', routerLink: ['/preferences']},
+                                  {label: 'Mes saisies rapides', routerLink: ['/quickInputs']},
                                   {label: 'Déconnexion', command: () => { this.logout() }}];
 
   mainMenuContent: MenuItem[] = [

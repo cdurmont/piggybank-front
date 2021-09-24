@@ -15,8 +15,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     req = req.clone({
-      setParams: {
-        apikey: this.loginService.getApikey()
+      setHeaders: {
+        Authorization: 'Api-Key ' + this.loginService.getApikey()
       },
     });
 

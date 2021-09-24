@@ -1,18 +1,18 @@
 <a routerLink="/">Retour aux comptes</a>
 <p>Compte : {{account.name}}
-  <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text" routerLink="/accounts/properties/{{account._id}}"></button>
+  <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text" routerLink="/accounts/properties/{{account._id}}" *ngIf="user.admin"></button>
 </p>
 
 <div *ngIf="subAccounts.length==0">
-  Ce compte ne contient pas de sous-comptes. <a routerLink="/accounts/create">Créer un sous-compte...</a>
+  Ce compte ne contient pas de sous-comptes. <a routerLink="/accounts/create" *ngIf="user.admin">Créer un sous-compte...</a>
 </div>
-<div >
+<div *ngIf="subAccounts.length>0">
   {{subAccounts.length}} sous-compte(s)
 
-  <p-table *ngIf="subAccounts.length>0" [value]="subAccounts">
+  <p-table [value]="subAccounts">
     <ng-template pTemplate="caption">
 
-        <a routerLink="/accounts/create"><i class="pi pi-plus-circle"></i> </a>
+        <a routerLink="/accounts/create" *ngIf="user.admin"><i class="pi pi-plus-circle"></i> </a>
 
     </ng-template>
     <ng-template pTemplate="header">
@@ -33,9 +33,6 @@
   <ng-template pTemplate="caption">
     <div class="table-header">
       Ecritures du compte
-      <span style="float:right">
-        <a routerLink="/transactions/create/{{account._id}}"><i class="pi pi-plus-circle"></i> </a>
-      </span>
     </div>
   </ng-template>
   <ng-template pTemplate="header">
@@ -57,7 +54,7 @@
       </td>
       <td>{{entry.reference}}</td>
       <td>{{entry.transaction.description}}</td>
-      <td>{{entry.contreparties[0].account.name}}</td>
+      <td>{{entry.contreparties.length <3 ? entry.contreparties[0].account.name : 'Transaction répartie'}}</td>
       <td class="amount"><span *ngIf="entry.debit || entry.debit != 0">  {{entry.debit | currency : 'EUR'}}</span></td>
       <td class="amount"><span *ngIf="entry.credit || entry.credit != 0">{{entry.credit | currency: 'EUR'}}</span></td>
       <td class="amount">{{entry.balance | currency: 'EUR'}}</td>
@@ -85,5 +82,5 @@
     </tr>
   </ng-template>
 </p-table>
-
+<p-button routerLink="/transactions/create/{{account._id}}" *ngIf="writeAllowed">Saisir une écriture</p-button>
 <p-confirmDialog></p-confirmDialog>

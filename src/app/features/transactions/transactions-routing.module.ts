@@ -6,6 +6,8 @@ import {RecurComponent} from "./recur/recur.component";
 const routes: Routes = [
   { path: 'create/:id', component: TransactionsComponent },
   { path: 'createRecur', component: TransactionsComponent },
+  { path: 'createQuick', component: TransactionsComponent },
+  { path: 'useQuickInput/:id', component: TransactionsComponent },
   { path: 'update/:id', component: TransactionsComponent },
   { path: 'recurring', component: RecurComponent },
 ];
