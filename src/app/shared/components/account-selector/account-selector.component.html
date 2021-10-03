@@ -3,13 +3,11 @@
     <input id="acc" name="acc" type="text" disabled="disabled" pInputText [(ngModel)]="account.name" [placeholder]="placeholder">
     <label for="acc">{{label}}</label>
   </span>
-  <button pButton type="button" icon="pi pi-search" class="p-inputgroup-addon" (click)="op.toggle($event)"></button>
+  <button pButton type="button" icon="pi pi-search" class="p-inputgroup-addon" (click)="show()"></button>
   <button pButton type="button" icon="pi pi-times" class="p-inputgroup-addon" (click)="clear()"></button>
-  <p-overlayPanel #op>
-    <ng-template pTemplate>
+  <p-dialog #op [(visible)]="visible">
       <p-tree [value]="accounts" (onNodeExpand)="onNodeExpand($event)" [filter]="true"
-              selectionMode="single" (onNodeSelect)="nodeSelect($event, op)">
+              selectionMode="single" (onNodeSelect)="nodeSelect($event)">
       </p-tree>
-    </ng-template>
-  </p-overlayPanel>
+  </p-dialog>
 </div>

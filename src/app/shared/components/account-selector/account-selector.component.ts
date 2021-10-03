@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {AccountsComponent} from "../../../features/accounts/accounts.component";
 import {AccountService} from "../../../core/services/account.service";
 import {MessageService} from "primeng/api";
@@ -22,6 +22,7 @@ export class AccountSelectorComponent extends AccountsComponent {
   @Output()
   onAccountSelect: EventEmitter<IAccount> = new EventEmitter<IAccount>();
   selectedLabel: string | undefined;
+  visible: boolean = false;
 
   constructor(accountService: AccountService,
               messageService: MessageService,
@@ -37,8 +38,8 @@ export class AccountSelectorComponent extends AccountsComponent {
     this.selectedLabel = this.account?.name;
   }
 
-  nodeSelect(event: any, op:any): void {
-    op.hide(event);
+  nodeSelect(event: any): void {
+    this.visible = false;
     this.account = event.node.data;
     this.selectedLabel = event.node.label;
     this.onAccountSelect.emit(event.node.data);
@@ -48,5 +49,9 @@ export class AccountSelectorComponent extends AccountsComponent {
     this.onAccountSelect.emit({});
     this.selectedLabel = undefined;
     this.account = {};
+  }
+
+  show(): void {
+    this.visible = true;
   }
 }
