@@ -28,59 +28,52 @@
 </div>
 
 <p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
-<p-table [value]="entries" styleClass="p-datatable-striped p-datatable-gridlines" dataKey="_id" rowExpandMode="single"
-  [contextMenu]="cm" [(contextMenuSelection)]="selectedEntry" *ngIf="subAccounts.length==0">
-  <ng-template pTemplate="caption">
-    <div class="table-header">
-      Ecritures du compte
-    </div>
-  </ng-template>
-  <ng-template pTemplate="header">
-      <td width="10%">Date</td>
-      <td>Référence</td>
-      <td width="40%">Description</td>
-      <td width="20%">Compte</td>
-      <td>Débit</td>
-      <td>Crédit</td>
-      <td>Solde</td>
-  </ng-template>
-  <ng-template pTemplate="body" let-entry let-expanded="expanded">
-    <tr [ngClass]="expanded ? 'rowExpanded' : ''" [pContextMenuRow]="entry">
-      <td>
-        <div class="p-grid p-ai-center vertical-container">
-          <button type="button" pButton [pRowToggler]="entry" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float: left"></button>
-          <span>{{entry.date | date : 'shortDate' }}</span>
-        </div>
-      </td>
-      <td>{{entry.reference}}</td>
-      <td>{{entry.transaction.description}}</td>
-      <td>{{entry.contreparties.length <3 ? entry.contreparties[0].account.name : 'Transaction répartie'}}</td>
-      <td class="amount"><span *ngIf="entry.debit || entry.debit != 0">  {{entry.debit | currency : 'EUR'}}</span></td>
-      <td class="amount"><span *ngIf="entry.credit || entry.credit != 0">{{entry.credit | currency: 'EUR'}}</span></td>
-      <td class="amount">{{entry.balance | currency: 'EUR'}}</td>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="rowexpansion" let-entry>
-    <tr>
-      <td colspan="7" style="padding:0">
-          <!-- contreparties -->
-          <p-table [value]="entry.contreparties" dataKey="_id">
-            <ng-template pTemplate="body" let-ctp>
-              <tr [ngClass]="'contrepartie'">
-                <td width="10%"></td>
-                <td>{{ctp.reference}}</td>
-                <td width="40%">{{ctp.description}}</td>
-                <td width="20%">{{ctp.account.name}}</td>
-                <td class="amount"><span *ngIf="ctp.debit || ctp.debit != 0">{{ctp.debit | currency: 'EUR'}}</span></td>
-                <td class="amount"><span *ngIf="ctp.credit || ctp.credit != 0">{{ctp.credit | currency: 'EUR'}}</span></td>
-                <td></td>
-              </tr>
-            </ng-template>
-          </p-table>
 
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+<div class="p-grid p-fluid">
+  <div class="p-d-none p-d-lg-block p-lg-2">Date</div>
+  <div class="p-d-none p-d-lg-block p-lg-2">Référence</div>
+  <div class="p-md-4 p-lg-3">Description</div>
+  <div class="p-md-3 p-lg-2">Compte</div>
+  <div class="amount p-d-none p-d-lg-block p-lg-1">Débit</div>
+  <div class="amount p-d-none p-d-lg-block p-lg-1">Crédit</div>
+  <div class="amount p-d-block p-md-2 p-d-lg-none">+/-</div>
+  <div class="amount p-md-3 p-lg-1">Solde</div>
+</div>
+<div *ngFor="let entry of entries" class="ecritures">
+  <div class="p-grid p-fluid" (contextmenu)="openContextMenu(entry);cm.show($event)">
+    <div class="p-d-none p-d-lg-block p-lg-2">
+      <button type="button" pButton (click)="toggleExpand(entry)"
+              class="p-button-text p-button-rounded p-button-plain" [icon]="isExpanded(entry) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float:left"></button>
+      <span>{{entry.date | date : 'shortDate' }}</span>
+    </div>
+    <div class="p-d-none p-d-lg-block p-lg-2">{{entry.reference}}</div>
+    <div class="p-md-4 p-lg-3">{{entry.transaction.description}}</div>
+    <div class="p-md-3 p-lg-2">
+      {{entry.contreparties && entry.contreparties.length>0 && entry.contreparties.length<3 ? entry.contreparties[0].account.name : ''}}
+      {{entry.contreparties && entry.contreparties.length>1 && entry.contreparties.length>=3 ? 'Transaction répartie' : ''}}
+    </div>
+    <div class="amount p-d-none p-d-lg-block p-lg-1"><span *ngIf="entry.debit || entry.debit != 0">  {{entry.debit | currency : 'EUR'}}</span></div>
+    <div class="amount p-d-none p-d-lg-block p-lg-1">
+      <span *ngIf="entry.credit || entry.credit != 0">{{entry.credit | currency: 'EUR'}}</span>
+    </div>
+    <div class="amount p-d-block p-md-2 p-d-lg-none">{{creditDebit(entry) | currency: 'EUR'}}
+    </div>
+    <div class="amount p-md-3 p-lg-1">{{entry.balance | currency: 'EUR'}}</div>
+
+  </div>
+  <div *ngIf="isExpanded(entry)" class="contrepartie">
+    <div *ngFor="let ctp of entry.contreparties" class="p-grid p-fluid">
+      <div class="p-col-12 p-md-6 p-lg-2">
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-2">{{ctp.reference}}</div>
+      <div class="p-col-12 p-md-6 p-lg-3">{{ctp.description}}</div>
+      <div class="p-col-12 p-md-6 p-lg-2">{{ctp.account.name}}</div>
+      <div class="amount p-col-12 p-md-6 p-lg-1"><span *ngIf="ctp.debit || ctp.debit != 0">{{ctp.debit | currency: 'EUR'}}</span></div>
+      <div class="amount p-col-12 p-md-6 p-lg-1"><span *ngIf="ctp.credit || ctp.credit != 0">{{ctp.credit | currency: 'EUR'}}</span></div>
+      <div class="amount p-col-12 p-md-6 p-lg-1"></div>
+    </div>
+  </div>
+</div>
+
 <p-button routerLink="/transactions/create/{{account._id}}" *ngIf="writeAllowed">Saisir une écriture</p-button>
 <p-confirmDialog></p-confirmDialog>

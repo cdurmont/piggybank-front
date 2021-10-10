@@ -8,6 +8,8 @@ interface IEntry {
     reference?: string,
     description?: string,
     contreparties?: IEntry[]
+    expanded?: boolean;
+    balance?: number;
 }
 
 export default IEntry;

@@ -7,6 +7,14 @@
     background-color: #f4fafe !important;
   }
 
+div.ecritures:nth-child(2n) {
+  background-color: #fafafa !important;
+}
+
+.contrepartie {
+  background-color: #f4fafe !important;
+}
+
 :host ::ng-deep .rowExpanded {
   background-color: #a0d2fa !important;
 }

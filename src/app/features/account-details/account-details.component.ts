@@ -9,6 +9,7 @@ import {TransactionService} from "../../core/services/transaction.service";
 import {LoginService} from "../../core/services/login.service";
 import IUser from "../../shared/models/IUser";
 import {PermissionService} from "../../core/services/permission.service";
+import ITransaction from "../../shared/models/ITransaction";
 
 @Component({
   selector: 'app-account-details',
@@ -116,5 +117,34 @@ export class AccountDetailsComponent implements OnInit {
 
   private updateEntry() {
     this.router.navigate([`/transactions/update/${this.selectedEntry.transaction._id}`]).catch(() => {console.error('error navigating to transaction details')});
+  }
+
+  isSplitTransaction(transaction: ITransaction) {
+    return (transaction && transaction.entries && transaction.entries.length>2);
+
+  }
+
+  toggleExpand(entry: IEntry) {
+    entry.expanded = !entry.expanded;
+  }
+
+  isExpanded(entry:IEntry) {
+    return entry.expanded == true;
+  }
+
+  openContextMenu(entry: IEntry) {
+    this.selectedEntry = entry;
+
+  }
+
+  creditDebit(entry: IEntry) {
+    let credit:number = 0;
+    let debit:number = 0;
+    if (entry.credit)
+      credit = entry.credit;
+    if (entry.debit)
+      debit = entry.debit;
+    return debit - credit;
+
   }
 }
