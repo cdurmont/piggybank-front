@@ -1,0 +1,121 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "dataVersion",
+      "urls": ["/api-v1/version*"],
+      "cacheConfig": {
+        "maxSize": 2,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "dataUser",
+      "urls": ["/api-v1/users*"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "dataAccount",
+      "urls": ["/api-v1/accounts**"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },    {
+      "name": "dataAccount2",
+      "urls": ["/api-v1/accounts/**"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "dataAssociation",
+      "urls": ["/api-v1/associations**"],
+      "cacheConfig": {
+        "maxSize": 1000,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "dataEntry",
+      "urls": ["/api-v1/entries**"],
+      "cacheConfig": {
+        "maxSize": 5000,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "dataPermission",
+      "urls": ["/api-v1/permissions**"],
+      "cacheConfig": {
+        "maxSize": 1000,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "dataTransaction",
+      "urls": ["/api-v1/transactions**"],
+      "cacheConfig": {
+        "maxSize": 5000,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "dataDefault",
+      "urls": ["/api-v1/**"],
+      "cacheConfig": {
+        "maxSize": 1000,
+        "maxAge": "7d",
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    }
+  ]
+}

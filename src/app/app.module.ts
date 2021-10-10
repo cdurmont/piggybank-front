@@ -16,6 +16,8 @@ import { PreferencesComponent } from './features/preferences/preferences.compone
 import { PrimeImportsModule } from "./shared/prime-imports/prime-imports.module";
 import { BalanceComponent } from './shared/components/balance/balance.component';
 import { QuickinputsComponent } from './features/quickinputs/quickinputs.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
     declarations: [
@@ -32,6 +34,12 @@ import { QuickinputsComponent } from './features/quickinputs/quickinputs.compone
         HttpClientModule,
         AppRoutingModule,
         PrimeImportsModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+          enabled: environment.production,
+          // Register the ServiceWorker as soon as the app is stable
+          // or after 30 seconds (whichever comes first).
+          registrationStrategy: 'registerWhenStable:30000'
+        }),
 
     ],
     providers: [
