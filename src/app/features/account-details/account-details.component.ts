@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewChecked, AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import IAccount from "../../shared/models/IAccount";
 import {AccountService} from "../../core/services/account.service";
@@ -48,34 +48,36 @@ export class AccountDetailsComponent implements OnInit {
       {label: "Supprimer", icon:'pi pi-fw pi-trash', command: () => { this.deleteEntry()}},
     ];
     // main account
-    let id = this.route.snapshot.paramMap.get('id');
-    this.accountService.read({_id: id}).subscribe(
-      value => { if (value && value.length == 1) this.account = value[0]},
-      error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture du compte", data: error})}
-    );
+    this.route.params.subscribe(value => {
+      let id = value.id;
+      this.accountService.read({_id: id}).subscribe(
+        value => { if (value && value.length == 1) this.account = value[0]},
+        error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture du compte", data: error})}
+      );
 
-    // sub-accounts
-    this.accountService.read({parent: {_id: id}}).subscribe(
-      value => { this.subAccounts = value},
-      error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture des sous-comptes", data: error})}
-    );
+      // sub-accounts
+      this.accountService.read({parent: {_id: id}}).subscribe(
+        value => { this.subAccounts = value},
+        error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture des sous-comptes", data: error})}
+      );
 
-    // entries
-    this.loadEntries(id);
+      // entries
+      this.loadEntries(id);
 
-    // connected user
-    this.loginService.getUser().subscribe(user => {
-      this.user = user;
-      if (user.admin)
-        this.writeAllowed = true;
-      else
-        this.permissionService.read({user: user, account: { _id: id}}).subscribe(permissions => {
-          if (permissions)
-            permissions.forEach(permission => {
-              if (permission.type === 'W')
-                this.writeAllowed = true;
-            })
-        })
+      // connected user
+      this.loginService.getUser().subscribe(user => {
+        this.user = user;
+        if (user.admin)
+          this.writeAllowed = true;
+        else
+          this.permissionService.read({user: user, account: { _id: id}}).subscribe(permissions => {
+            if (permissions)
+              permissions.forEach(permission => {
+                if (permission.type === 'W')
+                  this.writeAllowed = true;
+              })
+          })
+      });
     });
   }
 

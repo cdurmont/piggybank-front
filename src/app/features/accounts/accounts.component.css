@@ -1,0 +1,9 @@
+:host ::ng-deep .p-treenode-label {
+  width:100%
+}
+
+:host ::ng-deep .p-card-footer {
+  margin: -2em 0 0;
+  padding: 0px;
+}
+

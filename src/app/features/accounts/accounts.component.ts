@@ -76,7 +76,5 @@ export class AccountsComponent implements OnInit {
       })
   }
 
-  refresh(): void {
-    this.accountService.forceReload();
-  }
+
 }

@@ -15,14 +15,25 @@
           <label for="name">Nom*</label>
         </span>
     </div>
-    <div class="p-field p-col-12 p-md-4">
-      <p-inputSwitch id="admin" name="admin" [(ngModel)]="user.admin"></p-inputSwitch><label for="admin">Administrateur</label>
-    </div>
     <div class="p-field p-col-12 p-md-4" *ngIf="createMode">
         <span class="p-float-label">
           <input pPassword type="password" id="password" name="password" [(ngModel)]="user.hash" required="required">
           <label for="password">Mot de passe*</label>
         </span>
+    </div>
+    <div class="p-field p-col-12 p-md-4">
+      <p-inputSwitch id="admin" name="admin" [(ngModel)]="user.admin"></p-inputSwitch><label for="admin">Administrateur</label>
+    </div>
+    <div *ngIf="!user.admin">
+      <p-table [value]="permissions">
+        <ng-template let-perm pTemplate="body">
+          <tr>
+            <td><app-account-selector (onAccountSelect)="setAccount($event, perm)" [account]="perm.account"></app-account-selector></td>
+            <td><p-selectButton optionLabel="name" optionValue="code" [(ngModel)]="perm.type" [options]="accessModes"></p-selectButton>{{perm.type}}</td>
+            <td><p-button icon="pi pi-trash" (click)="remove(perm)"></p-button></td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
     <div class="p-field p-grid">
       <p-button type="button" icon="pi pi-undo" label="Annuler" routerLink="/admin/users" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"></p-button>

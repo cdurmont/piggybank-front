@@ -3,6 +3,7 @@ import { VersionService } from "./core/services/version.service";
 import IUser from "./shared/models/IUser";
 import {LoginService} from "./core/services/login.service";
 import {MenuItem, MessageService} from "primeng/api";
+import {AccountService} from "./core/services/account.service";
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
   ];
 
   constructor(private versionService: VersionService,
+              private accountService: AccountService,
               private loginService: LoginService) {
   }
 
@@ -35,5 +37,8 @@ export class AppComponent implements OnInit {
 
   logout(): void {
     this.user = undefined;
+  }
+  refresh(): void {
+    this.accountService.forceReload();
   }
 }

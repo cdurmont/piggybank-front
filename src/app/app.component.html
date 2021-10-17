@@ -9,14 +9,16 @@
       </a>
     </div>
     <div>
+      <p-button icon="pi pi-refresh" (click)="refresh()"></p-button>
       <p-button icon="pi pi-cog" *ngIf="user.admin" routerLink="/admin/users"></p-button>
       <p-button icon="pi pi-user" (click)="userMenu.toggle($event)"></p-button>
       <p-menu #userMenu [popup]="true" [model]="userMenuContent"></p-menu>
     </div>
   </div>
 
-
-  <router-outlet></router-outlet>
+  <div class="mainContent">
+    <router-outlet></router-outlet>
+  </div>
 </div>
 
 

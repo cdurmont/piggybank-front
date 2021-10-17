@@ -18,3 +18,7 @@ div.ecritures:nth-child(2n) {
 :host ::ng-deep .rowExpanded {
   background-color: #a0d2fa !important;
 }
+
+:host ::ng-deep .p-card {
+  margin-bottom:2px;
+}

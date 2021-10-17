@@ -22,6 +22,8 @@ import {FileUploadModule} from "primeng/fileupload";
 import {SelectButtonModule} from "primeng/selectbutton";
 import {CheckboxModule} from "primeng/checkbox";
 import {DialogModule} from 'primeng/dialog';
+import {CardModule} from "primeng/card";
+import {DropdownModule} from "primeng/dropdown";
 
 @NgModule({
   declarations: [],
@@ -47,6 +49,7 @@ import {DialogModule} from 'primeng/dialog';
     SelectButtonModule,
     CheckboxModule,
     DialogModule,
+    CardModule,
   ],
   exports: [
     InputTextModule,
@@ -69,6 +72,7 @@ import {DialogModule} from 'primeng/dialog';
     SelectButtonModule,
     CheckboxModule,
     DialogModule,
+    CardModule,
   ],
   providers: [ ConfirmationService ]
 })

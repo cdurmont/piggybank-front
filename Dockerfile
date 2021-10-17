@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY . ./
 
 RUN npm ci --quiet
-RUN node_modules/.bin/ng build --prod
+RUN node_modules/.bin/ng build --configuration production
 
 #
 # Production stage.

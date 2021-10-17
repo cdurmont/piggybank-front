@@ -1,31 +1,14 @@
-<p-treeTable [value]="accounts" (onNodeExpand)="onNodeExpand($event)">
-  <ng-template pTemplate="caption">
-    <div class="table-header">Vue globale des comptes
-      <span style="float:right">
-        <a (click)="refresh()"><i class="pi pi-refresh"></i></a>
-      </span>
-    </div>
+<p-tree [value]="accounts" (onNodeExpand)="onNodeExpand($event)">
+  <ng-template let-rowNode pTemplate="default">
+    <p-card routerLink="accounts/details/{{rowNode.data._id}}">
+      {{rowNode.data.name}}
+      <ng-template pTemplate="footer">
+        <app-balance [account]="rowNode.data"></app-balance>
+      </ng-template>
+    </p-card>
   </ng-template>
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Compte</th>
-      <th>Solde</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-    <tr>
-      <td>
-        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-        <a routerLink="accounts/details/{{rowData._id}}">
-          {{rowData.name}}
-        </a>
-      </td>
-      <td>
-        <app-balance [account]="rowData"></app-balance>
-      </td>
-    </tr>
-  </ng-template>
-</p-treeTable>
+</p-tree>
+
 <br>
 <p-button (click)="quickInputs.toggle($event)">Saisie rapide</p-button>&nbsp;
 <p-menu #quickInputs [popup]="true" [model]="quickInputsMenu"></p-menu>
