@@ -14,7 +14,7 @@ import {AuthInterceptor} from "./core/auth.interceptor";
 import { PreferencesComponent } from './features/preferences/preferences.component';
 
 import { PrimeImportsModule } from "./shared/prime-imports/prime-imports.module";
-import { BalanceComponent } from './shared/components/balance/balance.component';
+import {SharedComponentsModule} from "./shared/shared-components/shared-components.module";
 import { QuickinputsComponent } from './features/quickinputs/quickinputs.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -25,7 +25,6 @@ import { environment } from '../environments/environment';
         LoginComponent,
         AccountsComponent,
         PreferencesComponent,
-        BalanceComponent,
         QuickinputsComponent,
     ],
     imports: [
@@ -34,6 +33,7 @@ import { environment } from '../environments/environment';
         HttpClientModule,
         AppRoutingModule,
         PrimeImportsModule,
+        SharedComponentsModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
           enabled: environment.production,
           // Register the ServiceWorker as soon as the app is stable
@@ -49,8 +49,7 @@ import { environment } from '../environments/environment';
             multi: true,
         },
     ],
-    exports: [
-    ],
+
     bootstrap: [AppComponent]
 })
 export class AppModule { }

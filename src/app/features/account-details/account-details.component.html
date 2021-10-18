@@ -8,6 +8,9 @@
   <div *ngFor="let sub of subAccounts">
     <p-card routerLink="/accounts/details/{{sub._id}}">
       {{sub.name}}
+      <div style="float:right">
+        <app-balance [account]="sub"></app-balance>
+      </div>
     </p-card>
   </div>
 </div>

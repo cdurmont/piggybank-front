@@ -2,9 +2,9 @@
   <ng-template let-rowNode pTemplate="default">
     <p-card routerLink="accounts/details/{{rowNode.data._id}}">
       {{rowNode.data.name}}
-      <ng-template pTemplate="footer">
+      <div style="float:right">
         <app-balance [account]="rowNode.data"></app-balance>
-      </ng-template>
+      </div>
     </p-card>
   </ng-template>
 </p-tree>

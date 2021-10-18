@@ -16,11 +16,11 @@ import {SharedComponentsModule} from "../../shared/shared-components/shared-comp
   exports: [
 
   ],
-  imports: [
-    CommonModule,
-    AccountDetailsRoutingModule,
-    PrimeImportsModule,
-    SharedComponentsModule,
-  ]
+    imports: [
+        CommonModule,
+        AccountDetailsRoutingModule,
+        PrimeImportsModule,
+        SharedComponentsModule,
+    ]
 })
 export class AccountDetailsModule { }

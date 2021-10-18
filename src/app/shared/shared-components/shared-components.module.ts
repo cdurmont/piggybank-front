@@ -2,19 +2,21 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {AccountSelectorComponent} from "../components/account-selector/account-selector.component";
 import {PrimeImportsModule} from "../prime-imports/prime-imports.module";
-
+import {BalanceComponent} from "../components/balance/balance.component";
 
 
 @NgModule({
   declarations: [
-    AccountSelectorComponent
+    AccountSelectorComponent,
+    BalanceComponent,
   ],
   imports: [
     CommonModule,
     PrimeImportsModule
   ],
   exports: [
-    AccountSelectorComponent
+    AccountSelectorComponent,
+    BalanceComponent,
   ]
 })
 export class SharedComponentsModule { }
