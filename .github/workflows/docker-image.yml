@@ -53,4 +53,4 @@ jobs:
       uses: zzzze/webhook-trigger@master
       with:
         webhook_url: ${{ secrets.WEBHOOK_URL }}
-        options: "-H \"Authorization: token ${{ secrets.WEBHOOK_TOKEN }}\""
+        options: "-k -H \"Authorization: token ${{ secrets.WEBHOOK_TOKEN }}\""
