@@ -5,7 +5,6 @@ import {MessageService} from "primeng/api";
 import {AccountService} from "../../core/services/account.service";
 import {TransactionService} from "../../core/services/transaction.service";
 import {EntryService} from "../../core/services/entry.service";
-import IEntry from "../../shared/models/IEntry";
 import IAssociation from "../../shared/models/IAssociation";
 import {AssociationService} from "../../core/services/association.service";
 
@@ -24,6 +23,9 @@ export class ImportComponent implements OnInit {
 
   association: IAssociation = {account: {}};
   associatingTransaction: ITransaction = {};
+
+  nbPending:number = 0;
+
   private createMode: boolean = true; //used for associations
 
   constructor(private messageService: MessageService,
@@ -34,19 +36,12 @@ export class ImportComponent implements OnInit {
               ) { }
 
   ngOnInit(): void {
-    this.accountService.read({type: 'I'}).subscribe(
-      accountList => {
-        if (accountList)
-          accountList.forEach(account => { account.createOrLink = 'C'; account.parent= {}})
-        this.importedAccounts = accountList;
-      },
-      error => {
-        this.messageService.add({severity: 'error', summary: "Erreur lors de la lecture des comptes importés"});
-        console.error(error);
-      }
-    );
+    this.loadAccounts();
+    this.loadAssociationsAndTransactions();
+  }
 
-    this.associationService.read({}).subscribe( associations => {
+  private loadAssociationsAndTransactions() {
+    this.associationService.read({}).subscribe(associations => {
       this.transactionService.read({type: 'I'}).subscribe(
         txnList => {
           if (txnList) {
@@ -66,7 +61,9 @@ export class ImportComponent implements OnInit {
                   debit: txn.entries[0].credit,
                   credit: txn.entries[0].debit,
                 });
-              txn.entries.forEach(entry => { if (entry.date) entry.date = new Date(entry.date)}); // revive dates
+              txn.entries.forEach(entry => {
+                if (entry.date) entry.date = new Date(entry.date)
+              }); // revive dates
               // try to associate to an account
               if (associations)
                 associations.forEach(assoc => {
@@ -90,6 +87,23 @@ export class ImportComponent implements OnInit {
       );
 
     });
+  }
+
+  private loadAccounts() {
+    this.accountService.read({type: 'I'}).subscribe(
+      accountList => {
+        if (accountList)
+          accountList.forEach(account => {
+            account.createOrLink = 'C';
+            account.parent = {}
+          })
+        this.importedAccounts = accountList;
+      },
+      error => {
+        this.messageService.add({severity: 'error', summary: "Erreur lors de la lecture des comptes importés"});
+        console.error(error);
+      }
+    );
   }
 
   accountSelected(parent: IAccount, account:IAccount): void {
@@ -150,14 +164,28 @@ export class ImportComponent implements OnInit {
     });
   }
 
+  transactionCreated(): void {
+    if ( --this.nbPending == 0) {
+      this.loadAssociationsAndTransactions();
+    }
+  }
+
   importTransactions():void {
+    this.nbPending = 0;
+    // count the number of transactions to be saved
     this.importedTransactions.forEach(txn => {
-      if (txn.entries && txn.entries.length==2 && txn.entries[1].account && txn.entries[1].account._id && txn.selected) {
-        // an account has been set for this transaction, save it !
+      if (ImportComponent.isReadyForImport(txn)) {
+        this.nbPending++;
+      }
+    });
+
+    this.importedTransactions.forEach(txn => {
+      if (ImportComponent.isReadyForImport(txn)) {
         txn.type = 'S'; // this is now a standard transaction
         txn.assignDialogVisible = undefined;  // remove all presentation attributes
         txn.selected = undefined;
         txn.appliedAssociation = undefined;
+        // @ts-ignore
         let contrepartie = txn.entries[1];
         this.transactionService.update(txn).subscribe(
           () => {
@@ -165,18 +193,25 @@ export class ImportComponent implements OnInit {
             this.entryService.create(contrepartie).subscribe(
               () => {
                 this.messageService.add({severity: 'success', summary: "Transaction '" + txn.description + "' importée"});
+                this.transactionCreated();
               }, error => {
                 this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement de la contrepartie"});
                 console.error(error);
+                this.transactionCreated();
               }
             );
           }, error => {
             this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement de la transaction"});
             console.error(error);
+            this.transactionCreated();
           }
         );
       }
     });
+  }
+
+  private static isReadyForImport(txn: ITransaction) {
+    return txn.entries && txn.entries.length == 2 && txn.entries[1].account && txn.entries[1].account._id && txn.selected;
   }
 
   showDialogAssign(txn: ITransaction) {
@@ -218,5 +253,11 @@ export class ImportComponent implements OnInit {
 
   accountSelectedAssoc(account: IAccount) {
     this.association.account = account;
+  }
+
+  fileUploaded() {
+    this.messageService.add({severity: 'success', summary: "Fichier importé"});
+    this.loadAccounts();
+    this.loadAssociationsAndTransactions();
   }
 }

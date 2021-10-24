@@ -47,4 +47,4 @@
   <button pButton type="button" label="Importer les transactions complétées" (click)="importTransactions()"></button>
 </div>
 
-<p-fileUpload url="../api-v1/imports/ofx" name="ofx"></p-fileUpload>
+<p-fileUpload url="../api-v1/imports/ofx" name="ofx" (onUpload)="fileUploaded()"></p-fileUpload>
