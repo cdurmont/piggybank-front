@@ -14,12 +14,14 @@ export class LoginService {
   private serviceUrl:string = `${environment.backendUrl}/login`;
   private userSubject: BehaviorSubject<IUser>;
   private apikeyCache: string | undefined;
+  private domaineCache: string | undefined;
 
   constructor(private httpClient: HttpClient) {
     let userJson:string = localStorage.getItem('user') || '{}'; // retrieve from local storage if present
     const user:IUser = JSON.parse(userJson);
     this.userSubject = new BehaviorSubject<IUser>(user);
     this.apikeyCache = user.apikey;
+    this.domaineCache = user.domain;
   }
 
   getUser():Observable<IUser> {
@@ -33,6 +35,7 @@ export class LoginService {
         // store user details in local storage to keep user logged in between page refreshes
         localStorage.setItem('user', JSON.stringify(user));
         this.apikeyCache = user.apikey;
+        this.domaineCache = user.domain;
         this.userSubject.next(user);
         return user;
       }));
@@ -40,5 +43,9 @@ export class LoginService {
 
   getApikey():string {
     return this.apikeyCache || '';
+  }
+
+  getDomain():string {
+    return this.domaineCache || '';
   }
 }

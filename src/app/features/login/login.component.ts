@@ -22,6 +22,12 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
+    // check if username contains a domain
+    if (this.user.login && this.user.login.includes('@') ) {
+      let parts:string[] = this.user.login.split('@');
+      this.user.login = parts[0];
+      this.user.domain = parts[1];
+    }
     console.log('User login' + JSON.stringify(this.user));
     this.loginService.login(this.user).subscribe(loggedUser => {
       this.user = loggedUser;
