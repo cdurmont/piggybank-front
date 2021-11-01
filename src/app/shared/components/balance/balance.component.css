@@ -2,3 +2,11 @@
   text-align: end;
   font-weight: bold;
 }
+
+.good {
+  color: #007600;
+}
+
+.bad {
+  color: #760000;
+}

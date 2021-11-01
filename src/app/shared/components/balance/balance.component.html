@@ -1,5 +1,5 @@
 <div class="balance">
-  <span *ngIf="balance != 0">
+  <span *ngIf="balance != 0" [className]="className">
   {{balance | currency: 'EUR'}}
   </span>
 </div>

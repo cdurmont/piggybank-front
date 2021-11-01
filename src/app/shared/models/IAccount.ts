@@ -8,7 +8,8 @@ interface IAccount {
     iban?: string,
     parent?: any,
     type?: string,
-    createOrLink?: string;
+    colorRevert?: boolean,
+    createOrLink?: string,
 }
 
 export default IAccount;
