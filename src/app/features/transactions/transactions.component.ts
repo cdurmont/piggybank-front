@@ -242,10 +242,17 @@ export class TransactionsComponent implements OnInit {
 
     if (!this.validate())
       return;
+    if (this.recurMode) {
+      if (!this.transaction.recurNextDate) {
+        this.transaction.recurNextDate = TransactionsComponent.addMonths(this.transaction.recurStartDate, 1);
+      }
+      else if (this.transaction.recurEndDate && this.transaction.recurEndDate.getTime() < this.transaction.recurNextDate.getTime())
+        this.transaction.recurNextDate = undefined;
 
-    if (this.recurMode && !this.transaction.recurNextDate) {
-      this.transaction.recurNextDate = TransactionsComponent.addMonths(this.transaction.recurStartDate, 1);
+      if (this.transaction.recurNextDate && this.transaction.recurStartDate && this.transaction.recurNextDate.getTime() < this.transaction.recurStartDate.getTime())
+        this.transaction.recurNextDate = this.transaction.recurStartDate;
     }
+
 
     if (this.createMode)
       this.saveCreate();
