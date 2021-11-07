@@ -37,7 +37,16 @@ export class RecurComponent implements OnInit {
   private initTransactions() {
     this.transactionService.read({type: 'R'}).subscribe(
       txns => {
-        this.transactions = txns; // TODO sort transactions
+        // sort transactions by recurStartDate
+        this.transactions = txns.sort((a, b) =>  {
+          let aTime:number = 0;
+          let bTime:number = 0;
+          if (a && a.recurStartDate)
+            aTime = a.recurStartDate.getTime();
+          if (b && b.recurStartDate)
+            bTime = b.recurStartDate.getTime();
+          return  bTime - aTime;
+        });
       }, error => {
         this.messageService.add({
           severity: 'error',

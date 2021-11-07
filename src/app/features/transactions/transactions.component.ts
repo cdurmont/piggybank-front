@@ -32,7 +32,7 @@ export class TransactionsComponent implements OnInit {
   recurMode: boolean = false;
   quickMode: boolean = false;
   expanded: boolean = false;
-  multi: boolean = true;
+  multi: boolean = false;
   mainAccount: IAccount = {};
 
   private deletedEntries: IEntry[] = [];
