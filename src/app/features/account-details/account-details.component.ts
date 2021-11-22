@@ -1,4 +1,4 @@
-import {AfterViewChecked, AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import IAccount from "../../shared/models/IAccount";
 import {AccountService} from "../../core/services/account.service";
@@ -118,12 +118,11 @@ export class AccountDetailsComponent implements OnInit {
   }
 
   private updateEntry() {
-    this.router.navigate([`/transactions/update/${this.selectedEntry.transaction._id}`]).catch(() => {console.error('error navigating to transaction details')});
+    this.router.navigate([`/transactions/update/${this.selectedEntry.transaction._id}/${this.account._id}`]).catch(() => {console.error('error navigating to transaction details')});
   }
 
   isSplitTransaction(transaction: ITransaction) {
     return (transaction && transaction.entries && transaction.entries.length>2);
-
   }
 
   toggleExpand(entry: IEntry) {

@@ -34,7 +34,7 @@
     <app-account-selector (onAccountSelect)="setAccount($event, transaction.entries[1])" [account]="transaction.entries[1].account" *ngIf="!isSplitTransaction()" [placeholder]="quickMode ? 'Vers' : 'Compte'"></app-account-selector>
     <input pInputText disabled="disabled" *ngIf="isSplitTransaction()" value="Transaction répartie">
   </div>
-  <div class="amount p-col-12 p-md-6 p-lg-2" *ngIf="!quickMode"><input type="number" pInputText [(ngModel)]="transaction.entries[0].debit" (ngModelChange)="changeMainDebit($event)" placeholder="Débit"></div>
+  <div class="amount p-col-12 p-md-6 p-lg-2" *ngIf="!quickMode"><input type="number" [class]="debitStyleClass(transaction.entries[0])" pInputText [(ngModel)]="transaction.entries[0].debit" (ngModelChange)="changeMainDebit($event)" placeholder="Débit"></div>
   <div class="amount p-col-12 p-md-6 p-lg-2">
     <input type="number" pInputText [(ngModel)]="transaction.entries[0].credit" (ngModelChange)="changeMainCredit($event)" [placeholder]="quickMode ? 'Montant' : 'Crédit'">
     <p-button class="transMenu" icon="pi pi-ellipsis-v" (click)="transMenu.toggle($event)"></p-button>

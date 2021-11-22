@@ -5,3 +5,11 @@
 p-button.transMenu {
   position:absolute;
 }
+
+.good {
+  background-color: #007600;
+}
+
+.bad {
+  background-color: #760000;
+}

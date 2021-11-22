@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'createQuick', component: TransactionsComponent },
   { path: 'useQuickInput/:id', component: TransactionsComponent },
   { path: 'update/:id', component: TransactionsComponent },
+  { path: 'update/:id/:mainAccountId', component: TransactionsComponent },
   { path: 'recurring', component: RecurComponent },
 ];
 

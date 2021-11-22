@@ -67,6 +67,7 @@ export class TransactionsComponent implements OnInit {
     if (path === "createQuick" || path === "useQuickInput")
       this.quickMode = true;
     let id = this.route.snapshot.paramMap.get('id');
+    let mainAccountId = this.route.snapshot.paramMap.get('mainAccountId');
     if (id) {
       if (this.quickMode) {
         // id + quickMode => using a quick input as a model to create a new transaction
@@ -110,6 +111,15 @@ export class TransactionsComponent implements OnInit {
             // init account and transaction, add 'entries' as member of transaction
             if (entries.length == 0)
               return this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction: aucune écriture"});
+            // put the main account's entry on top
+            if (mainAccountId) {
+              let mainEntryIndex:number= entries.findIndex(e => {return e.account._id == mainAccountId});
+              if (mainEntryIndex >= 0) {
+                let mainEntry:IEntry = entries[mainEntryIndex];
+                entries.splice(mainEntryIndex, 1);
+                entries.unshift(mainEntry);
+              }
+            }
             this.mainAccount = entries[0].account;
             this.transaction = entries[0].transaction;
             this.transaction.entries = entries;
@@ -384,5 +394,14 @@ export class TransactionsComponent implements OnInit {
       entry.debit = entry.credit;
       entry.credit = oldDebit;
     })
+  }
+
+  debitStyleClass(entry: IEntry) {
+    let good:boolean = true;
+    if (!entry.debit)
+      return "";
+    if (entry.account.colorRevert)
+      good = !good;
+    return good ? "good" : "bad";
   }
 }
