@@ -21,6 +21,7 @@ export class UserDetailComponent implements OnInit {
   permissions: IPermission[] = [];
   deletedPermissions: IPermission[] = [];
   accessModes = [{name:'Consultation', code:'R'}, {name:'Modification', code: 'W'}];
+  changePass:boolean = false;
 
   constructor(private messageService: MessageService,
               private route: ActivatedRoute,

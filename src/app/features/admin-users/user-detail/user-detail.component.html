@@ -15,7 +15,10 @@
           <label for="name">Nom*</label>
         </span>
     </div>
-    <div class="p-field p-col-12 p-md-4" *ngIf="createMode">
+    <div class="p-field p-col-12 p-md-4" *ngIf="!createMode">
+      <p-inputSwitch id="changePass" name="changePass" [(ngModel)]="changePass"></p-inputSwitch><label for="changePass">Modifier le mot de passe</label>
+    </div>
+    <div class="p-field p-col-12 p-md-4" *ngIf="createMode || changePass">
         <span class="p-float-label">
           <input pPassword type="password" id="password" name="password" [(ngModel)]="user.hash" required="required">
           <label for="password">Mot de passe*</label>

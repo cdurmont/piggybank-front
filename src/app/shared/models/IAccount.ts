@@ -9,6 +9,7 @@ interface IAccount {
     parent?: any,
     type?: string,
     colorRevert?: boolean,
+    reconcilable?: boolean,
     createOrLink?: string,
 }
 

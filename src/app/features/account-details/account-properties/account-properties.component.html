@@ -27,6 +27,9 @@
     <div class="p-field p-col-12 p-md-4">
       <p-inputSwitch id="revert" name="revert" [(ngModel)]="account.colorRevert"></p-inputSwitch><label for="revert">Inverser les couleurs des soldes</label>
     </div>
+    <div class="p-field p-col-12 p-md-4">
+      <p-inputSwitch id="reconcile" name="reconcile" [(ngModel)]="account.reconcilable"></p-inputSwitch><label for="reconcile">Autoriser le rapprochement pour ce compte</label>
+    </div>
 
     <div class="p-col-12 p-grid p-md-4">
       <p-button type="button" icon="pi pi-trash" label="Supprimer" (click)="delete()" class="p-sm-12 p-xl-4" styleClass="p-button-danger"></p-button>
