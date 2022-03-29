@@ -1,8 +1,27 @@
-# PiggybankFront
+# Piggybank (front-end)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.4.
+This is the front-end part of Piggybank, a simple personal accounting app based on double-entry bookkeeping.
+Piggybank is currently tailored to my needs, but feel free to use it and contribute !
 
-## Development server
+## Piggybank Quick start
+
+Want to try out Piggybank ? All you need is :
+* a working Docker environment
+* The docker-compose.yaml file at the root of this project's sources
+* Run `docker-compose up -d` in the directory containing the docker-compose.yaml file
+
+This will start 4 containers:
+* a mongodb server on port 27017 (SECURITY WARNING ! root password for mongodb hardcoded in the docker-compose.yaml !)
+* a mongo-express instance on port 8081
+* Piggybank backend on port 3000
+* Piggybank frontend on port 4000
+
+Navigate to `http://localhost:4000/` to access Piggybank. Upon install, log in with any 
+login/password, this wille create the first user and set it as admin.
+
+
+
+## front-end Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
