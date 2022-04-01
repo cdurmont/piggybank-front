@@ -10,6 +10,7 @@ import {LoginService} from "../../core/services/login.service";
 import IUser from "../../shared/models/IUser";
 import {PermissionService} from "../../core/services/permission.service";
 import ITransaction from "../../shared/models/ITransaction";
+import {Entry} from "../../shared/business/Entry";
 
 @Component({
   selector: 'app-account-details',
@@ -29,6 +30,8 @@ export class AccountDetailsComponent implements OnInit {
 
   user:IUser = {};
   writeAllowed: boolean = false;
+  showReconciled: boolean = false;
+  selectAll:boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -82,19 +85,47 @@ export class AccountDetailsComponent implements OnInit {
   }
 
   loadEntries(accountId: string|null) {
-    this.entryService.readDetailed({account: {_id: accountId}}).subscribe(
+    this.entryService.readDetailed({account: {_id: accountId}}, this.showReconciled || !this.account.reconcilable).subscribe(
       value => {
         //
         if (value)
           value.forEach(entry => {
-            if (entry.contreparties && entry.contreparties.length>1)
-              while (entry.contreparties[0].account._id == this.account._id)
-                entry.contreparties.push(<IEntry>entry.contreparties.shift());
+            this.setCtpAccountName(entry);
           });
         this.entries = value;
       },
       error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture des écritures du compte", data: error})}
     );
+  }
+
+  private setCtpAccountName(entry: IEntry) {
+    if (entry.contreparties && entry.contreparties.length > 1) {
+      // step 1 : group by account
+      let ctpRedux1: IEntry[] = [];
+      let idAccounts: string[] = [];
+      entry.contreparties.forEach(e => {
+        let idx = idAccounts.indexOf(e.account._id);
+        if (idx < 0) {  // if not present, add it to list
+          idAccounts.push(e.account._id);
+          ctpRedux1.push({...e}); // push a clone of e... later on we will modify it, so let's preserve the original
+        } else {          // if present, merge debit/credit
+          Entry.add(ctpRedux1[idx], e);
+        }
+      });
+      // step 2 : remove "empty" lines
+      let ctpRedux2: IEntry[] = [];
+      ctpRedux1.forEach(e => {
+        if (!Entry.isZero(e) || e.account._id === this.account._id) // always add the current account
+          ctpRedux2.push(e);
+      });
+      // step 3 : set ctp account name
+      if (ctpRedux2.length > 2)
+        entry.contrepartieAccountName = "Transaction répartie";
+      else if (ctpRedux2.length == 2) {
+        entry.contrepartieAccountName = ctpRedux2[0].account._id === this.account._id ? ctpRedux2[1].account.name : ctpRedux2[0].account.name;
+      } else
+        entry.contrepartieAccountName = "Transaction cheloue";
+    }
   }
 
   toggleSubAccounts() {
@@ -138,14 +169,95 @@ export class AccountDetailsComponent implements OnInit {
 
   }
 
-  creditDebit(entry: IEntry) {
-    let credit:number = 0;
-    let debit:number = 0;
-    if (entry.credit)
-      credit = entry.credit;
-    if (entry.debit)
-      debit = entry.debit;
-    return debit - credit;
 
+
+  reconciledChanged() {
+    this.loadEntries(this.account._id);
+  }
+
+  /**
+   * "Select all" option for reconcilable accounts
+   * @param evt evt.check = whether the "select all" checkbox is checked
+   */
+  onSelectAll(evt: any) {
+    console.log("selectAll");
+    this.entries.forEach(entry => {
+      entry.transaction.selected = evt.checked;
+    });
+  }
+
+  /**
+   * Update all selected transactions, mark them as reconciled
+   */
+  markReconciled(mark:boolean) {
+    this.entries.forEach(entry => {
+      if (entry.transaction.selected) {
+        console.log("mark txn "+entry.transaction.description +" : " + mark);
+        entry.transaction.reconciled = mark;
+        this.transactionService.update(entry.transaction).subscribe(()=>{}, error => {
+          this.messageService.add({severity: 'error', summary: "Erreur modification de la transaction", data: error})
+        });
+      }
+    });
+    this.loadEntries(this.account._id);
+  }
+
+  /** reconcile 2 transactions
+   * the selected transactions should balance out
+   */
+  reconcile() {
+    let selectedEntries:IEntry[]=[];
+    this.entries.forEach(entry => {
+      if (entry.transaction.selected) {
+        console.log("selected txn " + entry.transaction.description);
+        selectedEntries.push(entry);
+      }
+    });
+
+    if (selectedEntries.length != 2)
+      this.messageService.add({severity: 'warn', summary: "Sélectionnez exactement 2 transactions à rapprocher"});
+    else {
+      if (Math.abs(Entry.creditDebit(selectedEntries[0]) + Entry.creditDebit(selectedEntries[1])) >= 0.01) {
+        this.messageService.add({severity: 'warn', summary: "Les 2 transactions à rapprocher ne sont pas du même montant"});
+      }
+      else {
+        // 1/ all entries on transaction 1 switch to transaction 0
+        let remainingTxn = selectedEntries[0].transaction;
+        let deleteTxn = selectedEntries[1].transaction
+        this.entryService.batchUpdate(
+          {transaction: {_id: deleteTxn._id}},
+          {transaction: {_id: remainingTxn._id}}
+          ).subscribe(() => {
+            // 2/ transaction 0 marked as reconciled
+            remainingTxn.reconciled = true;
+            this.transactionService.update(remainingTxn).subscribe(
+              () => {
+                // 3/ transaction 1 gets deleted
+                this.transactionService.delete(deleteTxn).subscribe(
+                  () => {
+                    // 4/ Finished!
+                    this.messageService.add({severity: 'success', summary: "Transactions rapprochées"});
+                    this.entries.forEach(entry => {entry.transaction.selected = false});
+                    this.loadEntries(this.account._id);
+                  },
+                  error => {
+                    this.messageService.add({severity: 'error', summary: `La transaction ${deleteTxn._id} n'a pas pu être supprimée`, data: error})
+                  }
+                );
+              },
+              error => {
+                this.messageService.add({severity: 'error', summary: `La transaction ${remainingTxn._id} n'a pas pu être marquée comme rapprochée`, data: error})
+              }
+            );
+
+        }, error => {
+          this.messageService.add({severity: 'error', summary: "Erreur modification de la transaction", data: error})
+        });
+      }
+    }
+  }
+
+  creditDebit(entry: IEntry) {
+    return Entry.creditDebit(entry);
   }
 }

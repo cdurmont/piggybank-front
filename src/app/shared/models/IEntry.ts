@@ -7,9 +7,10 @@ interface IEntry {
     debit?: number,
     reference?: string,
     description?: string,
-    contreparties?: IEntry[]
-    expanded?: boolean;
-    balance?: number;
+    contreparties?: IEntry[],
+    contrepartieAccountName?: string,
+    expanded?: boolean,
+    balance?: number,
 }
 
 export default IEntry;

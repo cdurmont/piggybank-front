@@ -34,8 +34,8 @@ export class EntryService {
       }));
   }
 
-  readDetailed(entryFilter: IEntry): Observable<IEntry[]> {
-    return this.httpClient.get<IEntry[]>(`${this.serviceUrl}/detailed`, { params: { filter: JSON.stringify(entryFilter)}});
+  readDetailed(entryFilter: IEntry, reconciled: boolean): Observable<IEntry[]> {
+    return this.httpClient.get<IEntry[]>(`${this.serviceUrl}/detailed`, { params: { filter: JSON.stringify(entryFilter), reconciled: reconciled}});
   }
 
   update(entry: IEntry): Observable<{}> {

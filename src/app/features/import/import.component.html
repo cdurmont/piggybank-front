@@ -24,10 +24,9 @@
       <div class="p-col-2 p-grid">
         <p-checkbox class="p-col-3" [binary]="true" [(ngModel)]="txn.selected"></p-checkbox>
         <p-calendar class="p-col-9" disabled="disabled" [(ngModel)]="txn.entries[0].date" dateFormat="dd/mm/yy"></p-calendar> </div>
-      <div class="p-col-2"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].reference"></div>
-      <div class="p-col-3">
+      <div class="p-col-2">
         <div class="p-inputgroup">
-          <input pInputText disabled="disabled" [(ngModel)]="txn.description">
+          <input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].reference">
           <p-button (click)="showDialogAssign(txn)"><i class="pi pi-link"></i></p-button>
           <p-dialog title="Assigner un compte automatiquement" [(visible)]="txn.assignDialogVisible">
             <div class="p-grid">
@@ -38,6 +37,9 @@
             </div>
           </p-dialog>
         </div>
+      </div>
+      <div class="p-col-3">
+          <input pInputText [(ngModel)]="txn.description">
       </div>
       <div class="p-col-3"><app-account-selector [account]="txn.entries[1].account" (onAccountSelect)="accountSelectedTxn($event,txn)"></app-account-selector> </div>
       <div class="p-col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].debit"></div>

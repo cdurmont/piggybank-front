@@ -216,7 +216,8 @@ export class ImportComponent implements OnInit {
 
   showDialogAssign(txn: ITransaction) {
     txn.assignDialogVisible = true;
-    this.association = {  regex: txn.description,
+    // @ts-ignore
+    this.association = {  regex: txn.entries[0].reference,
                           account: txn.entries && txn.entries.length>1 ? txn.entries[1].account : undefined};
     this.associatingTransaction = txn;
   }

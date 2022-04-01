@@ -19,7 +19,7 @@
   <p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
 
   <div class="p-grid p-fluid">
-    <div class="p-d-none p-d-md-block p-md-2">Date</div>
+    <div class="p-d-none p-d-md-block p-md-2"><p-checkbox title="Tout sélectionner" [binary]="true" *ngIf="account.reconcilable && user.admin" (onChange)="onSelectAll($event)" [(ngModel)]="selectAll"></p-checkbox>Date</div>
     <div class="p-d-none p-d-md-block p-md-2">Référence</div>
     <div class="p-col-4 p-md-3">Description</div>
     <div class="p-col-3 p-md-2">Compte</div>
@@ -31,6 +31,7 @@
   <div *ngFor="let entry of entries" class="ecritures">
     <div class="p-grid p-fluid" (contextmenu)="openContextMenu(entry);cm.show($event)">
       <div class="p-d-none p-d-md-block p-md-2">
+        <p-checkbox title="Sélectionner" [binary]="true" [(ngModel)]="entry.transaction.selected" *ngIf="account.reconcilable"></p-checkbox>
         <button type="button" pButton (click)="toggleExpand(entry)"
                 class="p-button-text p-button-rounded p-button-plain" [icon]="isExpanded(entry) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float:left"></button>
         <span>{{entry.date | date : 'shortDate' }}</span>
@@ -38,8 +39,11 @@
       <div class="p-d-none p-d-md-block p-md-2">{{entry.reference}}</div>
       <div class="p-col-4 p-md-3">{{entry.transaction.description}}</div>
       <div class="p-col-3 p-md-2">
+        <!--
         {{entry.contreparties && entry.contreparties.length>0 && entry.contreparties.length<3 ? entry.contreparties[0].account.name : ''}}
         {{entry.contreparties && entry.contreparties.length>1 && entry.contreparties.length>=3 ? 'Transaction répartie' : ''}}
+        -->
+        {{entry.contrepartieAccountName}}
       </div>
       <div class="amount p-d-none p-d-md-block p-md-1"><span *ngIf="entry.debit || entry.debit != 0">  {{entry.debit | currency : 'EUR'}}</span></div>
       <div class="amount p-d-none p-d-md-block p-md-1">
@@ -67,4 +71,10 @@
 
 <p-button routerLink="/transactions/create/{{account._id}}" *ngIf="writeAllowed && subAccounts.length == 0">Saisir une écriture</p-button>&nbsp;
 <p-button routerLink="/accounts/create" *ngIf="user.admin">Créer un sous-compte</p-button>
+<span *ngIf="account.reconcilable">&nbsp;
+  <p-button (click)="reconcile()">Rapprocher</p-button>&nbsp;
+  <p-button *ngIf="user.admin" (click)="markReconciled(true)">Marqué comme rapproché</p-button>&nbsp;
+  <p-button *ngIf="user.admin" (click)="markReconciled(false)">Marqué comme non rapproché</p-button>&nbsp;
+  <p-inputSwitch id="showReconciled" name="showReconciled" [(ngModel)]="showReconciled" (onChange)="reconciledChanged()"></p-inputSwitch><label for="showReconciled">Afficher les lignes déja pointées</label>
+</span>
 <p-confirmDialog></p-confirmDialog>

@@ -23,6 +23,7 @@
   <div class="p-col-12 p-md-6 p-lg-2">
     <button *ngIf="!quickMode" type="button" pButton (click)="toggleExpand()"
             class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float:left"></button>
+    <div style="float:left;margin-top:16px"><p-inputSwitch *ngIf="!quickMode && !recurMode" [(ngModel)]="transaction.reconciled" title="Transaction rapprochée"></p-inputSwitch></div>
     <p-calendar *ngIf="!quickMode" [(ngModel)]="transaction.entries[0].date" appendTo="body" dateFormat="dd/mm/yy" (ngModelChange)="changeDate($event)"></p-calendar>
   </div>
   <div class="p-col-12 p-md-6 p-lg-1" *ngIf="!quickMode"><input type="text" pInputText [(ngModel)]="transaction.entries[0].reference" placeholder="Référence"></div>

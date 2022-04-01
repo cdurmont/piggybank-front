@@ -13,6 +13,7 @@ interface ITransaction {
     recurNextDate?: Date,
     owner?: IUser,
     entries?: IEntry[],
+    reconciled?: boolean,
     selected?: boolean,
     assignDialogVisible?: boolean,
     appliedAssociation?: IAssociation,
