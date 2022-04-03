@@ -54,7 +54,13 @@ export class AccountDetailsComponent implements OnInit {
     this.route.params.subscribe(value => {
       let id = value.id;
       this.accountService.read({_id: id}).subscribe(
-        value => { if (value && value.length == 1) this.account = value[0]},
+        value => {
+          if (value && value.length == 1) {
+            this.account = value[0];
+            // entries
+            this.loadEntries(id);
+          }
+        },
         error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture du compte", data: error})}
       );
 
@@ -64,8 +70,6 @@ export class AccountDetailsComponent implements OnInit {
         error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture des sous-comptes", data: error})}
       );
 
-      // entries
-      this.loadEntries(id);
 
       // connected user
       this.loginService.getUser().subscribe(user => {
