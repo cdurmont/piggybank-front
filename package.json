@@ -22,9 +22,11 @@
     "@angular/router": "~13.3.11",
     "@angular/service-worker": "~13.3.11",
     "@fullcalendar/core": "^5.6.0",
+    "keycloak-angular": "^10.0.2",
+    "keycloak-js": "^18.0.1",
     "primeflex": "^2.0.0",
-    "primeicons": "^4.1.0",
-    "primeng": "^12.1.0",
+    "primeicons": "^5.0.0",
+    "primeng": "^13.4.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"
