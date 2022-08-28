@@ -227,7 +227,7 @@ export class AccountDetailsComponent implements OnInit {
       else {
         // 1/ all entries on transaction 1 switch to transaction 0
         let remainingTxn = selectedEntries[0].transaction;
-        let deleteTxn = selectedEntries[1].transaction
+        let deleteTxn = selectedEntries[1].transaction;
         this.entryService.batchUpdate(
           {transaction: {_id: deleteTxn._id}},
           {transaction: {_id: remainingTxn._id}}
