@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import { AppComponent } from './app.component';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -18,6 +18,8 @@ import {SharedComponentsModule} from "./shared/shared-components/shared-componen
 import { QuickinputsComponent } from './features/quickinputs/quickinputs.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import {initializeKeycloak} from "./init/keycloak-init.factory";
+import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 
 @NgModule({
     declarations: [
@@ -34,12 +36,14 @@ import { environment } from '../environments/environment';
         AppRoutingModule,
         PrimeImportsModule,
         SharedComponentsModule,
+        KeycloakAngularModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
           enabled: environment.production,
           // Register the ServiceWorker as soon as the app is stable
           // or after 30 seconds (whichever comes first).
           registrationStrategy: 'registerWhenStable:30000'
         }),
+
 
     ],
     providers: [
@@ -48,6 +52,12 @@ import { environment } from '../environments/environment';
             useClass: AuthInterceptor,
             multi: true,
         },
+      {
+        provide: APP_INITIALIZER,
+        useFactory: initializeKeycloak,
+        multi: true,
+        deps: [KeycloakService],
+      }
     ],
 
     bootstrap: [AppComponent]

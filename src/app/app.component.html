@@ -22,9 +22,10 @@
 </div>
 
 
-
-<div *ngIf="!user || !user.login">
-  <app-login></app-login>
+<p>loggedIn : {{loggedIn}}</p>
+<p *ngIf="userProfile">profile : {{userProfile.id}} {{userProfile.username}} : {{userProfile.firstName}} {{userProfile.lastName}} {{userProfile.email}}</p>
+<div *ngIf="!loggedIn">
+  La connexion OpenID a échoué :(
 </div>
 
 <p-toast></p-toast>
