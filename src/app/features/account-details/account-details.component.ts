@@ -53,7 +53,7 @@ export class AccountDetailsComponent implements OnInit {
     // main account
     this.route.params.subscribe(value => {
       let id = value.id;
-      this.accountService.read({_id: id}).subscribe(
+      this.accountService.read(1, {id: id}).subscribe(
         value => {
           if (value && value.length == 1) {
             this.account = value[0];
@@ -65,7 +65,7 @@ export class AccountDetailsComponent implements OnInit {
       );
 
       // sub-accounts
-      this.accountService.read({parent: {_id: id}}).subscribe(
+      this.accountService.read(1, {parent: {_id: id}}).subscribe(
         value => { this.subAccounts = value},
         error => { this.messageService.add({severity: 'error', summary: "Erreur de lecture des sous-comptes", data: error})}
       );
@@ -119,14 +119,14 @@ export class AccountDetailsComponent implements OnInit {
       // step 2 : remove "empty" lines
       let ctpRedux2: IEntry[] = [];
       ctpRedux1.forEach(e => {
-        if (!Entry.isZero(e) || e.account._id === this.account._id) // always add the current account
+        if (!Entry.isZero(e) || e.account._id === this.account.id) // always add the current account
           ctpRedux2.push(e);
       });
       // step 3 : set ctp account name
       if (ctpRedux2.length > 2)
         entry.contrepartieAccountName = "Transaction répartie";
       else if (ctpRedux2.length == 2) {
-        entry.contrepartieAccountName = ctpRedux2[0].account._id === this.account._id ? ctpRedux2[1].account.name : ctpRedux2[0].account.name;
+        entry.contrepartieAccountName = ctpRedux2[0].account._id === this.account.id ? ctpRedux2[1].account.name : ctpRedux2[0].account.name;
       } else
         entry.contrepartieAccountName = "Transaction cheloue";
     }
@@ -144,7 +144,7 @@ export class AccountDetailsComponent implements OnInit {
         this.transactionService.delete(this.selectedEntry.transaction).subscribe(
           () => {
           this.messageService.add({severity: 'success', summary: "Transaction supprimée"});
-          this.loadEntries(this.account._id);
+          this.loadEntries(this.account.id);
         }, error => {
             this.messageService.add({severity: 'error', summary: "Erreur lors de la suppression de la transaction", data: error});
           })
@@ -153,7 +153,7 @@ export class AccountDetailsComponent implements OnInit {
   }
 
   private updateEntry() {
-    this.router.navigate([`/transactions/update/${this.selectedEntry.transaction._id}/${this.account._id}`]).catch(() => {console.error('error navigating to transaction details')});
+    this.router.navigate([`/transactions/update/${this.selectedEntry.transaction._id}/${this.account.id}`]).catch(() => {console.error('error navigating to transaction details')});
   }
 
   isSplitTransaction(transaction: ITransaction) {
@@ -176,7 +176,7 @@ export class AccountDetailsComponent implements OnInit {
 
 
   reconciledChanged() {
-    this.loadEntries(this.account._id);
+    this.loadEntries(this.account.id);
   }
 
   /**
@@ -203,7 +203,7 @@ export class AccountDetailsComponent implements OnInit {
         });
       }
     });
-    this.loadEntries(this.account._id);
+    this.loadEntries(this.account.id);
   }
 
   /** reconcile 2 transactions
@@ -242,7 +242,7 @@ export class AccountDetailsComponent implements OnInit {
                     // 4/ Finished!
                     this.messageService.add({severity: 'success', summary: "Transactions rapprochées"});
                     this.entries.forEach(entry => {entry.transaction.selected = false});
-                    this.loadEntries(this.account._id);
+                    this.loadEntries(this.account.id);
                   },
                   error => {
                     this.messageService.add({severity: 'error', summary: `La transaction ${deleteTxn._id} n'a pas pu être supprimée`, data: error})

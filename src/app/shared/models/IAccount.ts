@@ -2,7 +2,7 @@
 
 interface IAccount {
 
-    _id?: any,
+    id?: any,
     name?: string,
     externalRef?: string,
     iban?: string,
@@ -11,6 +11,8 @@ interface IAccount {
     colorRevert?: boolean,
     reconcilable?: boolean,
     createOrLink?: string,
+    root?: boolean,
+    subAccounts?: IAccount[]
 }
 
 export default IAccount;

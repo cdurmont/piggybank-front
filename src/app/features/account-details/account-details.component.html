@@ -1,12 +1,12 @@
 <p>Compte :
-  <a routerLink="/accounts/properties/{{account._id}}" *ngIf="user.admin">{{account.name}}</a>
+  <a routerLink="/accounts/properties/{{account.id}}" *ngIf="user.admin">{{account.name}}</a>
 </p>
 
 <div *ngIf="subAccounts.length>0">
   {{subAccounts.length}} sous-compte(s):
 
   <div *ngFor="let sub of subAccounts">
-    <p-card routerLink="/accounts/details/{{sub._id}}">
+    <p-card routerLink="/accounts/details/{{sub.id}}">
       {{sub.name}}
       <div style="float:right">
         <app-balance [account]="sub"></app-balance>
@@ -69,7 +69,7 @@
   </div>
 </div>
 
-<p-button routerLink="/transactions/create/{{account._id}}" *ngIf="writeAllowed && subAccounts.length == 0">Saisir une écriture</p-button>&nbsp;
+<p-button routerLink="/transactions/create/{{account.id}}" *ngIf="writeAllowed && subAccounts.length == 0">Saisir une écriture</p-button>&nbsp;
 <p-button routerLink="/accounts/create" *ngIf="user.admin">Créer un sous-compte</p-button>
 <span *ngIf="account.reconcilable">&nbsp;
   <p-button (click)="reconcile()">Rapprocher</p-button>&nbsp;

@@ -27,7 +27,7 @@ export class AccountPropertiesComponent implements OnInit {
   ngOnInit(): void {
     let id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.accountService.read({_id: id}).subscribe(
+      this.accountService.read(1, {id: id}).subscribe(
         value => {
           if (value && value.length == 1) {
             this.account = value[0];
@@ -43,7 +43,7 @@ export class AccountPropertiesComponent implements OnInit {
 
   save(): void {
     if (this.createMode)
-      this.accountService.create(this.account).subscribe(
+      this.accountService.create(1, this.account).subscribe(
         () => {
           this.messageService.add({severity: 'success', summary: "Compte créé"});
           this.location.back();
@@ -54,7 +54,7 @@ export class AccountPropertiesComponent implements OnInit {
         }
       );
     else
-      this.accountService.update(this.account).subscribe(
+      this.accountService.update(1, this.account).subscribe(
         () => {
           this.messageService.add({severity: 'success', summary: "Compte modifié"});
           this.location.back();
@@ -73,7 +73,7 @@ export class AccountPropertiesComponent implements OnInit {
         icon: 'pi pi-exclamation-triangle',
         message: "Etes-vous sûr de vouloir supprimer ce compte ?",
         accept: () => {
-          this.accountService.delete(this.account).subscribe(
+          this.accountService.delete(1, this.account).subscribe(
             value => {
               this.messageService.add({severity: 'success', summary: "Compte supprimé"});
               this.router.navigate(['/']).catch(() => {console.error('error navigating to main page')});

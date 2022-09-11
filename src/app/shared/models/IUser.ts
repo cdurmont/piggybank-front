@@ -1,6 +1,6 @@
 
 interface IUser {
-    _id?: any,
+    id?: any,
     login?: string,
     salt?: string,
     hash?: string,

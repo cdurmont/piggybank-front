@@ -96,7 +96,7 @@ export class TransactionsComponent implements OnInit {
         );
       }
       else if (this.createMode) {
-        this.accountService.read({_id: id}).subscribe(
+        this.accountService.read(1, {id: id}).subscribe(
           value => {
             this.mainAccount = value[0];
             this.initTransaction();

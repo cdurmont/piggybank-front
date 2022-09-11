@@ -47,11 +47,6 @@ import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 
     ],
     providers: [
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthInterceptor,
-            multi: true,
-        },
       {
         provide: APP_INITIALIZER,
         useFactory: initializeKeycloak,

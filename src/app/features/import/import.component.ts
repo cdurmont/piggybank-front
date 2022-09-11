@@ -90,7 +90,7 @@ export class ImportComponent implements OnInit {
   }
 
   private loadAccounts() {
-    this.accountService.read({type: 'I'}).subscribe(
+    this.accountService.read(1, {type: 'I'}).subscribe(
       accountList => {
         if (accountList)
           accountList.forEach(account => {
@@ -113,7 +113,7 @@ export class ImportComponent implements OnInit {
   accountSelectedTxn(account: IAccount, txn:ITransaction): void {
     if (txn && txn.entries && txn.entries.length>1) {
       txn.entries[1].account = account;
-      if (account && account._id)
+      if (account && account.id)
         txn.selected = true;
     }
   }
@@ -123,7 +123,7 @@ export class ImportComponent implements OnInit {
       if (account.createOrLink === 'C') {
         account.type = 'U';
         account.createOrLink = undefined;
-        this.accountService.update(account).subscribe(
+        this.accountService.update(1, account).subscribe(
           () => {},
           error => {
             this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement du compte"});
@@ -134,14 +134,14 @@ export class ImportComponent implements OnInit {
         account.createOrLink = undefined;
         // Link to another existing account. Account to be used is stored in 'parent'
         // 1. move all entries from the imported account to the linked account
-        this.entryService.batchUpdate({account: {_id: account._id}}, {account: account.parent}).subscribe(
+        this.entryService.batchUpdate({account: {_id: account.id}}, {account: account.parent}).subscribe(
           () => {
             // 2. store externalRef in the linked account so further imports will find it
             account.parent.externalRef = account.externalRef;
-            this.accountService.update(account.parent).subscribe(
+            this.accountService.update(1, account.parent).subscribe(
               () => {
                 // 3. delete imported account
-                this.accountService.delete(account).subscribe(
+                this.accountService.delete(1, account).subscribe(
                   () => {
                     // we should do something here to celebrate...
                     this.messageService.add({severity: 'success', summary: "Compte importé"});

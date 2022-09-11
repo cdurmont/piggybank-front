@@ -19,12 +19,13 @@ export class BalanceComponent implements OnInit {
               private accountService: AccountService) { }
 
   ngOnInit(): void {
-    this.accountService.getBalance(this.account).subscribe(account => {
-      let positive:boolean = (account.balance >= 0);
+    this.accountService.getBalance(1, this.account).subscribe(balance => {
+
+      let positive:boolean = (balance >= 0);
       if (this.account.colorRevert)
         positive = !positive;
       this.className = positive ? 'good' : 'bad';
-      this.balance = Math.abs(account.balance);
+      this.balance = Math.abs(balance);
     })
   }
 
