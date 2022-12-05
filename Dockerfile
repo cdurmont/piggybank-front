@@ -21,7 +21,8 @@ WORKDIR /app
 ## static content from previous stage
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 ## nginx config, including backend reverse proxy settings
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+#COPY nginx.conf /etc/nginx/templates/default.conf.template
+COPY nginx.conf /temp/default.conf
 ## startup script, which will be responsible for injecting environment variables
 COPY envvars.sh /
 ENTRYPOINT [ "sh", "/envvars.sh" ]
