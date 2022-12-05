@@ -20,6 +20,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import {initializeKeycloak} from "./init/keycloak-init.factory";
 import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
+import {ConfigInitService} from "./init/config-init.service";
 
 @NgModule({
     declarations: [
@@ -47,11 +48,12 @@ import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 
     ],
     providers: [
+      ConfigInitService,
       {
         provide: APP_INITIALIZER,
         useFactory: initializeKeycloak,
         multi: true,
-        deps: [KeycloakService],
+        deps: [KeycloakService, ConfigInitService],
       }
     ],
 

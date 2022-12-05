@@ -1,19 +1,29 @@
 import { KeycloakService } from "keycloak-angular";
+import {ConfigInitService} from "./config-init.service";
+import {switchMap} from "rxjs/operators";
+import {fromPromise} from "rxjs/internal-compatibility";
 
 export function initializeKeycloak(
-  keycloak: KeycloakService
+  keycloak: KeycloakService,
+  configService: ConfigInitService
 ) {
   return () =>
-    keycloak.init({
-      config: {
-        url: 'https://access.durmont.net' ,
-        realm: 'home',
-        clientId: 'piggybank-front-dev',
-      },
-      initOptions: {
+    configService.getConfig()
+      .pipe(
+        switchMap<any, any>((config) => {
 
-        pkceMethod: 'S256',
-        checkLoginIframe: false
-      }
-    });
+          return fromPromise(keycloak.init({
+            config: {
+              url: config['KEYCLOAK_URL'],
+              realm: config['KEYCLOAK_REALM'],
+              clientId: config['KEYCLOAK_CLIENT_ID'],
+            },
+            initOptions: {
+              pkceMethod: 'S256',
+              checkLoginIframe: false
+            }
+          }))
+
+        })
+      ).toPromise();
 }
