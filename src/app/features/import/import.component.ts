@@ -42,7 +42,7 @@ export class ImportComponent implements OnInit {
 
   private loadAssociationsAndTransactions() {
     this.associationService.read({}).subscribe(associations => {
-      this.transactionService.read({type: 'I'}).subscribe(
+      this.transactionService.read(1, {type: 'I'}).subscribe(
         txnList => {
           if (txnList) {
             txnList.sort((a, b) => {
@@ -134,7 +134,7 @@ export class ImportComponent implements OnInit {
         account.createOrLink = undefined;
         // Link to another existing account. Account to be used is stored in 'parent'
         // 1. move all entries from the imported account to the linked account
-        this.entryService.batchUpdate({account: {_id: account.id}}, {account: account.parent}).subscribe(
+        this.entryService.batchUpdate(1, {account: {_id: account.id}}, {account: account.parent}).subscribe(
           () => {
             // 2. store externalRef in the linked account so further imports will find it
             account.parent.externalRef = account.externalRef;
@@ -187,10 +187,10 @@ export class ImportComponent implements OnInit {
         txn.appliedAssociation = undefined;
         // @ts-ignore
         let contrepartie = txn.entries[1];
-        this.transactionService.update(txn).subscribe(
+        this.transactionService.update(1, txn).subscribe(
           () => {
-            contrepartie.transaction = {_id: txn._id};
-            this.entryService.create(contrepartie).subscribe(
+            contrepartie.transaction = {_id: txn.id};
+            this.entryService.create(1, contrepartie).subscribe(
               () => {
                 this.messageService.add({severity: 'success', summary: "Transaction '" + txn.description + "' importée"});
                 this.transactionCreated();

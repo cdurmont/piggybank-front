@@ -9,23 +9,21 @@ import IPermission from "../../shared/models/IPermission";
 })
 export class PermissionService {
 
-  private serviceUrl:string = `${environment.backendUrl}/permissions`;
-
   constructor(private httpClient: HttpClient) { }
 
-  create(perm: IPermission): Observable<IPermission> {
-    return this.httpClient.post(this.serviceUrl, perm);
+  create(instanceId: number, perm: IPermission): Observable<IPermission> {
+    return this.httpClient.post(`${environment.backendUrl}/${instanceId}/permissions`, perm);
   }
 
-  read(permFilter: IPermission): Observable<IPermission[]> {
-    return this.httpClient.get<IPermission[]>(this.serviceUrl, { params: { filter: JSON.stringify(permFilter)}});
+  read(instanceId: number, permFilter: IPermission): Observable<IPermission[]> {
+    return this.httpClient.get<IPermission[]>(`${environment.backendUrl}/${instanceId}/permissions`, { params: { filter: JSON.stringify(permFilter)}});
   }
 
-  update(perm: IPermission): Observable<IPermission> {
-    return this.httpClient.put(`${this.serviceUrl}/${perm._id}`, perm);
+  update(instanceId: number, perm: IPermission): Observable<IPermission> {
+    return this.httpClient.put(`${environment.backendUrl}/${instanceId}/permissions/${perm.id}`, perm);
   }
 
-  delete(perm: IPermission): Observable<{}> {
-    return this.httpClient.delete(`${this.serviceUrl}/${perm._id}`);
+  delete(instanceId: number, perm: IPermission): Observable<{}> {
+    return this.httpClient.delete(`${environment.backendUrl}/${instanceId}/permissions/${perm.id}`);
   }
 }

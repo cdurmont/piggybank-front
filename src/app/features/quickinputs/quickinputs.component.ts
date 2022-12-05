@@ -30,7 +30,7 @@ export class QuickinputsComponent implements OnInit {
       {label: "Supprimer", icon:'pi pi-fw pi-trash', command: () => { this.delete()}},
     ];
     this.loginService.getUser().subscribe(user => {
-      this.transactionService.read({type: 'Q', owner: user}).subscribe(
+      this.transactionService.read(1, {type: 'Q', owner: user}).subscribe(
         txns => {
           this.transactions = txns;
         }, error => {
@@ -47,7 +47,7 @@ export class QuickinputsComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       message: "Etes-vous sûr de vouloir supprimer cette saisie rapide ?",
       accept: () => {
-        this.transactionService.delete(this.selectedTransaction).subscribe(
+        this.transactionService.delete(1, this.selectedTransaction).subscribe(
           () => {
             this.messageService.add({severity: 'success', summary: "Saisie rapide supprimée"});
             this.ngOnInit();
@@ -59,7 +59,7 @@ export class QuickinputsComponent implements OnInit {
   }
 
   private update() {
-    this.router.navigate([`/transactions/update/${this.selectedTransaction._id}`]).catch(() => {console.error('error navigating to transaction details')});
+    this.router.navigate([`/transactions/update/${this.selectedTransaction.id}`]).catch(() => {console.error('error navigating to transaction details')});
   }
 
 }

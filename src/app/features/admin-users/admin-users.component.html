@@ -17,7 +17,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-user>
     <tr>
-      <td><a routerLink="update/{{user._id}}">{{user.login}}</a></td>
+      <td><a routerLink="update/{{user.id}}">{{user.login}}</a></td>
       <td>{{user.name}}</td>
       <td>
         <i *ngIf="user.admin" class="pi pi-check-circle"></i>

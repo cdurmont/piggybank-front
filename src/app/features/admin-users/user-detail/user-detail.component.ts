@@ -39,13 +39,13 @@ export class UserDetailComponent implements OnInit {
     {
       this.userService.getById(id).subscribe(
         value => {
-          this.user = value[0];
+          this.user = value;
         },
         error => { this.messageService.add({severity: 'error', summary: "Erreur de récupération de l'utilisateur "+id, data: error}) }
       );
-      this.permissionService.read({user: {_id: id}}).subscribe(
+      this.permissionService.read(1, {user: {id: id}}).subscribe(
         value => {
-          value.push({user: {_id: id}, account: {} , type: 'R'});
+          value.push({user: {id: id}, account: {} , type: 'R'});
           this.permissions = value;
         }, error => {
           this.messageService.add({severity: 'error', summary: "Erreur de récupération des permissions de l'utilisateur "+id, data: error});
@@ -83,15 +83,15 @@ export class UserDetailComponent implements OnInit {
   savePermissions(): void {
     if (!this.user.admin) {
       this.deletedPermissions.forEach(perm => {
-        this.permissionService.delete(perm).subscribe(value => {}, error => {this.messageService.add({severity: 'error', summary: "Erreur à la suppression d'une permission ", data: error})})
+        this.permissionService.delete(1, perm).subscribe(value => {}, error => {this.messageService.add({severity: 'error', summary: "Erreur à la suppression d'une permission ", data: error})})
       });
 
       this.permissions.forEach(perm => {
-        if (perm.account._id) {
-          if (perm._id)
-            this.permissionService.update(perm).subscribe(value => {}, error => {this.messageService.add({severity: 'error', summary: "Erreur à la modification d'une permission ", data: error})});
+        if (perm.account.id) {
+          if (perm.id)
+            this.permissionService.update(1, perm).subscribe(value => {}, error => {this.messageService.add({severity: 'error', summary: "Erreur à la modification d'une permission ", data: error})});
           else
-            this.permissionService.create(perm).subscribe(value => {}, error => {this.messageService.add({severity: 'error', summary: "Erreur à la création d'une permission ", data: error})});
+            this.permissionService.create(1, perm).subscribe(value => {}, error => {this.messageService.add({severity: 'error', summary: "Erreur à la création d'une permission ", data: error})});
         }
       });
     }
@@ -119,7 +119,7 @@ export class UserDetailComponent implements OnInit {
   setAccount(account: IAccount, perm: any) {
     perm.account = account;
     let emptyLinePresent:boolean = this.permissions
-      .map<boolean>(value => { return value.account._id === undefined})
+      .map<boolean>(value => { return value.account.id === undefined})
       .reduce((previousValue, currentValue) => { return previousValue || currentValue});
     if (!emptyLinePresent)
       this.permissions.push({user: this.user, account: {}, type: 'R'});
@@ -129,7 +129,7 @@ export class UserDetailComponent implements OnInit {
     let idx = this.permissions.indexOf(perm);
     if (idx>-1)
       this.permissions.splice(idx, 1);
-    if (perm._id)
+    if (perm.id)
       this.deletedPermissions.push(perm);
   }
 }

@@ -5,13 +5,12 @@ import IAccount from "../../shared/models/IAccount";
 import {BehaviorSubject, Observable} from "rxjs";
 import IUser from "../../shared/models/IUser";
 import {map} from "rxjs/operators";
+import IEntry from "../../shared/models/IEntry";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-
-  private serviceUrl:string = `${environment.backendUrl}/1/accounts`;
 
   private rootAccountsSubject: BehaviorSubject<IAccount[]>;
 
@@ -74,5 +73,10 @@ export class AccountService {
   create(instanceId: number, account: IAccount): Observable<IAccount> {
     const serviceUrl: string = this.getServiceUrl(instanceId);
     return this.httpClient.post(`${serviceUrl}`,account);
+  }
+
+  readEntries(instanceId: number, accountId: string | null, showReconciled: boolean, page: number, pageSize: number): Observable<IEntry[]> {
+    const serviceUrl: string = this.getServiceUrl(instanceId);
+    return this.httpClient.get<IEntry[]>(`${serviceUrl}/${accountId}/entries`,{params: {showReconciled: showReconciled, page: page, size: pageSize}});
   }
 }

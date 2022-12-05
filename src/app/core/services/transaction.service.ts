@@ -9,15 +9,14 @@ import {map} from "rxjs/operators";
   providedIn: 'root'
 })
 export class TransactionService {
-  private serviceUrl:string = `${environment.backendUrl}/transactions`;
   constructor(private httpClient: HttpClient) { }
 
-  create(txn: ITransaction): Observable<ITransaction> {
-    return this.httpClient.post(this.serviceUrl, txn);
+  create(instanceId: number, txn: ITransaction): Observable<ITransaction> {
+    return this.httpClient.post(`${environment.backendUrl}/${instanceId}/transactions`, txn);
   }
 
-  read(txnFilter: ITransaction): Observable<ITransaction[]> {
-    return this.httpClient.get<ITransaction[]>(this.serviceUrl, { params: { filter: JSON.stringify(txnFilter)}})
+  read(instanceId: number, txnFilter: ITransaction): Observable<ITransaction[]> {
+    return this.httpClient.get<ITransaction[]>(`${environment.backendUrl}/${instanceId}/transactions`, { params: { filter: JSON.stringify(txnFilter)}})
       .pipe(map(transactions => {
         transactions.forEach(txn => {
           if (txn.recurStartDate) txn.recurStartDate = new Date(txn.recurStartDate);
@@ -28,11 +27,11 @@ export class TransactionService {
       }));
   }
 
-  update(txn: ITransaction): Observable<ITransaction> {
-    return this.httpClient.put(`${this.serviceUrl}/${txn._id}`, txn);
+  update(instanceId: number, txn: ITransaction): Observable<ITransaction> {
+    return this.httpClient.put(`${environment.backendUrl}/${instanceId}/transactions/${txn.id}`, txn);
   }
 
-  delete(txn: ITransaction): Observable<{}> {
-    return this.httpClient.delete(`${this.serviceUrl}/${txn._id}`);
+  delete(instanceId: number, txn: ITransaction): Observable<{}> {
+    return this.httpClient.delete(`${environment.backendUrl}/${instanceId}/transactions/${txn.id}`);
   }
 }

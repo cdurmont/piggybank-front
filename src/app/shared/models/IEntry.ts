@@ -1,5 +1,5 @@
 interface IEntry {
-    _id?: any,
+    id?: any,
     date?: Date,
     account?: any,
     transaction?: any,

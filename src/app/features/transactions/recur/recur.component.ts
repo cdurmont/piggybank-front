@@ -35,7 +35,7 @@ export class RecurComponent implements OnInit {
 
 
   private initTransactions() {
-    this.transactionService.read({type: 'R'}).subscribe(
+    this.transactionService.read(1, {type: 'R'}).subscribe(
       txns => {
         // sort transactions by recurStartDate
         this.transactions = txns.sort((a, b) =>  {
@@ -63,7 +63,7 @@ export class RecurComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       message: "Etes-vous sûr de vouloir supprimer l'ensemble de la transaction ?",
       accept: () => {
-        this.transactionService.delete(this.selectedTransaction).subscribe(
+        this.transactionService.delete(1, this.selectedTransaction).subscribe(
           () => {
             this.messageService.add({severity: 'success', summary: "Transaction supprimée"});
             this.ngOnInit();
@@ -75,21 +75,21 @@ export class RecurComponent implements OnInit {
   }
 
   private update() {
-    this.router.navigate([`/transactions/update/${this.selectedTransaction._id}`]).catch(() => {console.error('error navigating to transaction details')});
+    this.router.navigate([`/transactions/update/${this.selectedTransaction.id}`]).catch(() => {console.error('error navigating to transaction details')});
   }
 
   private duplicate() {
     // read transaction entries
-    this.entryService.read({transaction: { _id:this.selectedTransaction._id}}).subscribe(
+    this.entryService.read(1, {transaction: {_id: this.selectedTransaction.id}}).subscribe(
       entries => {
         this.selectedTransaction.description = "Copie de " +this.selectedTransaction.description;
         // clean up ids
-        this.selectedTransaction._id = undefined;
+        this.selectedTransaction.id = undefined;
         entries.forEach(entry => {
-          entry._id = undefined;
+          entry.id = undefined;
         })
         this.selectedTransaction.entries = entries;
-        this.transactionService.create(this.selectedTransaction).subscribe(
+        this.transactionService.create(1, this.selectedTransaction).subscribe(
           () => {
             this.messageService.add({severity: 'success', summary: "Transaction dupliquée"});
             this.initTransactions();

@@ -17,8 +17,8 @@ export class UserService {
     return this.httpClient.post(this.serviceUrl, user);
   }
 
-  read(): Observable<IUser[]> {
-    return this.httpClient.get<IUser[]>(this.serviceUrl);
+  read(userFilter: IUser = {}): Observable<IUser[]> {
+    return this.httpClient.get<IUser[]>(this.serviceUrl, {params: {filter: JSON.stringify(userFilter)}});
   }
 
   update(user: IUser): Observable<IUser> {
@@ -29,8 +29,7 @@ export class UserService {
     return this.httpClient.delete(`${this.serviceUrl}/${user.id}`);
   }
 
-  getById(id: string): Observable<IUser[]> {
-    let user:IUser = {id: id};
-    return this.httpClient.get<IUser[]>(this.serviceUrl, {params: {filter: JSON.stringify(user)}});
+  getById(id: string): Observable<IUser> {
+    return this.httpClient.get<IUser>(`${this.serviceUrl}/${id}`);
   }
 }

@@ -22,7 +22,7 @@
         </span>
     </div>
     <div class="p-field p-col-12 p-md-4">
-      <app-account-selector label="Compte parent" (onAccountSelect)="setParent($event)"></app-account-selector>
+      <app-account-selector label="Compte parent" (onAccountSelect)="setParent($event)" [account]="account.parent"></app-account-selector>
     </div>
     <div class="p-field p-col-12 p-md-4">
       <p-inputSwitch id="revert" name="revert" [(ngModel)]="account.colorRevert"></p-inputSwitch><label for="revert">Inverser les couleurs des soldes</label>

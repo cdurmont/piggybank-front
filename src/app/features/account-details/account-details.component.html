@@ -1,7 +1,7 @@
 <p>Compte :
   <a routerLink="/accounts/properties/{{account.id}}" *ngIf="user.admin">{{account.name}}</a>
+  <span *ngIf="!user.admin">{{account.name}}</span>
 </p>
-
 <div *ngIf="subAccounts.length>0">
   {{subAccounts.length}} sous-compte(s):
 
@@ -17,7 +17,7 @@
 
 <div *ngIf="subAccounts.length==0">
   <p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
-
+  <p-button *ngIf="showMoreLines()" (click)="loadMoreLines()">Afficher les {{PAGE_SIZE}} lignes précédentes</p-button>
   <div class="p-grid p-fluid">
     <div class="p-d-none p-d-md-block p-md-2"><p-checkbox title="Tout sélectionner" [binary]="true" *ngIf="account.reconcilable && user.admin" (onChange)="onSelectAll($event)" [(ngModel)]="selectAll"></p-checkbox>Date</div>
     <div class="p-d-none p-d-md-block p-md-2">Référence</div>
@@ -55,7 +55,7 @@
 
     </div>
     <div *ngIf="isExpanded(entry)" class="contrepartie">
-      <div *ngFor="let ctp of entry.contreparties" class="p-grid p-fluid">
+      <div *ngFor="let ctp of entry.transaction.entries" class="p-grid p-fluid">
         <div class="p-col-12 p-col-6 p-md-2">
         </div>
         <div class="p-col-12 p-col-6 p-md-2">{{ctp.reference}}</div>

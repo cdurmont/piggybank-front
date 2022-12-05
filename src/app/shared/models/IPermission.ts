@@ -1,7 +1,7 @@
 
 
 interface IPermission {
-    _id?: any,
+    id?: any,
     user?: any,
     account?: any,
     type?: string

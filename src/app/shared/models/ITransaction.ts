@@ -4,7 +4,7 @@ import IAssociation from "./IAssociation";
 
 
 interface ITransaction {
-    _id?: any,
+    id?: any,
     balanced?: boolean,
     type?: string,
     description?: string,

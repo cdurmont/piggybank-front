@@ -5,6 +5,8 @@ import {MessageService} from "primeng/api";
 import IAccount from "../../models/IAccount";
 import {TransactionService} from "../../../core/services/transaction.service";
 import {LoginService} from "../../../core/services/login.service";
+import {KeycloakService} from "keycloak-angular";
+import {UserService} from "../../../core/services/user.service";
 
 @Component({
   selector: 'app-account-selector',
@@ -27,13 +29,14 @@ export class AccountSelectorComponent extends AccountsComponent {
   constructor(accountService: AccountService,
               messageService: MessageService,
               transactionService: TransactionService,
-              loginService: LoginService,
+              userService: UserService,
+              keycloakService: KeycloakService
               ) {
-    super(accountService, messageService, transactionService, loginService);
+    super(accountService, messageService, transactionService, userService, keycloakService);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
+  async ngOnInit() {
+    await super.ngOnInit();
     this.onAccountSelect.emit(this.account);
     this.selectedLabel = this.account?.name;
   }

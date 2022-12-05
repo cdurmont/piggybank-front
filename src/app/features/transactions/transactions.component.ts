@@ -73,7 +73,7 @@ export class TransactionsComponent implements OnInit {
         // id + quickMode => using a quick input as a model to create a new transaction
         this.multi = false;
         this.transaction.type = 'S';
-        this.entryService.read({transaction: { _id:id}}).subscribe(
+        this.entryService.read(1, {transaction: {id: id}}).subscribe(
           entries => {
             if (entries.length == 0)
               return this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction: aucune écriture"});
@@ -106,14 +106,14 @@ export class TransactionsComponent implements OnInit {
         );
       } else {
         // update mode, id is a Transaction id !
-        this.entryService.read({transaction: { _id:id}}).subscribe(
+        this.entryService.read(1, {transaction: {id: id}}).subscribe(
           entries => {
             // init account and transaction, add 'entries' as member of transaction
             if (entries.length == 0)
               return this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction: aucune écriture"});
             // put the main account's entry on top
             if (mainAccountId) {
-              let mainEntryIndex:number= entries.findIndex(e => {return e.account._id == mainAccountId});
+              let mainEntryIndex:number= entries.findIndex(e => {return e.account.id == mainAccountId});
               if (mainEntryIndex >= 0) {
                 let mainEntry:IEntry = entries[mainEntryIndex];
                 entries.splice(mainEntryIndex, 1);
@@ -203,7 +203,7 @@ export class TransactionsComponent implements OnInit {
     // step 1, calculate balance
     let totalDebit: number = 0, totalCredit: number = 0;
     this.transaction.entries?.forEach(entry => {
-      if (entry.account && entry.account._id) {   // ignore "empty" lines
+      if (entry.account && entry.account.id) {   // ignore "empty" lines
         if (entry.debit) totalDebit += entry.debit;
         if (entry.credit) totalCredit += entry.credit;
       }
@@ -238,7 +238,7 @@ export class TransactionsComponent implements OnInit {
     // step 3, remove unneeded line(s)
     this.transaction.entries = this.transaction.entries?.filter(entry => {
       let keep = entry.debit || entry.credit; // false if both credit and debit are undefined, false or whatever js considers equivalent
-      if (!keep && entry._id)
+      if (!keep && entry.id)
         this.deletedEntries.push(entry);      // put it aside so we can delete it when saving the transaction
       return keep;
     })
@@ -280,7 +280,7 @@ export class TransactionsComponent implements OnInit {
     let ok: boolean = true;
     // updating the transaction it tricky ! Might be some entries to create, update and/or delete !
     this.deletedEntries.forEach(entry => {
-      this.entryService.delete(entry).subscribe(
+      this.entryService.delete(1, entry).subscribe(
         () => {
         },
         (error: any) => {
@@ -298,11 +298,11 @@ export class TransactionsComponent implements OnInit {
     let entries: IEntry[] = this.transaction.entries;
     this.transaction.entries = undefined; // or things get messy when serializing... objects are nested
     let newEntries: IEntry[] = entries.filter(entry => {
-      return entry._id == undefined
+      return entry.id == undefined
     });
     newEntries?.forEach(entry => {
       entry.transaction = this.transaction;
-      this.entryService.create(entry).subscribe(
+      this.entryService.create(1, entry).subscribe(
         () => {
         }, error => {
           ok = false;
@@ -316,10 +316,10 @@ export class TransactionsComponent implements OnInit {
       );
     });
     let updatedEntries: IEntry[] = entries.filter(entry => {
-      return entry._id != undefined
+      return entry.id != undefined
     });
     updatedEntries?.forEach(entry => {
-      this.entryService.update(entry).subscribe(
+      this.entryService.update(1, entry).subscribe(
         () => {
         }, error => {
           ok = false;
@@ -333,7 +333,7 @@ export class TransactionsComponent implements OnInit {
       );
     });
     if (ok) {
-      this.transactionService.update(this.transaction).subscribe(
+      this.transactionService.update(1, this.transaction).subscribe(
         () => {
           this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
           this.location.back();
@@ -351,8 +351,28 @@ export class TransactionsComponent implements OnInit {
   }
 
   private saveCreate() {
-    this.transactionService.create(this.transaction).subscribe(
+    this.transactionService.create(1, this.transaction).subscribe(
       () => {
+        // @ts-ignore
+        const entries:IEntry[] = [...this.transaction.entries];
+        this.transaction.entries = undefined;
+        // @ts-ignore
+        entries.forEach(entry => {
+          entry.transaction = this.transaction;
+          console.log("Enregistrement écriture : "+ JSON.stringify(entry));
+          this.entryService.create(1, entry).subscribe(
+            () => {
+            }, error => {
+              this.messageService.add({
+                severity: 'error',
+                summary: "Erreur à l'enregistrement de la transaction (2)",
+                detail: "Vérifiez la transaction, elle est peut-être corrompue!",
+                data: error
+              });
+              console.log(JSON.stringify(error));
+            }
+          );
+        });
         this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
         if (!this.multi)
           this.location.back();
@@ -372,7 +392,7 @@ export class TransactionsComponent implements OnInit {
     let ok: boolean = true;
     // @ts-ignore
     this.transaction.entries.forEach((entry, pos) => {
-      if (!entry.account || !entry.account._id) {
+      if (!entry.account || !entry.account.id) {
         ok = false;
         this.messageService.add({
           severity: 'warn',
