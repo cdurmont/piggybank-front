@@ -4,7 +4,6 @@ import {AccountService} from "../../../core/services/account.service";
 import {MessageService} from "primeng/api";
 import IAccount from "../../models/IAccount";
 import {TransactionService} from "../../../core/services/transaction.service";
-import {LoginService} from "../../../core/services/login.service";
 import {KeycloakService} from "keycloak-angular";
 import {UserService} from "../../../core/services/user.service";
 
@@ -15,10 +14,20 @@ import {UserService} from "../../../core/services/user.service";
 })
 export class AccountSelectorComponent extends AccountsComponent {
 
+  @Input() get account(): IAccount {
+    return this._account;
+  }
+
+  set account(value: IAccount) {
+    console.log("account set : " + JSON.stringify(value));
+    this._account = value;
+    if (value)
+      this.selectedLabel = value.name;
+  }
+
   @Input()
   label: string | undefined;
-  @Input()
-  account: IAccount = {};
+  private _account: IAccount = {};
   @Input()
   placeholder: string = "Compte";
   @Output()
@@ -37,13 +46,15 @@ export class AccountSelectorComponent extends AccountsComponent {
 
   async ngOnInit() {
     await super.ngOnInit();
-    this.onAccountSelect.emit(this.account);
-    this.selectedLabel = this.account?.name;
+    if (!this._account)
+      this._account = {};
+    this.onAccountSelect.emit(this._account);
+    this.selectedLabel = this._account?.name;
   }
 
   nodeSelect(event: any): void {
     this.visible = false;
-    this.account = event.node.data;
+    this._account = event.node.data;
     this.selectedLabel = event.node.label;
     this.onAccountSelect.emit(event.node.data);
   }
@@ -51,10 +62,11 @@ export class AccountSelectorComponent extends AccountsComponent {
   clear(): void {
     this.onAccountSelect.emit({});
     this.selectedLabel = undefined;
-    this.account = {};
+    this._account = {};
   }
 
   show(): void {
     this.visible = true;
   }
+
 }

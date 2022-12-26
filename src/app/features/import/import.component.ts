@@ -134,7 +134,7 @@ export class ImportComponent implements OnInit {
         account.createOrLink = undefined;
         // Link to another existing account. Account to be used is stored in 'parent'
         // 1. move all entries from the imported account to the linked account
-        this.entryService.batchUpdate(1, {account: {_id: account.id}}, {account: account.parent}).subscribe(
+        this.entryService.batchUpdate(1, {account: {id: account.id}}, {account: account.parent}).subscribe(
           () => {
             // 2. store externalRef in the linked account so further imports will find it
             account.parent.externalRef = account.externalRef;
@@ -189,7 +189,7 @@ export class ImportComponent implements OnInit {
         let contrepartie = txn.entries[1];
         this.transactionService.update(1, txn).subscribe(
           () => {
-            contrepartie.transaction = {_id: txn.id};
+            contrepartie.transaction = {id: txn.id};
             this.entryService.create(1, contrepartie).subscribe(
               () => {
                 this.messageService.add({severity: 'success', summary: "Transaction '" + txn.description + "' importée"});
@@ -211,7 +211,7 @@ export class ImportComponent implements OnInit {
   }
 
   private static isReadyForImport(txn: ITransaction) {
-    return txn.entries && txn.entries.length == 2 && txn.entries[1].account && txn.entries[1].account._id && txn.selected;
+    return txn.entries && txn.entries.length == 2 && txn.entries[1].account && txn.entries[1].account.id && txn.selected;
   }
 
   showDialogAssign(txn: ITransaction) {

@@ -12,7 +12,7 @@ import {ConfirmationService, MessageService} from "primeng/api";
 })
 export class AccountPropertiesComponent implements OnInit {
 
-  account: IAccount = {type: 'U'};
+  account: IAccount = {type: 'U', parent: {}};
   createMode: boolean = true;
 
   constructor(private route: ActivatedRoute,

@@ -27,6 +27,16 @@ export class TransactionService {
       }));
   }
 
+  getById(instanceId: number, id: number): Observable<ITransaction> {
+    return this.httpClient.get<ITransaction>(`${environment.backendUrl}/${instanceId}/transactions/${id}`)
+      .pipe(map(txn => {
+          if (txn.recurStartDate) txn.recurStartDate = new Date(txn.recurStartDate);
+          if (txn.recurEndDate) txn.recurEndDate = new Date(txn.recurEndDate);
+          if (txn.recurNextDate) txn.recurNextDate = new Date(txn.recurNextDate);
+          return txn;
+        }));
+  }
+
   update(instanceId: number, txn: ITransaction): Observable<ITransaction> {
     return this.httpClient.put(`${environment.backendUrl}/${instanceId}/transactions/${txn.id}`, txn);
   }

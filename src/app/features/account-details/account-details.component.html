@@ -1,5 +1,5 @@
 <p>Compte :
-  <a routerLink="/accounts/properties/{{account.id}}" *ngIf="user.admin">{{account.name}}</a>
+  <a routerLink="/accounts/properties/{{account.id}}" *ngIf="user.admin">{{account.name ? account.name : "(sans nom)"}}</a>
   <span *ngIf="!user.admin">{{account.name}}</span>
 </p>
 <div *ngIf="subAccounts.length>0">

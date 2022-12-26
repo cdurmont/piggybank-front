@@ -66,13 +66,14 @@ export class TransactionsComponent implements OnInit {
       this.recurMode = true;
     if (path === "createQuick" || path === "useQuickInput")
       this.quickMode = true;
-    let id = this.route.snapshot.paramMap.get('id');
+    let id = Number(this.route.snapshot.paramMap.get('id'));
     let mainAccountId = this.route.snapshot.paramMap.get('mainAccountId');
     if (id) {
       if (this.quickMode) {
         // id + quickMode => using a quick input as a model to create a new transaction
         this.multi = false;
         this.transaction.type = 'S';
+        // TODO use transactionService
         this.entryService.read(1, {transaction: {id: id}}).subscribe(
           entries => {
             if (entries.length == 0)
@@ -106,8 +107,9 @@ export class TransactionsComponent implements OnInit {
         );
       } else {
         // update mode, id is a Transaction id !
-        this.entryService.read(1, {transaction: {id: id}}).subscribe(
-          entries => {
+        this.transactionService.getById(1, id).subscribe(
+          txn => {
+            let entries: IEntry[] = txn.entries ? txn.entries : [];
             // init account and transaction, add 'entries' as member of transaction
             if (entries.length == 0)
               return this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction: aucune écriture"});
@@ -121,10 +123,22 @@ export class TransactionsComponent implements OnInit {
               }
             }
             this.mainAccount = entries[0].account;
-            this.transaction = entries[0].transaction;
-            this.transaction.entries = entries;
+            this.transaction = txn;
             if (this.transaction.type === 'R') {
               this.recurMode = true;
+              // sort by amount
+              entries.sort((a, b) => {
+                let result:number = 0;
+                if (b.credit)
+                  result+=b.credit;
+                if (b.debit)
+                  result+=b.debit;
+                if (a.credit)
+                  result-=a.credit;
+                if (a.debit)
+                  result-=a.debit;
+                return result;
+              });
             }
 
           }, error => {
@@ -208,12 +222,14 @@ export class TransactionsComponent implements OnInit {
         if (entry.credit) totalCredit += entry.credit;
       }
     });
+    console.log("handleExtraLines : totaux : "+totalDebit+"/"+totalCredit);
     // step 2, if transaction is unbalanced, find an "empty" line and balance it, create an empty line if needed
 
     // find an empty line. Let's say an empty line is when no account is selected (yeah, why not)
     let emptyLines: IEntry[] | undefined = this.transaction.entries?.filter(entry => {
-      return (!entry.account || !entry.account._id)
+      return (!entry.account || !entry.account.id)
     });
+    console.log("handleExtraLines : empty lines : "+JSON.stringify(emptyLines));
     if (!emptyLines || emptyLines.length == 0) {
       // no empty line ? Create one
       let empty: IEntry = {date: new Date(), account: {}};
@@ -277,6 +293,21 @@ export class TransactionsComponent implements OnInit {
   }
 
   private saveUpdate() {
+    this.transactionService.update(1, this.transaction).subscribe(
+      () => {
+        this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
+        this.location.back();
+      }, error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: "Erreur à l'enregistrement de la transaction",
+          detail: "Vérifiez la transaction, elle est peut-être corrompue!",
+          data: error
+        });
+        this.location.back();
+      }
+    );
+    /*
     let ok: boolean = true;
     // updating the transaction it tricky ! Might be some entries to create, update and/or delete !
     this.deletedEntries.forEach(entry => {
@@ -348,6 +379,7 @@ export class TransactionsComponent implements OnInit {
         }
       );
     } else this.transaction.entries = entries;
+     */
   }
 
   private saveCreate() {
