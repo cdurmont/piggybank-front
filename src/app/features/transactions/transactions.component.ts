@@ -307,104 +307,11 @@ export class TransactionsComponent implements OnInit {
         this.location.back();
       }
     );
-    /*
-    let ok: boolean = true;
-    // updating the transaction it tricky ! Might be some entries to create, update and/or delete !
-    this.deletedEntries.forEach(entry => {
-      this.entryService.delete(1, entry).subscribe(
-        () => {
-        },
-        (error: any) => {
-          ok = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: "Erreur à l'enregistrement de la transaction (1)",
-            detail: "Aucune modification appliquée",
-            data: error
-          });
-        }
-      );
-    });
-    // @ts-ignore
-    let entries: IEntry[] = this.transaction.entries;
-    this.transaction.entries = undefined; // or things get messy when serializing... objects are nested
-    let newEntries: IEntry[] = entries.filter(entry => {
-      return entry.id == undefined
-    });
-    newEntries?.forEach(entry => {
-      entry.transaction = this.transaction;
-      this.entryService.create(1, entry).subscribe(
-        () => {
-        }, error => {
-          ok = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: "Erreur à l'enregistrement de la transaction (2)",
-            detail: "Vérifiez la transaction, elle est peut-être corrompue!",
-            data: error
-          });
-        }
-      );
-    });
-    let updatedEntries: IEntry[] = entries.filter(entry => {
-      return entry.id != undefined
-    });
-    updatedEntries?.forEach(entry => {
-      this.entryService.update(1, entry).subscribe(
-        () => {
-        }, error => {
-          ok = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: "Erreur à l'enregistrement de la transaction (3)",
-            detail: "Vérifiez la transaction, elle est peut-être corrompue!",
-            data: error
-          });
-        }
-      );
-    });
-    if (ok) {
-      this.transactionService.update(1, this.transaction).subscribe(
-        () => {
-          this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
-          this.location.back();
-        }, error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: "Erreur à l'enregistrement de la transaction (4)",
-            detail: "Vérifiez la transaction, elle est peut-être corrompue!",
-            data: error
-          });
-          this.location.back();
-        }
-      );
-    } else this.transaction.entries = entries;
-     */
   }
 
   private saveCreate() {
     this.transactionService.create(1, this.transaction).subscribe(
       () => {
-        // @ts-ignore
-        const entries:IEntry[] = [...this.transaction.entries];
-        this.transaction.entries = undefined;
-        // @ts-ignore
-        entries.forEach(entry => {
-          entry.transaction = this.transaction;
-          console.log("Enregistrement écriture : "+ JSON.stringify(entry));
-          this.entryService.create(1, entry).subscribe(
-            () => {
-            }, error => {
-              this.messageService.add({
-                severity: 'error',
-                summary: "Erreur à l'enregistrement de la transaction (2)",
-                detail: "Vérifiez la transaction, elle est peut-être corrompue!",
-                data: error
-              });
-              console.log(JSON.stringify(error));
-            }
-          );
-        });
         this.messageService.add({severity: 'success', summary: "Transaction enregistrée"});
         if (!this.multi)
           this.location.back();
