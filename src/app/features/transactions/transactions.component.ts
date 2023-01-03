@@ -74,13 +74,14 @@ export class TransactionsComponent implements OnInit {
         this.multi = false;
         this.transaction.type = 'S';
         // TODO use transactionService
-        this.entryService.read(1, {transaction: {id: id}}).subscribe(
-          entries => {
+        this.transactionService.getById(1, id).subscribe(
+          txn => {
+            let entries: IEntry[] = txn.entries ? txn.entries : [];
             if (entries.length == 0)
               return this.messageService.add({severity: 'error', summary: "Impossible de lire la transaction: aucune écriture"});
             this.mainAccount = entries[0].account;
             this.transaction.entries = [];
-            this.transaction.description = entries[0].transaction.description;
+            this.transaction.description = txn.description;
             // duplicates the model's entries
             entries.forEach(entry => {
               this.transaction.entries?.push({
@@ -269,6 +270,9 @@ export class TransactionsComponent implements OnInit {
     if (!this.validate())
       return;
     if (this.recurMode) {
+      if (this.transaction.recurStartDate) {
+        this.transaction.recurStartDate = this.toUTC(this.transaction.recurStartDate);
+      }
       if (!this.transaction.recurNextDate) {
         this.transaction.recurNextDate = TransactionsComponent.addMonths(this.transaction.recurStartDate, 1);
       }
@@ -277,6 +281,11 @@ export class TransactionsComponent implements OnInit {
 
       if (this.transaction.recurNextDate && this.transaction.recurStartDate && this.transaction.recurNextDate.getTime() < this.transaction.recurStartDate.getTime())
         this.transaction.recurNextDate = this.transaction.recurStartDate;
+
+      if (this.transaction.recurNextDate)
+        this.transaction.recurNextDate = this.toUTC(this.transaction.recurNextDate);
+      if (this.transaction.recurEndDate)
+        this.transaction.recurEndDate = this.toUTC(this.transaction.recurEndDate);
     }
 
 
@@ -286,6 +295,15 @@ export class TransactionsComponent implements OnInit {
       this.saveUpdate();
 
 
+  }
+
+  toUTC(date: Date): Date {
+    let d = date.getDate();
+    let m = date.getMonth();
+    let y = date.getFullYear();
+    date.setUTCHours(0);
+    date.setUTCFullYear(y, m, d);
+    return date;
   }
 
   isSplitTransaction(): boolean {

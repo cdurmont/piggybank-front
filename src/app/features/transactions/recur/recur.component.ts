@@ -80,16 +80,16 @@ export class RecurComponent implements OnInit {
 
   private duplicate() {
     // read transaction entries
-    this.entryService.read(1, {transaction: {_id: this.selectedTransaction.id}}).subscribe(
-      entries => {
-        this.selectedTransaction.description = "Copie de " +this.selectedTransaction.description;
+    this.transactionService.getById(1, this.selectedTransaction.id).subscribe(
+      txn => {
+        txn.description = "Copie de " +txn.description;
         // clean up ids
-        this.selectedTransaction.id = undefined;
-        entries.forEach(entry => {
-          entry.id = undefined;
-        })
-        this.selectedTransaction.entries = entries;
-        this.transactionService.create(1, this.selectedTransaction).subscribe(
+        txn.id = undefined;
+        if (txn.entries)
+          txn.entries.forEach(entry => {
+            entry.id = undefined;
+          });
+        this.transactionService.create(1, txn).subscribe(
           () => {
             this.messageService.add({severity: 'success', summary: "Transaction dupliquée"});
             this.initTransactions();

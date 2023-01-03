@@ -18,30 +18,35 @@ export class TransactionService {
   read(instanceId: number, txnFilter: ITransaction): Observable<ITransaction[]> {
     return this.httpClient.get<ITransaction[]>(`${environment.backendUrl}/${instanceId}/transactions`, { params: { filter: JSON.stringify(txnFilter)}})
       .pipe(map(transactions => {
-        transactions.forEach(txn => {
-          if (txn.recurStartDate) txn.recurStartDate = new Date(txn.recurStartDate);
-          if (txn.recurEndDate) txn.recurEndDate = new Date(txn.recurEndDate);
-          if (txn.recurNextDate) txn.recurNextDate = new Date(txn.recurNextDate);
-        });
+        transactions.forEach(txn => this.formatDates(txn));
         return transactions;
       }));
   }
 
   getById(instanceId: number, id: number): Observable<ITransaction> {
     return this.httpClient.get<ITransaction>(`${environment.backendUrl}/${instanceId}/transactions/${id}`)
-      .pipe(map(txn => {
-          if (txn.recurStartDate) txn.recurStartDate = new Date(txn.recurStartDate);
-          if (txn.recurEndDate) txn.recurEndDate = new Date(txn.recurEndDate);
-          if (txn.recurNextDate) txn.recurNextDate = new Date(txn.recurNextDate);
-          return txn;
-        }));
+      .pipe(map(txn => this.formatDates(txn)));
   }
 
   update(instanceId: number, txn: ITransaction): Observable<ITransaction> {
+    console.log("=>recurStartDate "+txn.recurStartDate);
+    console.log("=>recurStartDate "+JSON.stringify(txn));
     return this.httpClient.put(`${environment.backendUrl}/${instanceId}/transactions/${txn.id}`, txn);
   }
 
   delete(instanceId: number, txn: ITransaction): Observable<{}> {
     return this.httpClient.delete(`${environment.backendUrl}/${instanceId}/transactions/${txn.id}`);
+  }
+
+  formatDates(txn: ITransaction): ITransaction {
+    console.log("<=recurStartDate "+txn.recurStartDate);
+    if (txn.recurStartDate) txn.recurStartDate = new Date(txn.recurStartDate);
+    if (txn.recurEndDate) txn.recurEndDate = new Date(txn.recurEndDate);
+    if (txn.recurNextDate) txn.recurNextDate = new Date(txn.recurNextDate);
+    if (txn.entries)
+      txn.entries.forEach(entry => {
+        if (entry.date) entry.date = new Date(entry.date);
+      });
+    return txn;
   }
 }
