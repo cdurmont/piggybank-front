@@ -1,23 +1,5 @@
-<div *ngIf="importedAccounts.length>0">
-  <p>{{importedAccounts.length}} comptes à importer</p>
-  <div class="p-grid p-col-12 p-fluid" *ngFor="let account of importedAccounts">
-    <div class="p-col-3">
-      <input pInputText disabled="disabled" [(ngModel)]="account.externalRef">
-    </div>
-    <div class="p-col-3">
-      <input pInputText [(ngModel)]="account.name" [disabled]="account.createOrLink === 'L'">
-    </div>
-    <div class="p-col-1">
-      <p-selectButton [(ngModel)]="account.createOrLink" [options]="createOrLinkValues" optionLabel="name" optionValue="value"></p-selectButton>
-    </div>
-    <div class="p-col-5">
-      <app-account-selector [label]="account.createOrLink === 'C' ? 'Compte parent': 'Compte associé'" [account]="account.parent" (onAccountSelect)="accountSelected($event,account)"></app-account-selector>
-    </div>
-  </div>
-  <button pButton type="button" label="Créer/lier les comptes" (click)="importAccounts()"></button>
-</div>
 
-<div *ngIf="importedAccounts && importedAccounts.length == 0 && importedTransactions.length > 0">
+<div *ngIf="importedTransactions.length > 0">
   <p>{{importedTransactions.length}} transactions à importer</p>
   <div class="p-grid p-col-12 p-fluid" *ngFor="let txn of importedTransactions">
     <ng-container *ngIf=" txn && txn.entries && txn.entries.length>1">
@@ -49,4 +31,12 @@
   <button pButton type="button" label="Importer les transactions complétées" (click)="importTransactions()"></button>
 </div>
 
-<p-fileUpload url="../api-v1/imports/ofx" name="ofx" (onUpload)="fileUploaded()"></p-fileUpload>
+<p-fieldset legend="Import fichier bancaire QIF (Quicken/Money)">
+  <div class="p-grid">
+    <div class="p-col-6">
+      <p>Compte de destination</p>
+      <app-account-selector [account]="importAccount" (onAccountSelect)="accountSelectedImport($event)"></app-account-selector>
+    </div>
+    <p-fileUpload class="p-col-6" url="../api-v2/1/imports/qif" name="qif" (onBeforeUpload)="beforeUpload($event)" (onUpload)="fileUploaded()"></p-fileUpload>
+  </div>
+</p-fieldset>

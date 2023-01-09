@@ -9,25 +9,26 @@ import {Observable} from "rxjs";
 })
 export class AssociationService {
 
-  private serviceUrl:string = `${environment.backendUrl}/associations`;
-
+  getServiceUrl(instanceId: number): string {
+    return `${environment.backendUrl}/${instanceId}/associations`;
+  }
   constructor(private httpClient: HttpClient) { }
 
-  create(assoc: IAssociation): Observable<IAssociation> {
+  create(instanceId:number, assoc: IAssociation): Observable<IAssociation> {
     // @ts-ignore
-    return this.httpClient.post(this.serviceUrl, assoc);
+    return this.httpClient.post(this.getServiceUrl(instanceId), assoc);
   }
 
-  read(assocFilter: any): Observable<IAssociation[]> {
-    return this.httpClient.get<IAssociation[]>(this.serviceUrl, { params: { filter: JSON.stringify(assocFilter)}});
+  read(instanceId:number, assocFilter: any): Observable<IAssociation[]> {
+    return this.httpClient.get<IAssociation[]>(this.getServiceUrl(instanceId), { params: { filter: JSON.stringify(assocFilter)}});
   }
 
-  update(assoc: IAssociation): Observable<IAssociation> {
+  update(instanceId:number,assoc: IAssociation): Observable<IAssociation> {
     // @ts-ignore
-    return this.httpClient.put(`${this.serviceUrl}/${assoc._id}`, assoc);
+    return this.httpClient.put(`${this.getServiceUrl(instanceId)}/${assoc._id}`, assoc);
   }
 
-  delete(assoc: IAssociation): Observable<{}> {
-    return this.httpClient.delete(`${this.serviceUrl}/${assoc._id}`);
+  delete(instanceId:number,assoc: IAssociation): Observable<{}> {
+    return this.httpClient.delete(`${this.getServiceUrl(instanceId)}/${assoc._id}`);
   }
 }

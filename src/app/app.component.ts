@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   mainMenuContent: MenuItem[] = [
     {label: 'Comptes', routerLink: ['/']},
     {label: 'Transactions récurrentes', routerLink: ['/transactions/recurring']},
-    {label: 'Import OFX', routerLink: ['/import']},
+    {label: 'Import', routerLink: ['/import']},
   ];
 
   loggedIn: boolean = false;

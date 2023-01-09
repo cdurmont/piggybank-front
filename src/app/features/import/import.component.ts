@@ -18,11 +18,13 @@ export class ImportComponent implements OnInit {
   createOrLinkValues = [{name: "Créer", value:'C'},{name: "Lier", value: 'L'}];
   createOrLink:string = 'C';
 
-  importedAccounts: IAccount[] = [];
   importedTransactions: ITransaction[] = [];
 
   association: IAssociation = {account: {}};
   associatingTransaction: ITransaction = {};
+
+  accountId:number = 42;
+  importAccount: IAccount = {};
 
   nbPending:number = 0;
 
@@ -36,12 +38,11 @@ export class ImportComponent implements OnInit {
               ) { }
 
   ngOnInit(): void {
-    this.loadAccounts();
     this.loadAssociationsAndTransactions();
   }
 
   private loadAssociationsAndTransactions() {
-    this.associationService.read({}).subscribe(associations => {
+    this.associationService.read(1, {}).subscribe(associations => {
       this.transactionService.read(1, {type: 'I'}).subscribe(
         txnList => {
           if (txnList) {
@@ -74,7 +75,6 @@ export class ImportComponent implements OnInit {
                       txn.entries[1].account = assoc.account;
                     }
                   }
-
                 });
             });
           }
@@ -89,22 +89,6 @@ export class ImportComponent implements OnInit {
     });
   }
 
-  private loadAccounts() {
-    this.accountService.read(1, {type: 'I'}).subscribe(
-      accountList => {
-        if (accountList)
-          accountList.forEach(account => {
-            account.createOrLink = 'C';
-            account.parent = {}
-          })
-        this.importedAccounts = accountList;
-      },
-      error => {
-        this.messageService.add({severity: 'error', summary: "Erreur lors de la lecture des comptes importés"});
-        console.error(error);
-      }
-    );
-  }
 
   accountSelected(parent: IAccount, account:IAccount): void {
     account.parent = parent;
@@ -118,51 +102,7 @@ export class ImportComponent implements OnInit {
     }
   }
 
-  importAccounts():void {
-    this.importedAccounts.forEach(account => {
-      if (account.createOrLink === 'C') {
-        account.type = 'U';
-        account.createOrLink = undefined;
-        this.accountService.update(1, account).subscribe(
-          () => {},
-          error => {
-            this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement du compte"});
-            console.error(error);
-          }
-        );
-      } else {
-        account.createOrLink = undefined;
-        // Link to another existing account. Account to be used is stored in 'parent'
-        // 1. move all entries from the imported account to the linked account
-        this.entryService.batchUpdate(1, {account: {id: account.id}}, {account: account.parent}).subscribe(
-          () => {
-            // 2. store externalRef in the linked account so further imports will find it
-            account.parent.externalRef = account.externalRef;
-            this.accountService.update(1, account.parent).subscribe(
-              () => {
-                // 3. delete imported account
-                this.accountService.delete(1, account).subscribe(
-                  () => {
-                    // we should do something here to celebrate...
-                    this.messageService.add({severity: 'success', summary: "Compte importé"});
-                  }, error => {
-                    this.messageService.add({severity: 'error', summary: "Erreur lors de la suppression du compte temporaire"});
-                    console.error(error);
-                  }
-                );
-              }, error => {
-                this.messageService.add({severity: 'error', summary: "Erreur lors de la modification du compte lié"});
-                console.error(error);
-              }
-            );
-          }, error => {
-            this.messageService.add({severity: 'error', summary: "Erreur lors du déplacement des écritures sur le compte lié"});
-            console.error(error);
-          }
-        );
-      }
-    });
-  }
+
 
   transactionCreated(): void {
     if ( --this.nbPending == 0) {
@@ -186,20 +126,10 @@ export class ImportComponent implements OnInit {
         txn.selected = undefined;
         txn.appliedAssociation = undefined;
         // @ts-ignore
-        let contrepartie = txn.entries[1];
         this.transactionService.update(1, txn).subscribe(
           () => {
-            contrepartie.transaction = {id: txn.id};
-            this.entryService.create(1, contrepartie).subscribe(
-              () => {
-                this.messageService.add({severity: 'success', summary: "Transaction '" + txn.description + "' importée"});
-                this.transactionCreated();
-              }, error => {
-                this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement de la contrepartie"});
-                console.error(error);
-                this.transactionCreated();
-              }
-            );
+            this.messageService.add({severity: 'success', summary: "Transaction '" + txn.description + "' importée"});
+            this.transactionCreated();
           }, error => {
             this.messageService.add({severity: 'error', summary: "Erreur lors de l'enregistrement de la transaction"});
             console.error(error);
@@ -217,7 +147,7 @@ export class ImportComponent implements OnInit {
   showDialogAssign(txn: ITransaction) {
     txn.assignDialogVisible = true;
     // @ts-ignore
-    this.association = {  regex: txn.entries[0].reference,
+    this.association = {  regex: txn.description,
                           account: txn.entries && txn.entries.length>1 ? txn.entries[1].account : undefined};
     this.associatingTransaction = txn;
   }
@@ -228,7 +158,7 @@ export class ImportComponent implements OnInit {
 
   saveAssign() {
     if (this.createMode)
-      this.associationService.create(this.association).subscribe(
+      this.associationService.create(1, this.association).subscribe(
         () => {
           this.messageService.add({severity: 'success', summary: "Règle d'association créée"});
           this.associatingTransaction.assignDialogVisible = false;
@@ -239,7 +169,7 @@ export class ImportComponent implements OnInit {
         }
       );
     else
-      this.associationService.update(this.association).subscribe(
+      this.associationService.update(1, this.association).subscribe(
         () => {
           this.messageService.add({severity: 'success', summary: "Règle d'association modifiée"});
           this.associatingTransaction.assignDialogVisible = false;
@@ -256,9 +186,16 @@ export class ImportComponent implements OnInit {
     this.association.account = account;
   }
 
+  accountSelectedImport(account: IAccount) {
+    this.accountId = account ? account.id : null;
+  }
+
+  beforeUpload(evt:any) {
+    evt.formData.set("accountId",this.accountId);
+  }
+
   fileUploaded() {
     this.messageService.add({severity: 'success', summary: "Fichier importé"});
-    this.loadAccounts();
     this.loadAssociationsAndTransactions();
   }
 }

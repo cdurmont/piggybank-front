@@ -23,7 +23,7 @@ import {SelectButtonModule} from "primeng/selectbutton";
 import {CheckboxModule} from "primeng/checkbox";
 import {DialogModule} from 'primeng/dialog';
 import {CardModule} from "primeng/card";
-import {DropdownModule} from "primeng/dropdown";
+import {FieldsetModule} from 'primeng/fieldset';
 
 @NgModule({
   declarations: [],
@@ -50,6 +50,7 @@ import {DropdownModule} from "primeng/dropdown";
     CheckboxModule,
     DialogModule,
     CardModule,
+    FieldsetModule,
   ],
   exports: [
     InputTextModule,
@@ -73,6 +74,7 @@ import {DropdownModule} from "primeng/dropdown";
     CheckboxModule,
     DialogModule,
     CardModule,
+    FieldsetModule,
   ],
   providers: [ ConfirmationService ]
 })
