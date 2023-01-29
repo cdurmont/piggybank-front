@@ -60,6 +60,11 @@ export class AccountService {
     return this.httpClient.get(`${serviceUrl}/${account.id}/balance`);
   }
 
+  getStats(instanceId: number, account: IAccount): Observable<any> {
+    const serviceUrl: string = this.getServiceUrl(instanceId);
+    return this.httpClient.get(`${serviceUrl}/${account.id}/stats`);
+  }
+
   delete(instanceId: number, account: IAccount): Observable<{}> {
     const serviceUrl: string = this.getServiceUrl(instanceId);
     return this.httpClient.delete(`${serviceUrl}/${account.id}`);

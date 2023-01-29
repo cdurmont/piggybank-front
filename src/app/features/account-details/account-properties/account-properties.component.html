@@ -2,40 +2,67 @@
 <p *ngIf="createMode">Créer un compte</p>
 
 <form (ngSubmit)="save()">
-  <div class="p-fluid">
-    <div class="p-field p-col-12 p-md-4">
+
+  <p-dialog header="Choisir une couleur pour ce compte" [(visible)]="displayColors">
+    <div class="flex flex-wrap">
+      <div class="flex-auto align-items-center justify-content-center bg-{{color}}-100 border-round" style="width:2.5rem;height:2.5rem" (click)="selectColor(color)" *ngFor="let color of colors">    </div>
+    </div>
+  </p-dialog>
+  <p-dialog header="Choisir une icône pour ce compte" [(visible)]="displayIcons">
+    <div class="flex flex-wrap">
+      <div class="flex-auto align-items-center justify-content-center bg-{{selectedColor}}-100 border-round" style="width:2.5rem;height:2.5rem" (click)="selectIcon(icon)" *ngFor="let icon of icons">
+        <i class="{{icon}} text-{{selectedColor}}-500 text-xl"></i>
+      </div>
+    </div>
+  </p-dialog>
+
+<div class="flex block justify-content-center">
+  <div class="flex flex-column max-w-full min-w-full bg-gray-100 md:max-w-30rem md:align-self-center md:min-w-min">
+    <div class="flex m-3">
+      <div class="field flex-1">
         <span class="p-float-label">
           <input id="name" name="name" type="text" pInputText [(ngModel)]="account.name" required>
           <label for="name">Nom du compte*</label>
         </span>
+      </div>
+      <div class="flex flex-shrink-0 align-items-center justify-content-center bg-{{selectedColor}}-100 border-round" style="width:2.5rem;height:2.5rem" (click)="showColors()"></div>&nbsp;
+      <div class="flex flex-shrink-0 align-items-center justify-content-center bg-{{selectedColor}}-100 border-round" style="width:2.5rem;height:2.5rem" (click)="showIcons()">
+        <i class="{{selectedIcon}} text-{{selectedColor}}-500 text-xl"></i>
+      </div>
+
     </div>
-    <div class="p-field p-col-12 p-md-4">
+    <div class="flex m-3">
         <span class="p-float-label">
           <input id="iban" name="iban" type="text" pInputText [(ngModel)]="account.iban" required>
           <label for="iban">IBAN</label>
         </span>
     </div>
-    <div class="p-field p-col-12 p-md-4">
+    <div class="flex m-3">
         <span class="p-float-label">
           <input id="ref" name="ref" type="text" pInputText [(ngModel)]="account.externalRef" required>
           <label for="ref">Référence externe</label>
         </span>
     </div>
-    <div class="p-field p-col-12 p-md-4">
+    <div class="flex m-3">
       <app-account-selector label="Compte parent" (onAccountSelect)="setParent($event)" [account]="account.parent"></app-account-selector>
     </div>
-    <div class="p-field p-col-12 p-md-4">
+    <div class="flex m-3">
       <p-inputSwitch id="revert" name="revert" [(ngModel)]="account.colorRevert"></p-inputSwitch><label for="revert">Inverser les couleurs des soldes</label>
     </div>
-    <div class="p-field p-col-12 p-md-4">
+    <div class="flex m-3">
       <p-inputSwitch id="reconcile" name="reconcile" [(ngModel)]="account.reconcilable"></p-inputSwitch><label for="reconcile">Autoriser le rapprochement pour ce compte</label>
     </div>
 
-    <div class="p-col-12 p-grid p-md-4">
-      <p-button type="button" icon="pi pi-trash" label="Supprimer" (click)="delete()" class="p-sm-12 p-xl-4" styleClass="p-button-danger"></p-button>
-      <p-button type="button" icon="pi pi-undo" label="Annuler" (click)="cancel()" class="p-sm-12 p-xl-4"></p-button>
-      <p-button type="submit" icon="pi pi-check-square" label="Valider" class="p-sm-12 p-xl-4"></p-button>
-    </div>
   </div>
+</div>
+
+
+
+  <div class="flex">
+    <p-button type="button" icon="pi pi-trash" label="Supprimer" (click)="delete()" class="flex-1 sm:col-12 xl:col-4" styleClass="p-button-danger"></p-button>
+    <p-button type="button" icon="pi pi-undo" label="Annuler" (click)="cancel()" class="flex-1 sm:col-12 xl:col-4"></p-button>
+    <p-button type="submit" icon="pi pi-check-square" label="Valider" class="flex-1 sm:col-12 xl:col-4"></p-button>
+  </div>
+
 </form>
 <p-confirmDialog></p-confirmDialog>

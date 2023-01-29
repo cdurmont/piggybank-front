@@ -31,21 +31,12 @@ export class AccountsComponent implements OnInit {
               ) { }
 
   async ngOnInit() {
-    this.accountService.readTree(1).subscribe(value => {
-      this.accounts = value
-        .filter(account => {
-          return (account.type != 'I')
-        })
-        .map<TreeNode>(account => {
-          let tn: TreeNode = {data: account, leaf: account.subAccounts == null, label: account.name, key: account.id};
-          return tn;
-        });
-
-    }, error => {
-      this.messageService.add({severity: 'error', summary: "Erreur à la récupération des comptes", data: error});
-      console.error('Error reading accounts : ' + JSON.stringify(error));
-    });
+    this.loadAllAccounts();
     // quick inputs
+    await this.loadQuickInputs();
+  }
+
+  private async loadQuickInputs() {
     const loggedIn: boolean = await this.keycloakService.isLoggedIn();
     if (loggedIn) {
       this.userProfile = await this.keycloakService.loadUserProfile();
@@ -63,12 +54,28 @@ export class AccountsComponent implements OnInit {
               });
           })
 
-        }
-        else {
+        } else {
           console.error("users found : " + JSON.stringify(users));
         }
       });
     }
+  }
+
+  protected loadAllAccounts() {
+    this.accountService.readTree(1).subscribe(value => {
+      this.accounts = value
+        .filter(account => {
+          return (account.type != 'I')
+        })
+        .map<TreeNode>(account => {
+          let tn: TreeNode = {data: account, leaf: account.subAccounts == null, label: account.name, key: account.id};
+          return tn;
+        });
+
+    }, error => {
+      this.messageService.add({severity: 'error', summary: "Erreur à la récupération des comptes", data: error});
+      console.error('Error reading accounts : ' + JSON.stringify(error));
+    });
   }
 
   onNodeExpand(event: {node:TreeNode}) {

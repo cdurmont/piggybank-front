@@ -12,6 +12,9 @@ export class BalanceComponent implements OnInit {
 
   @Input()
   public account: IAccount = {};
+
+  @Input()
+  public raw:boolean = false;
   balance:number = 0;
   className:string = '';
 

@@ -1,0 +1,163 @@
+<p-menu #menu [popup]="true" [model]="mainMenuContent"></p-menu>
+<p-menu #userMenu [popup]="true" [model]="userMenuContent"></p-menu>
+<div class="flex justify-content-between toolbar">
+    <button type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)"></button>
+    <p-button icon="pi pi-home" pTooltip="Accueil" (click)="changePage('accueil')"></p-button>
+    <p-button icon="pi pi-sign-out" pTooltip="Ajouter une dépense" (click)="changePage('depense')"></p-button>
+    <p-button icon="pi pi-sign-in" pTooltip="Ajouter une entrée d'argent"></p-button>
+    <p-button icon="pi pi-user" (click)="userMenu.toggle($event)" pTooltip="Mon compte"></p-button>
+</div>
+
+<p-accordion *ngIf="pageMaquette == 'accueil'">
+
+<p-accordionTab header="Budgets dépense" [selected]="true">
+  <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+    <div class="grid">
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Alimentation/courant</span>
+              <div class="font-medium text-xl good">1 176,74€</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+              <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+            </div>
+          </div>
+          <span class="font-medium good">+700,00€</span><span class="text-500">/</span><span class="font-medium bad">-517,34€</span>
+          <span class="text-500"> ce mois-ci</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Assurances</span>
+              <div class="font-medium text-xl good">349,56€</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-orange-100 border-round" style="width:2.5rem;height:2.5rem">
+              <i class="pi pi-shield text-orange-500 text-xl"></i>
+            </div>
+          </div>
+          <span class="font-medium good">+150,00€</span><span class="text-500">/</span><span class="font-medium bad">-16,80€</span>
+          <span class="text-500"> ce mois-ci</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Communication</span>
+              <div class="font-medium text-xl bad">8,61€</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width:2.5rem;height:2.5rem">
+              <i class="pi pi-phone text-cyan-500 text-xl"></i>
+            </div>
+          </div>
+          <span class="font-medium good">+100,00€</span><span class="text-500">/</span><span class="font-medium bad">-112,27€</span>
+          <span class="text-500"> ce mois-ci</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Crédit</span>
+              <div class="font-medium text-xl good">0,00€</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-purple-100 border-round" style="width:2.5rem;height:2.5rem">
+              <i class="pi pi-home text-purple-500 text-xl"></i>
+            </div>
+          </div>
+          <span class="font-medium good">+1600,00€</span><span class="text-500">/</span><span class="font-medium bad">-1600,00€</span>
+          <span class="text-500"> ce mois-ci</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</p-accordionTab>
+<p-accordionTab header="Actifs">
+  <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+    <div class="grid">
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Comptes courants</span>
+              <div class="font-medium text-xl good">64 709,58€</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+              <i class="pi pi-credit-card text-blue-500 text-xl"></i>
+            </div>
+          </div>
+          <span class="font-medium good">+700,00€</span><span class="text-500">/</span><span class="font-medium bad">-517,34€</span>
+          <span class="text-500"> ce mois-ci</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Comptes d'épargne</span>
+              <div class="font-medium text-xl good">58 203,04€</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-orange-100 border-round" style="width:2.5rem;height:2.5rem">
+              <i class="pi pi-database text-orange-500 text-xl"></i>
+            </div>
+          </div>
+          <span class="font-medium good">+150,00€</span><span class="text-500">/</span><span class="font-medium bad">-16,80€</span>
+          <span class="text-500"> ce mois-ci</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Liquide</span>
+              <div class="font-medium text-xl bad">365,99€</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width:2.5rem;height:2.5rem">
+              <i class="pi pi-wallet text-cyan-500 text-xl"></i>
+            </div>
+          </div>
+          <span class="font-medium good">+100,00€</span><span class="text-500">/</span><span class="font-medium bad">-112,27€</span>
+          <span class="text-500"> ce mois-ci</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</p-accordionTab>
+</p-accordion>
+
+<div *ngIf="pageMaquette == 'depense'">
+
+  <h5>Nouvelle dépense</h5>
+  <div class="grid p-fluid">
+    <div class="col-12">
+      <p-calendar placeholder="Date du paiement"></p-calendar>
+    </div>
+    <div class="col-12">
+      <p-dropdown placeholder="Moyen de paiement"></p-dropdown>
+    </div>
+    <div class="col-12">
+      <p-dropdown placeholder="Budget"></p-dropdown>
+    </div>
+    <div class="col-12">
+      <input type="number" pInputText placeholder="Montant">
+    </div>
+  </div>
+
+  <div class="p-grid p-fluid">
+    <div class="col-12 md:col-6">
+      <button pButton type="button" icon="pi pi-undo" label="Annuler" ></button>
+    </div>
+    <div class="col-12 md:col-6">
+      <button pButton type="button" icon="pi pi-check-square" label="Valider" ></button>
+    </div>
+
+
+  </div>
+
+</div>

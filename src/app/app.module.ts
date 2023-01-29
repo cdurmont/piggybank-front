@@ -21,6 +21,8 @@ import { environment } from '../environments/environment';
 import {initializeKeycloak} from "./init/keycloak-init.factory";
 import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 import {ConfigInitService} from "./init/config-init.service";
+import { MaquetteComponent } from './maquette/maquette.component';
+import { HomeComponent } from './features/home/home.component';
 
 @NgModule({
     declarations: [
@@ -29,6 +31,8 @@ import {ConfigInitService} from "./init/config-init.service";
         AccountsComponent,
         PreferencesComponent,
         QuickinputsComponent,
+        MaquetteComponent,
+        HomeComponent,
     ],
     imports: [
         BrowserModule,

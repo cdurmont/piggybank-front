@@ -18,52 +18,52 @@
 <div *ngIf="subAccounts.length==0">
   <p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
   <p-button *ngIf="showMoreLines()" (click)="loadMoreLines()">Afficher les {{PAGE_SIZE}} lignes précédentes</p-button>
-  <div class="p-grid p-fluid">
-    <div class="p-d-none p-d-md-block p-md-2"><p-checkbox title="Tout sélectionner" [binary]="true" *ngIf="account.reconcilable && user.admin" (onChange)="onSelectAll($event)" [(ngModel)]="selectAll"></p-checkbox>Date</div>
-    <div class="p-d-none p-d-md-block p-md-2">Référence</div>
-    <div class="p-col-4 p-md-3">Description</div>
-    <div class="p-col-3 p-md-2">Compte</div>
-    <div class="amount p-d-none p-d-md-block p-md-1">Débit</div>
-    <div class="amount p-d-none p-d-md-block p-md-1">Crédit</div>
-    <div class="amount p-d-block p-col-2 p-d-md-none">+/-</div>
-    <div class="amount p-col-3 p-md-1">Solde</div>
+  <div class="grid p-fluid">
+    <div class="hidden md:block md:col-2"><p-checkbox title="Tout sélectionner" [binary]="true" *ngIf="account.reconcilable && user.admin" (onChange)="onSelectAll($event)" [(ngModel)]="selectAll"></p-checkbox>Date</div>
+    <div class="hidden md:block md:col-2">Référence</div>
+    <div class="col-4 md:col-3">Description</div>
+    <div class="col-3 md:col-2">Compte</div>
+    <div class="amount hidden md:block md:col-1">Débit</div>
+    <div class="amount hidden md:block md:col-1">Crédit</div>
+    <div class="amount block col-2 md:hidden">+/-</div>
+    <div class="amount col-3 md:col-1">Solde</div>
   </div>
   <div *ngFor="let entry of entries" class="ecritures">
-    <div class="p-grid p-fluid" (contextmenu)="openContextMenu(entry);cm.show($event)">
-      <div class="p-d-none p-d-md-block p-md-2">
+    <div class="grid p-fluid" (contextmenu)="openContextMenu(entry);cm.show($event)">
+      <div class="hidden md:block md:col-2">
         <p-checkbox title="Sélectionner" [binary]="true" [(ngModel)]="entry.transaction.selected" *ngIf="account.reconcilable"></p-checkbox>
         <button type="button" pButton (click)="toggleExpand(entry)"
                 class="p-button-text p-button-rounded p-button-plain" [icon]="isExpanded(entry) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" style="float:left"></button>
         <span>{{entry.date | date : 'shortDate' }}</span>
       </div>
-      <div class="p-d-none p-d-md-block p-md-2">{{entry.reference}}</div>
-      <div class="p-col-4 p-md-3">{{entry.transaction.description}}</div>
-      <div class="p-col-3 p-md-2">
+      <div class="hidden md:block md:col-2">{{entry.reference}}</div>
+      <div class="col-4 md:col-3">{{entry.transaction.description}}</div>
+      <div class="col-3 md:col-2">
         <!--
         {{entry.contreparties && entry.contreparties.length>0 && entry.contreparties.length<3 ? entry.contreparties[0].account.name : ''}}
         {{entry.contreparties && entry.contreparties.length>1 && entry.contreparties.length>=3 ? 'Transaction répartie' : ''}}
         -->
         {{entry.contrepartieAccountName}}
       </div>
-      <div class="amount p-d-none p-d-md-block p-md-1"><span *ngIf="entry.debit || entry.debit != 0">  {{entry.debit | currency : 'EUR'}}</span></div>
-      <div class="amount p-d-none p-d-md-block p-md-1">
+      <div class="amount hidden md:block md:col-1"><span *ngIf="entry.debit || entry.debit != 0">  {{entry.debit | currency : 'EUR'}}</span></div>
+      <div class="amount hidden md:block md:col-1">
         <span *ngIf="entry.credit || entry.credit != 0">{{entry.credit | currency: 'EUR'}}</span>
       </div>
-      <div class="amount p-d-block p-col-2 p-d-md-none">{{creditDebit(entry) | currency: 'EUR'}}
+      <div class="amount block col-2 md:hidden">{{creditDebit(entry) | currency: 'EUR'}}
       </div>
-      <div class="amount p-col-3 p-md-1">{{entry.balance | currency: 'EUR'}}</div>
+      <div class="amount col-3 md:col-1">{{entry.balance | currency: 'EUR'}}</div>
 
     </div>
     <div *ngIf="isExpanded(entry)" class="contrepartie">
-      <div *ngFor="let ctp of entry.transaction.entries" class="p-grid p-fluid">
-        <div class="p-col-12 p-col-6 p-md-2">
+      <div *ngFor="let ctp of entry.transaction.entries" class="grid p-fluid">
+        <div class="col-12 col-6 md:col-2">
         </div>
-        <div class="p-col-12 p-col-6 p-md-2">{{ctp.reference}}</div>
-        <div class="p-col-12 p-col-6 p-md-3">{{ctp.description}}</div>
-        <div class="p-col-12 p-col-6 p-md-2">{{ctp.account.name}}</div>
-        <div class="amount p-col-12 p-col-6 p-md-1"><span *ngIf="ctp.debit || ctp.debit != 0">{{ctp.debit | currency: 'EUR'}}</span></div>
-        <div class="amount p-col-12 p-col-6 p-md-1"><span *ngIf="ctp.credit || ctp.credit != 0">{{ctp.credit | currency: 'EUR'}}</span></div>
-        <div class="amount p-col-12 p-col-6 p-md-1"></div>
+        <div class="col-12 col-6 md:col-2">{{ctp.reference}}</div>
+        <div class="col-12 col-6 md:col-3">{{ctp.description}}</div>
+        <div class="col-12 col-6 md:col-2">{{ctp.account.name}}</div>
+        <div class="amount col-12 col-6 md:col-1"><span *ngIf="ctp.debit || ctp.debit != 0">{{ctp.debit | currency: 'EUR'}}</span></div>
+        <div class="amount col-12 col-6 md:col-1"><span *ngIf="ctp.credit || ctp.credit != 0">{{ctp.credit | currency: 'EUR'}}</span></div>
+        <div class="amount col-12 col-6 md:col-1"></div>
       </div>
     </div>
   </div>

@@ -1,0 +1,29 @@
+.good {
+  color: #007600;
+}
+
+.bad {
+  color: #760000;
+}
+
+
+.toolbar {
+  background-color: #3F51B5;
+  color: white;
+}
+.toolbar .title {
+  vertical-align: top;
+  margin: 0.714rem;
+  text-decoration: none;
+  color:white;
+}
+
+.footer{
+  color: lightslategrey;
+  text-align: right;
+  font-size: small;
+}
+
+.mainContent {
+  padding: 8px;
+}

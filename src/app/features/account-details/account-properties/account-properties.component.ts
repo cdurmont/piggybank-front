@@ -3,7 +3,7 @@ import IAccount from "../../../shared/models/IAccount";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {AccountService} from "../../../core/services/account.service";
-import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeIcons} from "primeng/api";
 
 @Component({
   selector: 'app-account-properties',
@@ -15,6 +15,17 @@ export class AccountPropertiesComponent implements OnInit {
   account: IAccount = {type: 'U', parent: {}};
   createMode: boolean = true;
 
+  displayColors: boolean =false;
+  displayIcons: boolean =false;
+
+  colors: string[] = ['black-alpha', 'blue', 'bluegray', 'cyan', 'gray', 'green', 'indigo', 'orange', 'pink', 'primary',
+    'purple', 'red', 'teal', 'white-alpha', 'yellow'];
+
+  icons: string[] =[];
+
+  selectedColor: string = 'blue';
+  selectedIcon: string = 'pi pi-shopping-cart';
+
   constructor(private route: ActivatedRoute,
               private accountService: AccountService,
               private messageService: MessageService,
@@ -25,6 +36,11 @@ export class AccountPropertiesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    for (const iconProp in PrimeIcons) {
+      // @ts-ignore
+      this.icons.push(PrimeIcons[iconProp]);
+    }
     let id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.accountService.read(1, {id: id}).subscribe(
@@ -32,6 +48,8 @@ export class AccountPropertiesComponent implements OnInit {
           if (value && value.length == 1) {
             this.account = value[0];
             this.createMode = false;
+            this.selectedColor = this.account.color ? this.account.color : 'blue';
+            this.selectedIcon = this.account.icon ? this.account.icon : 'pi pi-tag';
           }
         },
         error => {
@@ -42,6 +60,8 @@ export class AccountPropertiesComponent implements OnInit {
   }
 
   save(): void {
+    this.account.color = this.selectedColor;
+    this.account.icon = this.selectedIcon;
     if (this.createMode)
       this.accountService.create(1, this.account).subscribe(
         () => {
@@ -97,5 +117,22 @@ export class AccountPropertiesComponent implements OnInit {
 
   setParent(parent: IAccount | undefined): void {
     this.account.parent = parent;
+  }
+
+  showColors() {
+    this.displayColors = !this.displayColors;
+  }
+  showIcons() {
+    this.displayIcons = !this.displayIcons;
+  }
+
+  selectColor(color: string) {
+    this.selectedColor = color;
+    this.displayColors = false;
+  }
+
+  selectIcon(icon: string) {
+    this.selectedIcon = icon;
+    this.displayIcons = false;
   }
 }

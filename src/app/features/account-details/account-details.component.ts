@@ -86,7 +86,7 @@ export class AccountDetailsComponent implements OnInit {
       // sub-accounts
       this.accountService.read(1, {parent: {id: id}}).subscribe(
         value => {
-          this.subAccounts = value
+          this.subAccounts = value;
         },
         error => {
           this.messageService.add({severity: 'error', summary: "Erreur de lecture des sous-comptes", data: error})

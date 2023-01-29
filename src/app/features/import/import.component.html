@@ -1,42 +1,42 @@
 
 <div *ngIf="importedTransactions.length > 0">
   <p>{{importedTransactions.length}} transactions à importer</p>
-  <div class="p-grid p-col-12 p-fluid" *ngFor="let txn of importedTransactions">
+  <div class="grid col-12 p-fluid" *ngFor="let txn of importedTransactions">
     <ng-container *ngIf=" txn && txn.entries && txn.entries.length>1">
-      <div class="p-col-2 p-grid">
-        <p-checkbox class="p-col-3" [binary]="true" [(ngModel)]="txn.selected"></p-checkbox>
-        <p-calendar class="p-col-9" disabled="disabled" [(ngModel)]="txn.entries[0].date" dateFormat="dd/mm/yy"></p-calendar> </div>
-      <div class="p-col-2">
+      <div class="col-2 grid">
+        <p-checkbox class="col-3" [binary]="true" [(ngModel)]="txn.selected"></p-checkbox>
+        <p-calendar class="col-9" disabled="disabled" [(ngModel)]="txn.entries[0].date" dateFormat="dd/mm/yy"></p-calendar> </div>
+      <div class="col-2">
         <div class="p-inputgroup">
           <input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].reference">
           <p-button (click)="showDialogAssign(txn)"><i class="pi pi-link"></i></p-button>
           <p-dialog title="Assigner un compte automatiquement" [(visible)]="txn.assignDialogVisible">
-            <div class="p-grid">
-              <input pInputText placeholder="Regex" class="p-col-12" [(ngModel)]="association.regex">
-              <div class="p-col-12"><app-account-selector [account]="association.account" (onAccountSelect)="accountSelectedAssoc($event)"></app-account-selector> </div>
-              <p-button class="p-col-6" (click)="cancelAssign()">Annuler</p-button>
-              <p-button class="p-col-6" (click)="saveAssign()">Associer</p-button>
+            <div class="grid">
+              <input pInputText placeholder="Regex" class="col-12" [(ngModel)]="association.regex">
+              <div class="col-12"><app-account-selector [account]="association.account" (onAccountSelect)="accountSelectedAssoc($event)"></app-account-selector> </div>
+              <p-button class="col-6" (click)="cancelAssign()">Annuler</p-button>
+              <p-button class="col-6" (click)="saveAssign()">Associer</p-button>
             </div>
           </p-dialog>
         </div>
       </div>
-      <div class="p-col-3">
+      <div class="col-3">
           <input pInputText [(ngModel)]="txn.description">
       </div>
-      <div class="p-col-3"><app-account-selector [account]="txn.entries[1].account" (onAccountSelect)="accountSelectedTxn($event,txn)"></app-account-selector> </div>
-      <div class="p-col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].debit"></div>
-      <div class="p-col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].credit"></div>
+      <div class="col-3"><app-account-selector [account]="txn.entries[1].account" (onAccountSelect)="accountSelectedTxn($event,txn)"></app-account-selector> </div>
+      <div class="col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].debit"></div>
+      <div class="col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].credit"></div>
     </ng-container>
   </div>
   <button pButton type="button" label="Importer les transactions complétées" (click)="importTransactions()"></button>
 </div>
 
 <p-fieldset legend="Import fichier bancaire QIF (Quicken/Money)">
-  <div class="p-grid">
-    <div class="p-col-6">
+  <div class="grid">
+    <div class="col-6">
       <p>Compte de destination</p>
       <app-account-selector [account]="importAccount" (onAccountSelect)="accountSelectedImport($event)"></app-account-selector>
     </div>
-    <p-fileUpload class="p-col-6" url="../api-v2/1/imports/qif" name="qif" (onBeforeUpload)="beforeUpload($event)" (onUpload)="fileUploaded()"></p-fileUpload>
+    <p-fileUpload class="col-6" url="../api-v2/1/imports/qif" name="qif" (onBeforeUpload)="beforeUpload($event)" (onUpload)="fileUploaded()"></p-fileUpload>
   </div>
 </p-fieldset>

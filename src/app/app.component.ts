@@ -5,7 +5,8 @@ import {LoginService} from "./core/services/login.service";
 import {MenuItem, MessageService} from "primeng/api";
 import {AccountService} from "./core/services/account.service";
 import {KeycloakService} from "keycloak-angular";
-import {KeycloakProfile} from "keycloak-js";
+import Keycloak, {KeycloakProfile} from "keycloak-js";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -17,28 +18,32 @@ export class AppComponent implements OnInit {
   version = '';
   user: IUser | undefined;
 
-  userMenuContent: MenuItem[] = [ {label: 'Préférences', routerLink: ['/preferences']},
+  userMenuContent: MenuItem[] = [ {label: 'Mon Profil'},
+                                  {label: 'Mes paramètres', routerLink: ['/preferences']},
                                   {label: 'Mes saisies rapides', routerLink: ['/quickInputs']},
                                   {label: 'Déconnexion', command: () => { this.logout() }}];
 
   mainMenuContent: MenuItem[] = [
-    {label: 'Comptes', routerLink: ['/']},
+    {label: 'Accueil', routerLink: ['/']},
+    {label: 'Tous les comptes', routerLink: ['/allAccounts']},
     {label: 'Transactions récurrentes', routerLink: ['/transactions/recurring']},
     {label: 'Import', routerLink: ['/import']},
   ];
 
   loggedIn: boolean = false;
   userProfile: KeycloakProfile | null = null;
+  profileUrl: string = '';
+  maquette: boolean = false;
 
-
-
-  constructor(private versionService: VersionService,
+  constructor(private router: Router,
+              private versionService: VersionService,
               private accountService: AccountService,
               private loginService: LoginService,
               private readonly keycloakService: KeycloakService) {
   }
 
   async ngOnInit() {
+
     this.loginService.getUser().subscribe(value => {
       this.user = value
     });
@@ -47,6 +52,9 @@ export class AppComponent implements OnInit {
     });
 
     this.loggedIn = await this.keycloakService.isLoggedIn();
+    let kc: Keycloak = this.keycloakService.getKeycloakInstance();
+    this.profileUrl = `${kc.authServerUrl}/realms/${kc.realm}/account/`;
+    this.userMenuContent[0].url = this.profileUrl;
 
     if (this.loggedIn) {
       this.userProfile = await this.keycloakService.loadUserProfile();

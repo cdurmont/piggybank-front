@@ -1,0 +1,46 @@
+<p-accordion>
+
+  <p-accordionTab header="Budgets dépense" [selected]="true">
+    <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+      <div class="grid">
+        <div class="col-12 md:col-6 lg:col-3" *ngFor="let account of expenseAccounts" routerLink="/accounts/details/{{account.id}}">
+          <div class="surface-card shadow-2 p-3 border-round">
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-medium mb-3">{{account.name}}</span>
+                <div class="font-medium text-xl"><app-balance [account]="account" [raw]="true"></app-balance></div>
+              </div>
+              <div class="flex align-items-center justify-content-center bg-{{account.color}}-100 border-round" style="width:2.5rem;height:2.5rem">
+                <i class="{{account.icon}} text-{{account.color}}-500 text-xl"></i>
+              </div>
+            </div>
+            <span class="font-medium good">{{currentStats(account).credit | currency: 'EUR'}}</span><span class="text-500">/</span><span class="font-medium bad">{{currentStats(account).debit | currency: 'EUR'}}</span>
+            <span class="text-500"> ce mois-ci</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-accordionTab>
+  <p-accordionTab header="Actifs">
+    <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+      <div class="grid">
+        <div class="col-12 md:col-6 lg:col-3" *ngFor="let account of assetAccounts" routerLink="/accounts/details/{{account.id}}">
+          <div class="surface-card shadow-2 p-3 border-round">
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-medium mb-3">{{account.name}}</span>
+                <div class="font-medium text-xl"><app-balance [account]="account" [raw]="true"></app-balance></div>
+              </div>
+              <div class="flex align-items-center justify-content-center bg-{{account.color}}-100 border-round" style="width:2.5rem;height:2.5rem">
+                <i class="{{account.icon}} text-{{account.color}}-500 text-xl"></i>
+              </div>
+            </div>
+            <span class="font-medium good">{{currentStats(account).debit | currency: 'EUR'}}</span><span class="text-500">/</span><span class="font-medium bad">{{currentStats(account).credit | currency: 'EUR'}}</span>
+            <span class="text-500"> ce mois-ci</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </p-accordionTab>
+</p-accordion>

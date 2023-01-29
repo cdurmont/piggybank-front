@@ -45,7 +45,7 @@ export class AccountSelectorComponent extends AccountsComponent {
   }
 
   async ngOnInit() {
-    await super.ngOnInit();
+    //await super.ngOnInit();
     if (!this._account)
       this._account = {};
     this.onAccountSelect.emit(this._account);
@@ -66,6 +66,8 @@ export class AccountSelectorComponent extends AccountsComponent {
   }
 
   show(): void {
+    if (this.accounts.length == 0)
+      super.loadAllAccounts();
     this.visible = true;
   }
 

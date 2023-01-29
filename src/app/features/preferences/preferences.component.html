@@ -1,27 +1,7 @@
-<p>Paramètres utilisateur</p>
+<h2>Paramètres utilisateur</h2>
+<h3>Moyens de paiement</h3>
 
-<form (ngSubmit)="save()">
-  <div class="p-fluid">
-    <div class="p-field p-col-12 p-md-4">
-        <span class="p-float-label">
-            <input id="login" name="login" type="text" pInputText [(ngModel)]="user.login" required>
-            <label for="login">Identifiant</label>
-        </span>
-    </div>
-    <div class="p-field p-col-12 p-md-4">
-        <span class="p-float-label">
-          <input id="name" name="name" type="text" pInputText [(ngModel)]="user.name" required>
-          <label for="name">Nom</label>
-        </span>
-    </div>
-    <div class="p-field p-col-12 p-md-4">
-        <span class="p-float-label">
-          <input pPassword type="password" id="password" name="password" [(ngModel)]="user.hash">
-          <label for="password">Mot de passe</label>
-        </span>
-  </div>
-    <div class="p-field p-grid">
-      <p-button type="submit" icon="pi pi-check-square" label="Valider" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"></p-button>
-    </div>
-  </div>
+<form (ngSubmit)="savePM()">
+
+
 </form>

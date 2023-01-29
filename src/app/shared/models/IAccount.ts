@@ -1,3 +1,4 @@
+import IStat from "./IStat";
 
 
 interface IAccount {
@@ -12,7 +13,10 @@ interface IAccount {
     reconcilable?: boolean,
     createOrLink?: string,
     root?: boolean,
-    subAccounts?: IAccount[]
+    icon?: string,
+    color?: string,
+    subAccounts?: IAccount[],
+    stats?: IStat[]
 }
 
 export default IAccount;

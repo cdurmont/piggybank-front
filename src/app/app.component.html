@@ -1,5 +1,5 @@
 <div *ngIf="loggedIn">
-  <div class="p-d-flex p-jc-between toolbar">
+  <div class="p-d-flex p-jc-between toolbar" *ngIf="!maquette">
     <div class="p-d-flex p-jc-start">
       <button type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)"></button>
       <p-menu #menu [popup]="true" [model]="mainMenuContent"></p-menu>
@@ -26,7 +26,8 @@
   Connexion OpenID en cours...
 </div>
 
+
 <p-toast></p-toast>
 <p class="footer">PiggyBank API {{version}}</p>
-<p class="footer">App v2.0</p>
+<p class="footer">App v2.1.0</p>
 
