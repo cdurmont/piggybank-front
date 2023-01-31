@@ -11,8 +11,11 @@ import IStat from "../../shared/models/IStat";
 })
 export class HomeComponent implements OnInit {
 
+  TOLERANCE_PERCENT: number = 10;
+
   expenseAccounts: IAccount[] = [];
   assetAccounts: IAccount[] = [];
+  showMonth: number = -1;
 
   constructor(private accountService: AccountService,
               private messageService: MessageService,
@@ -57,19 +60,43 @@ export class HomeComponent implements OnInit {
   }
 
   currentStats(account: IAccount) : IStat {
-    let statNow:IStat = {};
     let now:Date = new Date();
+    now.setMonth(now.getMonth() + this.showMonth,1);  // show current/previous/any month
+
+    return this.statOfDate(account, now);
+  }
+
+  statOfDate(account: IAccount, statDate: Date) : IStat {
+    let statNow:IStat = {};
     if (account && account.stats)
       account.stats.forEach(stat => {
-        if (stat.year == now.getFullYear() && stat.month == now.getMonth()+1)
+        if (stat.year == statDate.getFullYear() && stat.month == statDate.getMonth()+1)
           statNow = stat;
       });
     if (!statNow.credit)
       statNow.credit = 0;
     if (!statNow.debit)
       statNow.debit = 0;
-
+    console.log(`stat de ${statDate.getMonth()+1}/${statDate.getFullYear()} : ${JSON.stringify(statNow)}`);
     return statNow;
   }
 
+  tendency(account: IAccount) : string {
+    let retour: string = '-';
+    const current: IStat = this.currentStats(account);
+    let previousMonth:Date = new Date();
+    previousMonth.setMonth(previousMonth.getMonth() + this.showMonth -1,1 );
+    const previous: IStat = this.statOfDate(account, previousMonth);
+    // @ts-ignore
+    const currentBalance:number = current.credit - current.debit;
+    // @ts-ignore
+    const previousBalance:number = previous.credit - previous.debit;
+    const tolerance:number = Math.abs(previousBalance * this.TOLERANCE_PERCENT / 100) ;
+    if (currentBalance > previousBalance + tolerance)
+      retour = '^';
+    if (currentBalance < previousBalance - tolerance)
+      retour = 'v';
+    //console.log(`compte ${account.name} balance m:${currentBalance}, balance m-1:${previousBalance}, tolerance:${tolerance}, tendance:${retour}`);
+    return retour;
+  }
 }

@@ -15,7 +15,10 @@
               </div>
             </div>
             <span class="font-medium good">{{currentStats(account).credit | currency: 'EUR'}}</span><span class="text-500">/</span><span class="font-medium bad">{{currentStats(account).debit | currency: 'EUR'}}</span>
-            <span class="text-500"> ce mois-ci</span>
+            <span class="text-500"> le mois dernier&nbsp;</span>
+            <span class="font-medium good" *ngIf="tendency(account) == '^'"><i class="pi pi-arrow-up-right"></i></span>
+            <span class="font-medium " *ngIf="tendency(account) == '-'"><i class="pi pi-minus"></i></span>
+            <span class="font-medium bad" *ngIf="tendency(account) == 'v'"><i class="pi pi-arrow-down-right"></i></span>
           </div>
         </div>
       </div>
@@ -36,7 +39,10 @@
               </div>
             </div>
             <span class="font-medium good">{{currentStats(account).debit | currency: 'EUR'}}</span><span class="text-500">/</span><span class="font-medium bad">{{currentStats(account).credit | currency: 'EUR'}}</span>
-            <span class="text-500"> ce mois-ci</span>
+            <span class="text-500"> le mois dernier&nbsp;</span>
+            <span class="font-medium good" *ngIf="tendency(account) == '^'"><i class="pi pi-arrow-up-right"></i></span>
+            <span class="font-medium " *ngIf="tendency(account) == '-'"><i class="pi pi-minus"></i></span>
+            <span class="font-medium bad" *ngIf="tendency(account) == 'v'"><i class="pi pi-arrow-down-right"></i></span>
           </div>
         </div>
 
