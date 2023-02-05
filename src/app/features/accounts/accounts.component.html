@@ -1,6 +1,6 @@
 <p-tree [value]="accounts" (onNodeExpand)="onNodeExpand($event)">
   <ng-template let-rowNode pTemplate="default">
-    <p-card routerLink="accounts/details/{{rowNode.data.id}}">
+    <p-card routerLink="/accounts/details/{{rowNode.data.id}}">
       {{rowNode.data.name}}
       <div style="float:right">
         <app-balance [account]="rowNode.data"></app-balance>

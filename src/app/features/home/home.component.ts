@@ -77,7 +77,6 @@ export class HomeComponent implements OnInit {
       statNow.credit = 0;
     if (!statNow.debit)
       statNow.debit = 0;
-    console.log(`stat de ${statDate.getMonth()+1}/${statDate.getFullYear()} : ${JSON.stringify(statNow)}`);
     return statNow;
   }
 
