@@ -27,6 +27,7 @@ import {FieldsetModule} from 'primeng/fieldset';
 import {PanelModule} from "primeng/panel";
 import {AccordionModule} from "primeng/accordion";
 import {DropdownModule} from "primeng/dropdown";
+import {ChartModule} from "primeng/chart";
 
 @NgModule({
   declarations: [],
@@ -57,6 +58,7 @@ import {DropdownModule} from "primeng/dropdown";
     PanelModule,
     AccordionModule,
     DropdownModule,
+    ChartModule,
   ],
   exports: [
     InputTextModule,
@@ -84,6 +86,7 @@ import {DropdownModule} from "primeng/dropdown";
     PanelModule,
     AccordionModule,
     DropdownModule,
+    ChartModule,
   ],
   providers: [ ConfirmationService ]
 })

@@ -1,7 +1,22 @@
-<p>Compte :
-  <a routerLink="/accounts/properties/{{account.id}}" *ngIf="user.admin">{{account.name ? account.name : "(sans nom)"}}</a>
-  <span *ngIf="!user.admin">{{account.name}}</span>
-</p>
+<div class="flex accountTitle">
+  <div class="flex-none">
+    <div class="flex align-items-center justify-content-center bg-{{account.color}}-100 border-round" style="width:3rem;height:3rem">
+      <i class="{{account.icon}} text-{{account.color}}-500 text-2xl"></i>
+    </div>
+
+  </div>
+  <div class="flex-1 accountName">
+    <button pButton class="p-button-text text-2xl text-gray-500 " routerLink="/accounts/properties/{{account.id}}" *ngIf="user.admin">{{account.name ? account.name : "(sans nom)"}}</button>
+    <button pButton class="p-button-text text-2xl text-gray-500 " *ngIf="!user.admin">{{account.name ? account.name : "(sans nom)"}}</button>
+  </div>
+  <div class="flex-none">
+    <button pButton class="p-button-outlined " icon="pi pi-ellipsis-v" (click)="buildAndShowMenu($event)"></button>
+    <p-menu #menu [popup]="true" [model]="accountMenu"></p-menu>
+    <button pButton class="p-button-outlined " icon="pi pi-chart-line" routerLink="/accounts/stats/{{account.id}}"></button>
+  </div>
+</div>
+
+<p></p>
 <div *ngIf="subAccounts.length>0">
   {{subAccounts.length}} sous-compte(s):
 
@@ -69,8 +84,6 @@
   </div>
 </div>
 
-<p-button routerLink="/transactions/create/{{account.id}}" *ngIf="writeAllowed && subAccounts.length == 0">Saisir une écriture</p-button>&nbsp;
-<p-button routerLink="/accounts/create" *ngIf="user.admin">Créer un sous-compte</p-button>
 <span *ngIf="account.reconcilable">&nbsp;
   <p-button (click)="reconcile()">Rapprocher</p-button>&nbsp;
   <p-button *ngIf="user.admin" (click)="markReconciled(true)">Marqué comme rapproché</p-button>&nbsp;

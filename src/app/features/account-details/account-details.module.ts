@@ -6,12 +6,14 @@ import { AccountDetailsComponent } from './account-details.component';
 import { PrimeImportsModule } from "../../shared/prime-imports/prime-imports.module";
 import { AccountPropertiesComponent } from './account-properties/account-properties.component';
 import {SharedComponentsModule} from "../../shared/shared-components/shared-components.module";
+import { StatsComponent } from './stats/stats.component';
 
 
 @NgModule({
   declarations: [
     AccountDetailsComponent,
     AccountPropertiesComponent,
+    StatsComponent,
   ],
   exports: [
 

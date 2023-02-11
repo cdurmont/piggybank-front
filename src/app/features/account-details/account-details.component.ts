@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import IAccount from "../../shared/models/IAccount";
 import {AccountService} from "../../core/services/account.service";
@@ -13,6 +13,7 @@ import ITransaction from "../../shared/models/ITransaction";
 import {Entry} from "../../shared/business/Entry";
 import {KeycloakService} from "keycloak-angular";
 import {UserService} from "../../core/services/user.service";
+import {Menu} from "primeng/menu";
 
 @Component({
   selector: 'app-account-details',
@@ -39,6 +40,8 @@ export class AccountDetailsComponent implements OnInit {
   writeAllowed: boolean = false;
   showReconciled: boolean = false;
   selectAll: boolean = false;
+  accountMenu: MenuItem[] = [];
+  @ViewChild('menu', {static: false}) menu: Menu | undefined;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -333,5 +336,14 @@ export class AccountDetailsComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.keycloakService.isUserInRole("admin");
+  }
+
+  buildAndShowMenu(event: any) {
+    this.accountMenu = [];
+    if (this.writeAllowed && this.subAccounts.length == 0)
+      this.accountMenu.push({label: 'Saisir une écriture', routerLink: `/transactions/create/${this.account.id}`});
+    if (this.user.admin)
+      this.accountMenu.push({label: 'Créer un sous-compte', routerLink: '/accounts/create'});
+    this.menu?.toggle(event);
   }
 }

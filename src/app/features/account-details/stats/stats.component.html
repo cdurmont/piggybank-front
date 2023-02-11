@@ -1,0 +1,5 @@
+<p>Historique du compte {{account.name}}</p>
+
+
+<p-chart type="bar" [data]="chartData" [options]="chartOptions"></p-chart>
+<button pButton routerLink="/accounts/details/{{account.id}}">Retour au compte</button>
