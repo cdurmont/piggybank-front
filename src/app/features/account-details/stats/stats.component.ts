@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {AccountService} from "../../../core/services/account.service";
-import {UserService} from "../../../core/services/user.service";
-import {PermissionService} from "../../../core/services/permission.service";
-import {KeycloakService} from "keycloak-angular";
 import {MessageService} from "primeng/api";
 import IStat from "../../../shared/models/IStat";
 import IAccount from "../../../shared/models/IAccount";
@@ -18,9 +15,6 @@ export class StatsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private messageService: MessageService,
               private accountService: AccountService,
-              private userService: UserService,
-              private permissionService: PermissionService,
-              private keycloakService: KeycloakService
   ) {
   }
 
@@ -60,19 +54,21 @@ export class StatsComponent implements OnInit {
 
     this.route.params.subscribe(async value => {
       let id = value.id;
-      this.accountService.getStats(1, {id: id}).subscribe(
-        value => {
-          this.stats = value;
-          this.formatChartData(value);
-        },
-        error => {
-          this.messageService.add({severity: 'error', summary: "Erreur de lecture des stats du compte", data: error})
-        }
-      );
       this.accountService.read(1, {id: id}).subscribe(
-        value => {
-          if (value && value.length == 1)
-            this.account = value[0];
+        accounts => {
+          if (accounts && accounts.length == 1) {
+            this.account = accounts[0];
+            this.accountService.getStats(1, {id: id}).subscribe(
+              stats => {
+                this.stats = stats;
+                this.formatChartData(stats);
+              },
+              error => {
+                this.messageService.add({severity: 'error', summary: "Erreur de lecture des stats du compte", data: error})
+              }
+            );
+
+          }
         },
         error => {
           this.messageService.add({severity: 'error', summary: "Erreur de lecture des stats du compte", data: error})
@@ -82,6 +78,8 @@ export class StatsComponent implements OnInit {
     }
 
   private formatChartData(stats: IStat[]) {
+    const borderGood = '#007600', backgroundGood = 'rgba(0,118,0,0.2)';
+    const borderBad = '#760000', backgroundBad = 'rgba(118,0,0,0.2)';
     let chartData:any = {
       labels: [],
       datasets: [
@@ -96,16 +94,16 @@ export class StatsComponent implements OnInit {
           type: 'line',
           label: 'Débit',
           fill: true,
-          borderColor: '#007600',
-          backgroundColor: 'rgba(0,118,0,0.2)',
+          borderColor: this.account.colorRevert ? borderBad : borderGood,
+          backgroundColor: this.account.colorRevert ? backgroundBad : backgroundGood,
           data: []
         },
         {
           type: 'line',
           label: 'Crédit',
           fill: true,
-          borderColor: '#760000',
-          backgroundColor: 'rgba(118,0,0,0.2)',
+          borderColor: this.account.colorRevert ? borderGood : borderBad,
+          backgroundColor: this.account.colorRevert ? backgroundGood : backgroundBad,
           data: []
         }
       ]
@@ -113,8 +111,14 @@ export class StatsComponent implements OnInit {
     let solde:number = 0;
     stats.forEach(stat => {
       chartData.labels.push(`${stat.month}/${stat.year}`);
-      // @ts-ignore
-      solde += stat.credit - stat.debit;
+      if (this.account.colorRevert)
+        { // @ts-ignore
+          solde += stat.credit - stat.debit;
+        }
+      else
+        { // @ts-ignore
+          solde += stat.debit - stat.credit;
+        }
       chartData.datasets[0].data.push(solde);
       chartData.datasets[1].data.push(stat.debit);
       chartData.datasets[2].data.push(stat.credit);
