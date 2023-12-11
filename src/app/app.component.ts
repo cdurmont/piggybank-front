@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
     {label: 'Tous les comptes', routerLink: ['/allAccounts']},
     {label: 'Transactions récurrentes', routerLink: ['/transactions/recurring']},
     {label: 'Import', routerLink: ['/import']},
+    {label: 'Synchro bancaire', routerLink: ['/import/connections']},
   ];
 
   loggedIn: boolean = false;

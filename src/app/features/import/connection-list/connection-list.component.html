@@ -1,0 +1,32 @@
+<div class="flex buttonBar">
+  <div class="flex-1">
+  </div>
+  <div class="flex-none">
+    <button pButton class="p-button-outlined" icon="pi pi-sync" pTooltip="Actualiser" (click)="sync()"></button>
+    <button pButton class="p-button-outlined" icon="pi pi-plus" pTooltip="Ajouter une banque..." (click)="addConnection()"></button>
+  </div>
+</div>
+
+
+<div *ngFor="let conn of connections">
+  <div class="flex bankName" style="{{'background-color:' + conn.primaryColor}}">
+    <div class="flex-1">
+      {{conn.bankName}}
+    </div>
+    <div class="flex-none">
+      <button pButton icon="pi pi-trash" pTooltip="Déconnecter" (click)="deleteConnection(conn)"></button>
+    </div>
+  </div>
+  <div class="accounts">
+    <div *ngFor="let account of conn.accounts" class="grid p-fluid">
+      <div class="col-5 md:col-3">**** {{account.mask}}</div>
+      <div class="col-7 md:col-3">{{account.name}}</div>
+      <div class="col-12 md:col-4">
+        <app-account-selector [account]="account.piggyAccount!" (onAccountSelect)="setAccount(conn, account, $event)"></app-account-selector>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{syncedTransactions}}
+<p-confirmDialog></p-confirmDialog>

@@ -40,7 +40,6 @@ export class TransactionsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private accountService: AccountService,
               private transactionService: TransactionService,
-              private entryService: EntryService,
               private messageService: MessageService,
               private location: Location,
               private loginService: LoginService,

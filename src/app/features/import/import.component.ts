@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import IAccount from "../../shared/models/IAccount";
 import ITransaction from "../../shared/models/ITransaction";
 import {MessageService} from "primeng/api";
-import {AccountService} from "../../core/services/account.service";
 import {TransactionService} from "../../core/services/transaction.service";
-import {EntryService} from "../../core/services/entry.service";
 import IAssociation from "../../shared/models/IAssociation";
 import {AssociationService} from "../../core/services/association.service";
 
@@ -28,11 +26,15 @@ export class ImportComponent implements OnInit {
 
   nbPending:number = 0;
 
+  detailsDialogData = {
+    visible: false,
+    title: '',
+    additionalData: {},
+  }
+
   private createMode: boolean = true; //used for associations
 
   constructor(private messageService: MessageService,
-              private accountService: AccountService,
-              private entryService: EntryService,
               private transactionService: TransactionService,
               private associationService: AssociationService,
               ) { }
@@ -197,5 +199,11 @@ export class ImportComponent implements OnInit {
   fileUploaded() {
     this.messageService.add({severity: 'success', summary: "Fichier importé"});
     this.loadAssociationsAndTransactions();
+  }
+
+  showDetails(txn: ITransaction) {
+    this.detailsDialogData.title = txn.description || '(sans description)';
+    this.detailsDialogData.additionalData = JSON.parse(txn.additionalData);
+    this.detailsDialogData.visible = true;
   }
 }

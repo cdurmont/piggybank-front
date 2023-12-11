@@ -10,9 +10,10 @@
     <button pButton class="p-button-text text-2xl text-gray-500 " *ngIf="!user.admin">{{account.name ? account.name : "(sans nom)"}}</button>
   </div>
   <div class="flex-none">
+    <button pButton class="p-button-outlined " icon="pi pi-backward" routerLink="/accounts/stats/{{account.id}}" (click)="loadMoreLines()" pTooltip="Afficher les {{PAGE_SIZE}} lignes précédentes"></button>
+    <button pButton class="p-button-outlined " icon="pi pi-chart-line" routerLink="/accounts/stats/{{account.id}}"></button>
     <button pButton class="p-button-outlined " icon="pi pi-ellipsis-v" (click)="buildAndShowMenu($event)"></button>
     <p-menu #menu [popup]="true" [model]="accountMenu"></p-menu>
-    <button pButton class="p-button-outlined " icon="pi pi-chart-line" routerLink="/accounts/stats/{{account.id}}"></button>
   </div>
 </div>
 
@@ -32,7 +33,6 @@
 
 <div *ngIf="subAccounts.length==0">
   <p-contextMenu #cm [model]="contextMenu"></p-contextMenu>
-  <p-button *ngIf="showMoreLines()" (click)="loadMoreLines()">Afficher les {{PAGE_SIZE}} lignes précédentes</p-button>
   <div class="grid p-fluid">
     <div class="hidden md:block md:col-2"><p-checkbox title="Tout sélectionner" [binary]="true" *ngIf="account.reconcilable && user.admin" (onChange)="onSelectAll($event)" [(ngModel)]="selectAll"></p-checkbox>Date</div>
     <div class="hidden md:block md:col-2">Référence</div>

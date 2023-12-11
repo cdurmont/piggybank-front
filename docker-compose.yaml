@@ -42,3 +42,4 @@ services:
       - piggybank-back
     environment:
       PIGGYBANK_BACKEND_URL: http://piggybank-back:3000
+      PIGGYBANK_LINK_URL: http://piggybank-link:3000

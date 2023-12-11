@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   configFile: 'assets/config/config.dev.json',
-  backendUrl: '/api-v2'
+  backendUrl: '/api-v2',
+  linkUrl: '/link-v2'
+
 };
 
 /*

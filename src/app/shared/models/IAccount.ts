@@ -6,6 +6,7 @@ interface IAccount {
     id?: any,
     name?: string,
     externalRef?: string,
+    linkId?: string | null,
     iban?: string,
     parent?: any,
     type?: string,

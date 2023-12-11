@@ -3,7 +3,6 @@ import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import IAccount from "../../shared/models/IAccount";
 import {BehaviorSubject, Observable} from "rxjs";
-import IUser from "../../shared/models/IUser";
 import {map} from "rxjs/operators";
 import IEntry from "../../shared/models/IEntry";
 
@@ -38,6 +37,11 @@ export class AccountService {
         return accounts;
       }))
       ;
+  }
+
+  readLinked(instanceId: number): Observable<IAccount[]> {
+    const serviceUrl: string = this.getServiceUrl(instanceId);
+    return this.httpClient.get<IAccount[]>(`${serviceUrl}/linked`);
   }
 
   readTree(instanceId: number): Observable<IAccount[]> {

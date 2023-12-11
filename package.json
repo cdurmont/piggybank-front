@@ -25,6 +25,7 @@
     "chart.js": "^4.2.1",
     "keycloak-angular": "^10.0.2",
     "keycloak-js": "^18.0.1",
+    "ngx-plaid-link": "^13.0.2",
     "primeflex": "^3.3.0",
     "primeicons": "^5.0.0",
     "primeng": "^13.4.1",

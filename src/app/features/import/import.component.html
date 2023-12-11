@@ -21,7 +21,13 @@
         </div>
       </div>
       <div class="col-3">
-          <input pInputText [(ngModel)]="txn.description">
+        <div class="p-inputgroup">
+          <span class="p-float-label">
+            <input pInputText [(ngModel)]="txn.description">
+          </span>
+          <button pButton type="button" icon="pi pi-question-circle" class="p-inputgroup-addon" (click)="showDetails(txn)"></button>
+        </div>
+
       </div>
       <div class="col-3"><app-account-selector [account]="txn.entries[1].account" (onAccountSelect)="accountSelectedTxn($event,txn)"></app-account-selector> </div>
       <div class="col-1"><input pInputText disabled="disabled" [(ngModel)]="txn.entries[0].debit"></div>
@@ -30,6 +36,12 @@
   </div>
   <button pButton type="button" label="Importer les transactions complétées" (click)="importTransactions()"></button>
 </div>
+
+<p-dialog [(visible)]="detailsDialogData.visible" [header]="detailsDialogData.title">
+  <code>
+    {{ detailsDialogData.additionalData | json}}
+  </code>
+</p-dialog>
 
 <p-fieldset legend="Import fichier bancaire QIF (Quicken/Money)">
   <div class="grid">
