@@ -10,7 +10,7 @@
     <button pButton class="p-button-text text-2xl text-gray-500 " *ngIf="!user.admin">{{account.name ? account.name : "(sans nom)"}}</button>
   </div>
   <div class="flex-none">
-    <button pButton class="p-button-outlined " icon="pi pi-backward" routerLink="/accounts/stats/{{account.id}}" (click)="loadMoreLines()" pTooltip="Afficher les {{PAGE_SIZE}} lignes précédentes"></button>
+    <button pButton class="p-button-outlined " icon="pi pi-backward" (click)="loadMoreLines()" pTooltip="Afficher les {{PAGE_SIZE}} lignes précédentes"></button>
     <button pButton class="p-button-outlined " icon="pi pi-chart-line" routerLink="/accounts/stats/{{account.id}}"></button>
     <button pButton class="p-button-outlined " icon="pi pi-ellipsis-v" (click)="buildAndShowMenu($event)"></button>
     <p-menu #menu [popup]="true" [model]="accountMenu"></p-menu>
