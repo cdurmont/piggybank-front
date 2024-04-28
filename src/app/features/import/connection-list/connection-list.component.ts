@@ -6,7 +6,6 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {AccountService} from "../../../core/services/account.service";
 import {Account} from "../../../shared/models/account.model";
 import IAccount from "../../../shared/models/IAccount";
-import ITransaction from "../../../shared/models/ITransaction";
 
 
 @Component({
@@ -135,5 +134,24 @@ export class ConnectionListComponent implements OnInit {
         this.syncedTransactions = JSON.stringify(result);
       }
     );
+  }
+
+  updateConnection(conn: Connection) {
+    this.connectionService.createPublicToken(conn.accessToken).subscribe(response => {
+      this.linkToken = response.token;
+      const plaidConf: PlaidConfig = {
+        token: response.token,
+        onSuccess: () => {
+          this.messageService.add({severity: 'success', summary: "Connexion mise à jour"});
+          this.fetchConnections();
+        },
+        onExit: () => {
+        }
+      };
+      this.plaidLinkService.createPlaid(plaidConf).then(handler => {
+        handler.open();
+      });
+    });
+
   }
 }

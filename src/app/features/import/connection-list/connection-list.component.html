@@ -14,6 +14,7 @@
       {{conn.bankName}}
     </div>
     <div class="flex-none">
+      <button pButton icon="pi pi-sync" pTooltip="Mettre à jour" (click)="updateConnection(conn)"></button>
       <button pButton icon="pi pi-trash" pTooltip="Déconnecter" (click)="deleteConnection(conn)"></button>
     </div>
   </div>

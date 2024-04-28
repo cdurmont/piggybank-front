@@ -11,8 +11,8 @@ export class ConnectionService {
 
   constructor(private httpClient: HttpClient) { }
 
-  createPublicToken()  {
-    return this.httpClient.post<{message: string, token: string, environment: string}>(`${environment.linkUrl}/link-token`,{});
+  createPublicToken(update?: string)  {
+    return this.httpClient.post<{message: string, token: string, environment: string}>(`${environment.linkUrl}/link-token`,{update});
   }
   create(publicToken: string, syncStartDate: Date, instance: number) {
     return this.httpClient.post<{message: string, accessToken: string}>(`${environment.linkUrl}/connection`,{publicToken: publicToken, syncStartDate: syncStartDate, instance: instance});
